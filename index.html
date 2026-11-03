@@ -9868,10 +9868,10 @@ var APP = (function () {
        operacional de Marcio Cristi, gestão de Nilton. A classificação
        contábil continua em Venda de Serviços → Locações de Dependências,
        que é outra dimensão e aponta para a mesma peça. */
-    if (g && g.nome === "Administrativa") {
-      return [{ id: "locacoes", nome: "Locações e Eventos" },
-        { id: "eventos", nome: "Eventos" }];
-    }
+    /* Administrativa: Locações e Eventos e Eventos são acessados somente
+       pelas pastas próprias do menu lateral, evitando abas duplicadas.
+       Nenhum módulo, dado ou permissão é alterado. */
+    if (g && g.nome === "Administrativa") return [];
     return [];
   }
   /* Rota antiga apontando para simulacoes cai na Visão Geral em vez de
