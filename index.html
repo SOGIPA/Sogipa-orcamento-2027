@@ -2338,6 +2338,11 @@ tr.hoverable:hover>td{background:rgba(61,123,255,.06);}
                do módulo. */
             if (!AUTH.deveTrocarSenha() && window.SBDATA && typeof window.SBDATA.carregar === "function") {
               try { window.SBDATA.carregar(); } catch (e) { avisar("sbdata", e); }
+              if (window.ASSOCIACOES && window.ASSOCIACOES.REPO) {
+                window.ASSOCIACOES.REPO.carregarBanco().then(function (r) {
+                  if (r.ok && typeof window.render === "function") window.render();
+                });
+              }
               if (typeof window.SBDATA.carregarDRE === "function") {
                 try { window.SBDATA.carregarDRE(); } catch (e) { avisar("sbdata:dre", e); }
               }
@@ -22387,7 +22392,7 @@ var DADOS_PA_2027 = {"fonte":"ATUALIZACOES_PESSOAL_DE_APOIO.xlsx","aba":"Consoli
    A chave quadroSocial saiu daqui: a quantidade de associados passou a
    viver numa fonte só, ASSOC_QUADRO, abaixo. Não existe mais array
    paralelo de titulares no arquivo. */
-var ASSOC_MATRIZ = {"pecas":[{"id":"mensalidades","nome":"Mensalidades","aba":"Mensalidades","linhaDRE":null,"nomeDRE":"MENSALIDADES","series":{"r22":[null,null,null,null,null,null,null,null,null,null,null,null],"r23":[null,null,null,null,null,null,null,null,null,null,null,null],"r24":[null,null,null,null,null,null,null,null,null,null,null,null],"r25":[null,null,null,null,null,null,null,null,null,null,null,null],"r26":[null,null,null,null,null,null,null,null,null,null,null,null],"o27":[null,null,null,null,null,null,null,null,null,null,null,null]},"rodape":{"r22":null,"r23":null,"r24":null,"r25":null,"r26":null,"o27":null},"ativa":true},{"id":"cota","nome":"Cota de Investimentos","aba":"Cota de Investimentos","linhaDRE":null,"nomeDRE":"COTA DE INVESTIMENTO","series":{"r22":[null,null,null,null,null,null,null,null,null,null,null,null],"r23":[null,null,null,null,null,null,null,null,null,null,null,null],"r24":[null,null,null,null,null,null,null,null,null,null,null,null],"r25":[null,null,null,null,null,null,null,null,null,null,null,null],"r26":[null,null,null,null,null,null,null,null,null,null,null,null],"o27":[null,null,null,null,null,null,null,null,null,null,null,null]},"rodape":{"r22":null,"r23":null,"r24":null,"r25":null,"r26":null,"o27":null},"ativa":true},{"id":"dependente","nome":"Mensalidade Dependente","aba":"Mensalidade Dependente","linhaDRE":null,"nomeDRE":"MENSALIDADE DEPENDENTE","series":{"r22":[null,null,null,null,null,null,null,null,null,null,null,null],"r23":[null,null,null,null,null,null,null,null,null,null,null,null],"r24":[null,null,null,null,null,null,null,null,null,null,null,null],"r25":[null,null,null,null,null,null,null,null,null,null,null,null],"r26":[null,null,null,null,null,null,null,null,null,null,null,null],"o27":[null,null,null,null,null,null,null,null,null,null,null,null]},"rodape":{"r22":null,"r23":null,"r24":null,"r25":null,"r26":null,"o27":null},"ativa":true},{"id":"reingressos","nome":"Reingressos","aba":"Reingressos","linhaDRE":null,"nomeDRE":"REINGRESSOS","series":{"r22":[null,null,null,null,null,null,null,null,null,null,null,null],"r23":[null,null,null,null,null,null,null,null,null,null,null,null],"r24":[null,null,null,null,null,null,null,null,null,null,null,null],"r25":[null,null,null,null,null,null,null,null,null,null,null,null],"r26":[null,null,null,null,null,null,null,null,null,null,null,null],"o27":[null,null,null,null,null,null,null,null,null,null,null,null]},"rodape":{"r22":null,"r23":null,"r24":null,"r25":null,"r26":null,"o27":null},"ativa":false},{"id":"desligamentos","nome":"Desligamentos","aba":"Desligamentos","linhaDRE":null,"nomeDRE":"DESLIGAMENTO","series":{"r22":[null,null,null,null,null,null,null,null,null,null,null,null],"r23":[null,null,null,null,null,null,null,null,null,null,null,null],"r24":[null,null,null,null,null,null,null,null,null,null,null,null],"r25":[null,null,null,null,null,null,null,null,null,null,null,null],"r26":[null,null,null,null,null,null,null,null,null,null,null,null],"o27":[null,null,null,null,null,null,null,null,null,null,null,null]},"rodape":{"r22":null,"r23":null,"r24":null,"r25":null,"r26":null,"o27":null},"ativa":false},{"id":"carteiras","nome":"Carteiras Sociais","aba":"Carteiras Sociais","linhaDRE":null,"nomeDRE":"CARTEIRAS SOCIAIS","series":{"r22":[null,null,null,null,null,null,null,null,null,null,null,null],"r23":[null,null,null,null,null,null,null,null,null,null,null,null],"r24":[null,null,null,null,null,null,null,null,null,null,null,null],"r25":[null,null,null,null,null,null,null,null,null,null,null,null],"r26":[null,null,null,null,null,null,null,null,null,null,null,null],"o27":[null,null,null,null,null,null,null,null,null,null,null,null]},"rodape":{"r22":null,"r23":null,"r24":null,"r25":null,"r26":null,"o27":null},"ativa":false},{"id":"temporario","nome":"Sócio Temporário","aba":"Sócio Temporário","linhaDRE":null,"nomeDRE":"SOCIO TEMPORARIO","series":{"r22":[null,null,null,null,null,null,null,null,null,null,null,null],"r23":[null,null,null,null,null,null,null,null,null,null,null,null],"r24":[null,null,null,null,null,null,null,null,null,null,null,null],"r25":[null,null,null,null,null,null,null,null,null,null,null,null],"r26":[null,null,null,null,null,null,null,null,null,null,null,null],"o27":[null,null,null,null,null,null,null,null,null,null,null,null]},"rodape":{"r22":null,"r23":null,"r24":null,"r25":null,"r26":null,"o27":null},"ativa":false},{"id":"joia","nome":"Joia","aba":"Joia","linhaDRE":null,"nomeDRE":"JOIA","series":{"r22":[null,null,null,null,null,null,null,null,null,null,null,null],"r23":[null,null,null,null,null,null,null,null,null,null,null,null],"r24":[null,null,null,null,null,null,null,null,null,null,null,null],"r25":[null,null,null,null,null,null,null,null,null,null,null,null],"r26":[null,null,null,null,null,null,null,null,null,null,null,null],"o27":[null,null,null,null,null,null,null,null,null,null,null,null]},"rodape":{"r22":null,"r23":null,"r24":null,"r25":null,"r26":null,"o27":null},"ativa":false}]};
+var ASSOC_MATRIZ = {"pecas":[{"id":"mensalidades","nome":"Mensalidades","aba":"Mensalidades","linhaDRE":null,"nomeDRE":"MENSALIDADES","series":{"r22":[null,null,null,null,null,null,null,null,null,null,null,null],"r23":[null,null,null,null,null,null,null,null,null,null,null,null],"r24":[null,null,null,null,null,null,null,null,null,null,null,null],"r25":[null,null,null,null,null,null,null,null,null,null,null,null],"r26":[1614239.5,1507446.27,1624134.84,1442940.7,1471260.36,1409041.09,1418749.74,1446233.43,1425399,1494010,1543040,1833568],"o27":[null,null,null,null,null,null,null,null,null,null,null,null]},"rodape":{"r22":null,"r23":null,"r24":null,"r25":null,"r26":null,"o27":null},"ativa":true},{"id":"cota","nome":"Cota de Investimentos","aba":"Cota de Investimentos","linhaDRE":null,"nomeDRE":"COTA DE INVESTIMENTO","series":{"r22":[null,null,null,null,null,null,null,null,null,null,null,null],"r23":[null,null,null,null,null,null,null,null,null,null,null,null],"r24":[null,null,null,null,null,null,null,null,null,null,null,null],"r25":[null,null,null,null,null,null,null,null,null,null,null,null],"r26":[30792,28683,30210,25564,26112,28228,27621,31413,27250,28663,28663,28663],"o27":[null,null,null,null,null,null,null,null,null,null,null,null]},"rodape":{"r22":null,"r23":null,"r24":null,"r25":null,"r26":null,"o27":null},"ativa":true},{"id":"dependente","nome":"Mensalidade Dependente","aba":"Mensalidade Dependente","linhaDRE":null,"nomeDRE":"MENSALIDADE DEPENDENTE","series":{"r22":[null,null,null,null,null,null,null,null,null,null,null,null],"r23":[null,null,null,null,null,null,null,null,null,null,null,null],"r24":[null,null,null,null,null,null,null,null,null,null,null,null],"r25":[null,null,null,null,null,null,null,null,null,null,null,null],"r26":[null,null,null,null,null,null,null,null,null,null,null,null],"o27":[null,null,null,null,null,null,null,null,null,null,null,null]},"rodape":{"r22":null,"r23":null,"r24":null,"r25":null,"r26":null,"o27":null},"ativa":true},{"id":"reingressos","nome":"Reingressos","aba":"Reingressos","linhaDRE":null,"nomeDRE":"REINGRESSOS","series":{"r22":[null,null,null,null,null,null,null,null,null,null,null,null],"r23":[null,null,null,null,null,null,null,null,null,null,null,null],"r24":[null,null,null,null,null,null,null,null,null,null,null,null],"r25":[null,null,null,null,null,null,null,null,null,null,null,null],"r26":[46451,23670,28106,11970,17920,11152,14731,27626,34439,44000,48000,109850],"o27":[null,null,null,null,null,null,null,null,null,null,null,null]},"rodape":{"r22":null,"r23":null,"r24":null,"r25":null,"r26":null,"o27":null},"ativa":true},{"id":"desligamentos","nome":"Desligamentos","aba":"Desligamentos","linhaDRE":null,"nomeDRE":"DESLIGAMENTO","series":{"r22":[null,null,null,null,null,null,null,null,null,null,null,null],"r23":[null,null,null,null,null,null,null,null,null,null,null,null],"r24":[null,null,null,null,null,null,null,null,null,null,null,null],"r25":[null,null,null,null,null,null,null,null,null,null,null,null],"r26":[null,null,null,null,null,null,null,null,null,null,null,null],"o27":[null,null,null,null,null,null,null,null,null,null,null,null]},"rodape":{"r22":null,"r23":null,"r24":null,"r25":null,"r26":null,"o27":null},"ativa":false},{"id":"carteiras","nome":"Carteiras Sociais","aba":"Carteiras Sociais","linhaDRE":null,"nomeDRE":"CARTEIRAS SOCIAIS","series":{"r22":[null,null,null,null,null,null,null,null,null,null,null,null],"r23":[null,null,null,null,null,null,null,null,null,null,null,null],"r24":[null,null,null,null,null,null,null,null,null,null,null,null],"r25":[null,null,null,null,null,null,null,null,null,null,null,null],"r26":[null,null,null,null,null,null,null,null,null,null,null,null],"o27":[null,null,null,null,null,null,null,null,null,null,null,null]},"rodape":{"r22":null,"r23":null,"r24":null,"r25":null,"r26":null,"o27":null},"ativa":false},{"id":"temporario","nome":"Sócio Temporário","aba":"Sócio Temporário","linhaDRE":null,"nomeDRE":"SOCIO TEMPORARIO","series":{"r22":[null,null,null,null,null,null,null,null,null,null,null,null],"r23":[null,null,null,null,null,null,null,null,null,null,null,null],"r24":[null,null,null,null,null,null,null,null,null,null,null,null],"r25":[null,null,null,null,null,null,null,null,null,null,null,null],"r26":[null,null,null,null,null,null,null,null,null,null,null,null],"o27":[null,null,null,null,null,null,null,null,null,null,null,null]},"rodape":{"r22":null,"r23":null,"r24":null,"r25":null,"r26":null,"o27":null},"ativa":false},{"id":"joia","nome":"Joia","aba":"Joia","linhaDRE":null,"nomeDRE":"JOIA","series":{"r22":[null,null,null,null,null,null,null,null,null,null,null,null],"r23":[null,null,null,null,null,null,null,null,null,null,null,null],"r24":[null,null,null,null,null,null,null,null,null,null,null,null],"r25":[null,null,null,null,null,null,null,null,null,null,null,null],"r26":[48886,33437,16316,13376,12243,14743,19707,28339,25099,42500,48000,78000],"o27":[null,null,null,null,null,null,null,null,null,null,null,null]},"rodape":{"r22":null,"r23":null,"r24":null,"r25":null,"r26":null,"o27":null},"ativa":true}]};
 
 /* ─────────── FONTE ÚNICA DO QUADRO SOCIAL ───────────
    Transcrição de ASSOCIAÇÕES 2027.xlsx. Três camadas, propositalmente
@@ -22469,6 +22474,57 @@ var ASSOC_QUADRO = {"fonte":"ASSOCIAÇÕES 2027.xlsx","abas":{"operacional":"PA"
   var REPO = {
     modo: "memoria-sessao",
     salvo: { valores: {}, registros: {} },
+    /* Persistência de Associações: somente o perfil ADM aciona este fluxo.
+       A grade é preenchida a partir das fontes, mas apenas meses efetivamente
+       modificados pelo administrador são gravados. Não grava dados em lote
+       no login e não altera as demais peças. */
+    carregarBanco: function () {
+      var SB = window.SB, AU = window.AUTH;
+      if (!SB || !AU || !AU.carregado || !AU.podeAdministrar || !AU.podeAdministrar())
+        return Promise.resolve({ok:false,motivo:"sem-permissao"});
+      return SB.from("associacoes_lancamentos_2027")
+        .select("atividade,mes,valor").eq("exercicio",2027)
+        .then(function (r) {
+          if (r.error) return {ok:false,motivo:r.error.message};
+          var salvo = {};
+          (r.data || []).forEach(function (x) {
+            if (!pecaById(x.atividade) || x.mes < 1 || x.mes > 12) return;
+            if (!salvo[x.atividade]) salvo[x.atividade] = {};
+            salvo[x.atividade][x.mes-1] = x.valor;
+          });
+          REPO.salvo.valores = salvo;
+          PLANO.valores = JSON.parse(JSON.stringify(salvo));
+          preencherPropostas();
+          return {ok:true,linhas:(r.data||[]).length};
+        });
+    },
+    salvarBanco: function () {
+      var SB = window.SB, AU = window.AUTH;
+      if (!SB || !AU || !AU.carregado || !AU.podeAdministrar || !AU.podeAdministrar())
+        return Promise.resolve({ok:false,motivo:"Acesso de administrador necessário"});
+      var linhas = [], sv = REPO.salvo.valores || {};
+      Object.keys(PLANO.valores).forEach(function (id) {
+        if (!pecaById(id)) return;
+        Object.keys(PLANO.valores[id] || {}).forEach(function (mes) {
+          var valor = PLANO.valores[id][mes], anterior = (sv[id] || {})[mes];
+          if (valor === null || valor === undefined || valor === anterior) return;
+          if (!Number.isInteger(valor)) return; /* não arredondar centavos silenciosamente */
+          linhas.push({exercicio:2027,atividade:id,mes:Number(mes)+1,valor:valor});
+        });
+      });
+      if (!linhas.length) return Promise.resolve({ok:true,linhas:0});
+      return SB.from("associacoes_lancamentos_2027")
+        .upsert(linhas,{onConflict:"exercicio,atividade,mes"})
+        .select("atividade,mes,valor")
+        .then(function (r) {
+          if (r.error) return {ok:false,motivo:r.error.message};
+          if (!r.data || r.data.length !== linhas.length) return {ok:false,motivo:"Gravação não confirmada integralmente"};
+          return REPO.carregarBanco().then(function (releitura) {
+            if (!releitura.ok) return {ok:false,motivo:"Não foi possível reler os dados salvos"};
+            return {ok:true,linhas:linhas.length};
+          });
+        })["catch"](function (e) {return {ok:false,motivo:String(e.message||e)};});
+    },
     /* Salvar a matriz também efetiva o texto que estiver na caixa: é o
        que faz "Salvar e sair" não deixar informação para trás. */
     salvarRascunho: function () {
@@ -22598,6 +22654,21 @@ var ASSOC_QUADRO = {"fonte":"ASSOCIAÇÕES 2027.xlsx","abas":{"operacional":"PA"
   function pecaById(id) {
     return PECAS.filter(function (p) { return p.id === id; })[0] || null;
   }
+  /* Propostas recebidas em 03/11/2026: somente rascunho, não DRE.
+     O administrador confirma os 48 meses no botão Salvar. */
+  var PROPOSTAS_ASSOC = {"cota":[18992,18944,18944,18944,18944,18944,18896,18896,18896,18896,18896,18896],"dependente":[335725,338806,336236,326073,316708,311384,308524,309172,312107,320249,332044,348036],"reingressos":[56985,32272,35654,14976,7961,10952,12126,16096,17398,39307,66061,92168],"joia":[53811,33246,23042,18502,18288,15690,15488,14106,14760,31605,53116,74107]};
+  function preencherPropostas() {
+    Object.keys(PROPOSTAS_ASSOC).forEach(function (id) {
+      if (!PLANO.valores[id]) PLANO.valores[id] = {};
+      PROPOSTAS_ASSOC[id].forEach(function (v,i) {
+        if (PLANO.valores[id][i] === undefined &&
+            (!REPO.salvo.valores[id] || REPO.salvo.valores[id][i] === undefined))
+          PLANO.valores[id][i] = v;
+      });
+    });
+  }
+  preencherPropostas();
+
 
   /* Leitura de um mês. `fonte` escolhe a camada — "rascunho" é o que está
      na tela, "salvo" é o que foi registrado. Em ambas, onde o gestor não
@@ -23309,6 +23380,9 @@ var ASSOC_QUADRO = {"fonte":"ASSOCIAÇÕES 2027.xlsx","abas":{"operacional":"PA"
       if (!p) return;
       var nova = serieFinanceira(id);
       if (!nova) return;
+      /* A fonte recebida pelo gestor tem precedência sobre a fórmula derivada.
+         Nunca substituir valores mensais já existentes. */
+      if ((p.series.o27 || []).some(function (v) { return v !== null && v !== undefined; })) return;
       var antiga = (p.series.o27 || vazio12()).slice();
       SUBSTITUICOES.push({ peca: id, nome: p.nome, linhaDRE: p.linhaDRE,
         anterior: antiga, novo: nova.slice(),
@@ -25481,13 +25555,38 @@ if (typeof APP !== "undefined" && APP) {
       "evolução da base social, e a camada está preparada para crescer quando houver essa regra.");
   }
 
+  /* Fonte externa de conferência. Não altera as séries oficiais, a DRE,
+     os rascunhos, o Supabase ou as premissas dos gestores. */
+  function referenciaMensalidades() {
+    var meses = ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"];
+    var ref26 = [1614240,1507446,1624135,1442941,1471260,1409041,1418750,1446233,1425399,1494010,1543040,1833568];
+    var ref27 = [1818861,1772304,1849114,1721920,1710856,1658572,1658687,1634880,1696173,1758547,1952707];
+    var vigente = AS.serie(AS.pecaById("mensalidades"), "o27") || [];
+    var dinheiro = function(v) { return v == null || !isFinite(v) ? "—" : "R$ " + Number(v).toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2}); };
+    var linhas = meses.map(function(m,i) {
+      var v = vigente[i];
+      return '<tr><td style="padding:9px 12px">'+m+'</td>'+
+        '<td style="text-align:right;padding:9px 12px">'+dinheiro(ref26[i])+'</td>'+
+        '<td style="text-align:right;padding:9px 12px">'+dinheiro(ref27[i])+'</td>'+
+        '<td style="text-align:right;padding:9px 12px;font-weight:600">'+dinheiro(v)+'</td>'+
+        '<td style="text-align:right;padding:9px 12px">'+(v == null ? '—' : dinheiro(v-ref27[i]))+'</td></tr>';
+    }).join("");
+    return '<section class="card" style="margin-top:18px;padding:20px">'+
+      '<h3 style="margin:0 0 8px">Mensalidades · conferência das fontes recebidas</h3>'+
+      '<p style="margin:0 0 14px;color:var(--muted,#aeb4c7)">Referência em valores líquidos. Os números enviados não substituem o orçamento vigente informado pelos gestores, nem são gravados automaticamente.</p>'+
+      '<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums">'+
+      '<thead><tr><th style="text-align:left;padding:9px 12px">Mês</th><th style="text-align:right;padding:9px 12px">2026 Real/Tend · referência</th><th style="text-align:right;padding:9px 12px">2027 fonte recebida</th><th style="text-align:right;padding:9px 12px">2027 vigente na peça</th><th style="text-align:right;padding:9px 12px">Vigente − fonte</th></tr></thead><tbody>'+linhas+'</tbody></table></div>'+
+      '<p style="font-size:12px;margin-top:12px;color:var(--muted,#aeb4c7)">Fonte 2026: total informado R$ 18.230.062,00; soma dos valores mensais exibidos R$ 18.230.063,00 (diferença de arredondamento de R$ 1,00). Fonte 2027: R$ 20.885.434,00. Histórico 2026 não identificado como integralmente realizado. Consulta apenas; sem efeito sobre a DRE.</p></section>';
+  }
+
   /* ─── PLANEJAMENTO ─── */
   function planejamento() {
     var p = pecaAtual();
     var out = stitle("Planejamento Orçamentário", "orçado 2027 mês a mês · " + esc(p.nome));
-    out += seletorPeca();
+    /* Peça definida pela navegação lateral; seletor redundante removido. */
     out += '<div id="assAcoes">' + barraSalvar() + "</div>";
     out += '<div class="gap"></div>' + grade(p);
+    if (p.id === "mensalidades") out += referenciaMensalidades();
     /* A seção padronizada substitui o cartão "Informações do Orçamento".
        Mesmo dado, mesmo histórico: o motor é o compartilhado. */
     if (window.PROMEMORIA) {
@@ -25965,17 +26064,34 @@ if (typeof APP !== "undefined" && APP) {
     }
     /* Salvar e sair registra o texto pendente antes de navegar. */
     if (k[0] === "saidaSalvar") {
-      AS.REPO.salvarRascunho();
-      S.assRegEdit = null;
-      var d2 = S.assSaida; S.assSaida = null; concluirSaida(d2, render); return;
+      if (S.assSalvando) return;
+      S.assSalvando = true;
+      AS.REPO.salvarBanco().then(function (r) {
+        S.assSalvando = false;
+        if (!r.ok) {window.alert("Falha ao salvar: " + (r.motivo||"sem confirmação"));render();return;}
+        AS.REPO.salvarRascunho();
+        S.assRegEdit = null;
+        var d2 = S.assSaida; S.assSaida = null; concluirSaida(d2, render);
+      });
+      return;
     }
     /* Salvar move o snapshot — e com ele o status da peça, o total da
        área e a DRE. Por isso a tela é redesenhada, com o aviso de êxito
        carregado no estado para sobreviver ao redesenho. */
     if (k[0] === "salvar") {
-      AS.REPO.salvarRascunho();
-      S.assFeed = true; S.assRegEdit = null;
-      render();
+      if (S.assSalvando) return;
+      S.assSalvando = true; S.assFeed = false;
+      AS.REPO.salvarBanco().then(function (r) {
+        S.assSalvando = false;
+        if (r.ok) {
+          AS.REPO.salvarRascunho();
+          S.assFeed = true; S.assRegEdit = null;
+        } else {
+          S.assFeed = false;
+          window.alert("Não foi possível salvar Associações. Nenhum sucesso confirmado. " + (r.motivo || "Verifique o acesso."));
+        }
+        render();
+      });
       return;
     }
     if (k[0] === "descartar") {
