@@ -22482,7 +22482,7 @@ var ASSOC_QUADRO = {"fonte":"ASSOCIAÇÕES 2027.xlsx","abas":{"operacional":"PA"
       var SB = window.SB, AU = window.AUTH;
       if (!SB || !AU || !AU.carregado || !AU.podeAdministrar || !AU.podeAdministrar())
         return Promise.resolve({ok:false,motivo:"sem-permissao"});
-      return SB.from("associacoes_lancamentos_2027")
+      return SB.from("associacoes_orcamento_pecas_2027")
         .select("atividade,mes,valor").eq("exercicio",2027)
         .then(function (r) {
           if (r.error) return {ok:false,motivo:r.error.message};
@@ -22513,7 +22513,7 @@ var ASSOC_QUADRO = {"fonte":"ASSOCIAÇÕES 2027.xlsx","abas":{"operacional":"PA"
         });
       });
       if (!linhas.length) return Promise.resolve({ok:true,linhas:0});
-      return SB.from("associacoes_lancamentos_2027")
+      return SB.from("associacoes_orcamento_pecas_2027")
         .upsert(linhas,{onConflict:"exercicio,atividade,mes"})
         .select("atividade,mes,valor")
         .then(function (r) {
