@@ -2583,8 +2583,17 @@ tr.hoverable:hover>td{background:rgba(61,123,255,.06);}
     if (!AUTH.perfil) return null;
     var p = AUTH.perfil;
     var g = AUTH.gerenciaPrincipal;
-    var partes = [p.nome].concat([p.cargo, g && g.nome ? g.nome : null]
-      .filter(function (x) { return x !== null && x !== undefined && String(x).trim() !== ""; }));
+    function nomeExibicao(valor) {
+      var palavras = String(valor || "").trim().replace(/\s+/g, " ").split(" ").filter(Boolean);
+      if (palavras.length <= 2) return palavras.join(" ");
+      return palavras[0] + " " + palavras[palavras.length - 1];
+    }
+    var cargo = String(p.cargo || "").trim();
+    var perfil = String(p.perfil || "").trim();
+    /* Cargo funcional e perfil de acesso são dados distintos; não repetir o
+       perfil como cargo quando forem idênticos. */
+    if (cargo && perfil && cargo.toLocaleLowerCase("pt-BR") === perfil.toLocaleLowerCase("pt-BR")) cargo = "";
+    var partes = [nomeExibicao(p.nome), cargo].filter(function (x) { return !!x; });
     return { linha: partes.join(" · "), perfil: p.perfil || null };
   };
 
@@ -3022,7 +3031,8 @@ tr.hoverable:hover>td{background:rgba(61,123,255,.06);}
     "RH":                      ["RH", "Recursos Humanos", 6],
     "TI":                      ["TI", "Tecnologia da Informação", 7],
     "Projetos e Obras":        ["PROJETOS E OBRAS", 8],
-    "Projetos e Planejamento": ["PROJETOS E PLANEJAMENTO", 9]
+    "Projetos e Planejamento": ["PROJETOS E PLANEJAMENTO", 9],
+    "Comunicação": ["COMUNICACAO", "MARKETING", 10]
   };
 
   /* ── sinônimos de módulo: id do painel → id institucional, código e nome ──
@@ -3139,6 +3149,7 @@ tr.hoverable:hover>td{background:rgba(61,123,255,.06);}
     if (!NAVPERM.pronto()) return false;
     if (id === "admin") return administra();
     if (id === "visaogeral") return NAVPERM.podeVisaoGeral();
+    if (id === "marketing" && consultarGer(refsGer("Comunicação"))) return true;
     if (leituraGlobal() || administra()) return true;
     return !!consultarMod(refsMod(id));
   };
@@ -3165,6 +3176,11 @@ tr.hoverable:hover>td{background:rgba(61,123,255,.06);}
   NAVPERM.podeVisaoGeral = function () {
     if (!NAVPERM.pronto()) return false;
     if (leituraGlobal() || administra()) return true;
+    /* Comunicação: o gestor trabalha na própria área. O flag genérico de
+       DRE não deve exibir a consolidação de Pessoal de todas as gerências.
+       Isto é somente proteção de interface; RLS/RPC devem ser auditadas. */
+    if (A().perfil && Number(A().perfil.gerencia_id) === 10 &&
+        String(A().perfil.perfil || "").toLowerCase() === "gerente") return false;
     /* Autorizacao explicita da DRE consolidada, sem leitura global de outras pecas. */
     if (A().perfil && A().perfil.acesso_dre_consolidada === true) return true;
     return !!consultarMod(MOD_REF.visaogeral);
@@ -7328,7 +7344,7 @@ var APP = (function () {
      sem valores, aguardando a matriz. Novas gerências podem entrar por importação
      ou cadastro, sem alteração de código. */
   ["Gerência Geral", "Administrativa", "Operações", "Esportes", "Manutenção", "RH", "TI",
-    "Projetos e Obras", "Projetos e Planejamento"].forEach(function (n) {
+    "Projetos e Obras", "Projetos e Planejamento", "Comunicação"].forEach(function (n) {
       PES.seqG++;
       PES.gerencias.push({
         id: "g" + PES.seqG, nome: n, status: "rascunho", ccs: [], turnover: [],
@@ -10292,6 +10308,7 @@ var APP = (function () {
     "TI": "Tecnologia da Informação",
     "Projetos e Obras": "Obras",
     "Projetos e Planejamento": "Planejamento e Desenvolvimento",
+    "Comunicação": "Comunicação",
     "Operações": "Operações",
     "Esportes": "Esportes"
   };
@@ -22354,13 +22371,14 @@ var DADOS_PA_2027 = {"fonte":"ATUALIZACOES_PESSOAL_DE_APOIO.xlsx","aba":"Consoli
     "RH": "RH",
     "TI": "TI",
     "PROJETOS E OBRAS": "Projetos e Obras",
-    "PROJETOS E PLANEJAMENTO": "Projetos e Planejamento"
+    "PROJETOS E PLANEJAMENTO": "Projetos e Planejamento",
+    "COMUNICACAO": "Comunicação", "MARKETING": "Comunicação"
   };
   /* Compatibilidade de lotação: o banco pode devolver o ID institucional,
      a grafia do painel ou a grafia da planilha. Não inferir por CC. */
   var GER_POR_ID = {1:"Administrativa",2:"Gerência Geral",3:"Operações",
     4:"Esportes",5:"Manutenção",6:"RH",7:"TI",8:"Projetos e Obras",
-    9:"Projetos e Planejamento"};
+    9:"Projetos e Planejamento",10:"Comunicação"};
   function resolverGerencia(r) {
     var id = r.gerenciaId || r.gerencia_id;
     if (id !== undefined && id !== null && GER_POR_ID[Number(id)]) return GER_POR_ID[Number(id)];
@@ -22372,7 +22390,8 @@ var DADOS_PA_2027 = {"fonte":"ATUALIZACOES_PESSOAL_DE_APOIO.xlsx","aba":"Consoli
       "ESPORTES":"Esportes", "MANUTENCAO":"Manutenção", "RH":"RH", "TI":"TI",
       "OBRAS":"Projetos e Obras", "PROJETOS E OBRAS":"Projetos e Obras",
       "PLANEJAMENTO E DESENVOLVIMENTO":"Projetos e Planejamento",
-      "PROJETOS E PLANEJAMENTO":"Projetos e Planejamento"};
+      "PROJETOS E PLANEJAMENTO":"Projetos e Planejamento",
+      "COMUNICACAO":"Comunicação", "MARKETING":"Comunicação"};
     return aliases[nome] || null;
   }
   var GER_SEM_VINCULO = "NÃO IDENTIFICADA";
