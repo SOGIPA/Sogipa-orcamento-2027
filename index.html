@@ -3499,663 +3499,1186 @@ var EST_MATRIZ={"series":{"r22":[63128.63,49531.07,83596.0,68058.5,82422.72,6318
    posição na árvore e declara que ainda não tem tela — nenhum dado é
    copiado de outra peça para preencher. */
 var ARVORE_ORC = [
- {
-  "nome": "RECEITA",
-  "filhos": [
-   {
-    "nome": "ASSOCIAÇÕES",
+  {
+    "nome": "RECEITA",
     "filhos": [
-     {
-      "nome": "MENSALIDADES",
-      "dest": [
-       "assoc",
-       "mensalidades",
-       null
-      ]
-     },
-     {
-      "nome": "COTA DE INVESTIMENTO",
-      "dest": [
-       "assoc",
-       "cota",
-       null
-      ]
-     },
-     {
-      "nome": "MENSALIDADE DEPENDENTE",
-      "dest": [
-       "assoc",
-       "dependente",
-       null
-      ]
-     },
-     {
-      "nome": "REINGRESSOS",
-      "dest": [
-       "assoc",
-       "reingressos",
-       null
-      ]
-     },
-     {
-      "nome": "DESLIGAMENTO",
-      "dest": [
-       "assoc",
-       "desligamentos",
-       null
-      ]
-     },
-     {
-      "nome": "CARTEIRAS SOCIAIS",
-      "dest": [
-       "assoc",
-       "carteiras",
-       null
-      ]
-     },
-     {
-      "nome": "SOCIO TEMPORARIO",
-      "dest": [
-       "assoc",
-       "temporario",
-       null
-      ]
-     },
-     {
-      "nome": "JOIA",
-      "dest": [
-       "assoc",
-       "joia",
-       null
-      ]
-     }
-    ],
-    "dest": [
-     "mod",
-     "associacoes",
-     null
-    ]
-   },
-   {
-    "nome": "VENDA DE SERVIÇOS",
-    "filhos": [
-     {
-      "nome": "ESTACIONAMENTO",
-      "dest": [
-       "ger",
-       "Operações",
-       "estacionamento"
-      ]
-     },
-     {
-      "nome": "ECONOMATOS"
-     },
-     {
-      "nome": "LOCAÇÕES DE DEPENDENCIAS",
-      "dest": [
-       "mod",
-       "locacoes",
-       null
-      ]
-     },
-     {
-      "nome": "CHURRASQUEIRAS",
-      "dest": [
-       "mod",
-       "churrasqueiras",
-       null
-      ]
-     },
-     {
-      "nome": "PATROCINIOS"
-     }
-    ]
-   },
-   {
-    "nome": "RECEITA DE PROJETO CRIANÇA"
-   },
-   {
-    "nome": "RECEITA DE ESPORTE",
-    "filhos": [
-     {
-      "nome": "MODALIDADES ESPORTIVAS",
-      "filhos": [
-       {
-        "nome": "MUSCULAÇÃO",
+      {
+        "nome": "ASSOCIAÇÕES",
         "filhos": [
-         {
-          "nome": "SERVIÇOS",
-          "dest": [
-           "esp",
-           "musculacao|servicos",
-           null
-          ]
-         }
+          {
+            "nome": "MENSALIDADES",
+            "dest": [
+              "assoc",
+              "mensalidades",
+              null
+            ]
+          },
+          {
+            "nome": "COTA DE INVESTIMENTO",
+            "dest": [
+              "assoc",
+              "cota",
+              null
+            ]
+          },
+          {
+            "nome": "MENSALIDADE DEPENDENTE",
+            "dest": [
+              "assoc",
+              "dependente",
+              null
+            ]
+          },
+          {
+            "nome": "REINGRESSOS",
+            "dest": [
+              "assoc",
+              "reingressos",
+              null
+            ]
+          },
+          {
+            "nome": "DESLIGAMENTO",
+            "dest": [
+              "assoc",
+              "desligamentos",
+              null
+            ]
+          },
+          {
+            "nome": "CARTEIRAS SOCIAIS",
+            "dest": [
+              "assoc",
+              "carteiras",
+              null
+            ]
+          },
+          {
+            "nome": "SOCIO TEMPORARIO",
+            "dest": [
+              "assoc",
+              "temporario",
+              null
+            ]
+          },
+          {
+            "nome": "JOIA",
+            "dest": [
+              "assoc",
+              "joia",
+              null
+            ]
+          }
+        ],
+        "dest": [
+          "mod",
+          "associacoes",
+          null
         ]
-       },
-       {
-        "nome": "JUDÔ",
+      },
+      {
+        "nome": "VENDA DE SERVIÇOS",
         "filhos": [
-         {
-          "nome": "FORMAÇÃO / ESCOLINHAS",
-          "dest": [
-           "esp",
-           "judo|formacao",
-           null
-          ]
-         },
-         {
-          "nome": "RENDIMENTO / EQUIPES",
-          "dest": [
-           "esp",
-           "judo|rendimento",
-           null
-          ]
-         },
-         {
-          "nome": "ALTO RENDIMENTO / OLÍMPICO",
-          "dest": [
-           "esp",
-           "judo|altoRendimento",
-           null
-          ]
-         },
-         {
-          "nome": "COMPETIÇÕES",
-          "dest": [
-           "esp",
-           "judo|competicoes",
-           null
-          ]
-         },
-         {
-          "nome": "EVENTOS ESPORTIVOS",
-          "dest": [
-           "esp",
-           "judo|eventos",
-           null
-          ]
-         }
+          {
+            "nome": "ESTACIONAMENTO",
+            "dest": [
+              "ger",
+              "Operações",
+              "estacionamento"
+            ]
+          },
+          {
+            "nome": "ECONOMATOS"
+          },
+          {
+            "nome": "LOCAÇÕES DE DEPENDENCIAS",
+            "dest": [
+              "mod",
+              "locacoes",
+              null
+            ]
+          },
+          {
+            "nome": "CHURRASQUEIRAS",
+            "dest": [
+              "mod",
+              "churrasqueiras",
+              null
+            ]
+          },
+          {
+            "nome": "PATROCINIOS"
+          }
         ]
-       }
-      ]
-     },
-     {
-      "nome": "PATROCINIOS ESPORTIVOS",
-      "dest": [
-       "rub",
-       "24",
-       null
-      ]
-     },
-     {
-      "nome": "LOCAÇÕES ESPORTIVAS",
-      "dest": [
-       "rub",
-       "25",
-       null
-      ]
-     },
-     {
-      "nome": "DEPARTAMENTOS ESPORTIVOS",
-      "dest": [
-       "rub",
-       "26",
-       null
-      ]
-     },
-     {
-      "nome": "OUTRAS RECEITAS ESPORTES",
-      "dest": [
-       "rub",
-       "27",
-       null
-      ]
-     },
-     {
-      "nome": "CARTÃO PRATA ESPORTES",
-      "dest": [
-       "rub",
-       "28",
-       null
-      ]
-     },
-     {
-      "nome": "INSCRIÇÕES ESPORTIVAS",
-      "dest": [
-       "rub",
-       "29",
-       null
-      ]
-     },
-     {
-      "nome": "EVENTOS ESPORTIVOS",
-      "dest": [
-       "rub",
-       "30",
-       null
-      ]
-     },
-     {
-      "nome": "REEMBOLSO COMPETIÇÕES",
-      "dest": [
-       "rub",
-       "31",
-       null
-      ]
-     }
+      },
+      {
+        "nome": "RECEITA DE PROJETO CRIANÇA"
+      },
+      {
+        "nome": "RECEITA DE ESPORTE",
+        "filhos": [
+          {
+            "nome": "MODALIDADES ESPORTIVAS",
+            "filhos": [
+              {
+                "nome": "MUSCULAÇÃO",
+                "filhos": [
+                  {
+                    "nome": "SERVIÇOS",
+                    "dest": [
+                      "esp",
+                      "musculacao|servicos",
+                      null
+                    ]
+                  }
+                ]
+              },
+              {
+                "nome": "JUDÔ",
+                "filhos": [
+                  {
+                    "nome": "FORMAÇÃO / ESCOLINHAS",
+                    "dest": [
+                      "esp",
+                      "judo|formacao",
+                      null
+                    ]
+                  },
+                  {
+                    "nome": "RENDIMENTO / EQUIPES",
+                    "dest": [
+                      "esp",
+                      "judo|rendimento",
+                      null
+                    ]
+                  },
+                  {
+                    "nome": "ALTO RENDIMENTO / OLÍMPICO",
+                    "dest": [
+                      "esp",
+                      "judo|altoRendimento",
+                      null
+                    ]
+                  },
+                  {
+                    "nome": "COMPETIÇÕES",
+                    "dest": [
+                      "esp",
+                      "judo|competicoes",
+                      null
+                    ]
+                  },
+                  {
+                    "nome": "EVENTOS ESPORTIVOS",
+                    "dest": [
+                      "esp",
+                      "judo|eventos",
+                      null
+                    ]
+                  }
+                ]
+              },
+              {
+                "nome": "BASQUETE",
+                "filhos": [
+                  {
+                    "nome": "RENDIMENTO",
+                    "dest": [
+                      "esp",
+                      "basquete|rendimento",
+                      null
+                    ]
+                  },
+                  {
+                    "nome": "FORMACAO",
+                    "dest": [
+                      "esp",
+                      "basquete|formacao",
+                      null
+                    ]
+                  },
+                  {
+                    "nome": "SERVICOS",
+                    "dest": [
+                      "esp",
+                      "basquete|servicos",
+                      null
+                    ]
+                  },
+                  {
+                    "nome": "COMPETICOES",
+                    "dest": [
+                      "esp",
+                      "basquete|competicoes",
+                      null
+                    ]
+                  },
+                  {
+                    "nome": "EVENTOS",
+                    "dest": [
+                      "esp",
+                      "basquete|eventos",
+                      null
+                    ]
+                  }
+                ]
+              },
+              {
+                "nome": "YOGA",
+                "filhos": [
+                  {
+                    "nome": "SERVICOS ESPORTIVOS",
+                    "dest": [
+                      "esp",
+                      "yoga|servicosEsportivos",
+                      null
+                    ]
+                  }
+                ]
+              },
+              {
+                "nome": "GINÁSTICA RÍTMICA",
+                "filhos": [
+                  {
+                    "nome": "ALTORENDIMENTO",
+                    "dest": [
+                      "esp",
+                      "ginastica_ritmica|altoRendimento",
+                      null
+                    ]
+                  },
+                  {
+                    "nome": "RENDIMENTO",
+                    "dest": [
+                      "esp",
+                      "ginastica_ritmica|rendimento",
+                      null
+                    ]
+                  },
+                  {
+                    "nome": "FORMACAO",
+                    "dest": [
+                      "esp",
+                      "ginastica_ritmica|formacao",
+                      null
+                    ]
+                  },
+                  {
+                    "nome": "COMPETICOES",
+                    "dest": [
+                      "esp",
+                      "ginastica_ritmica|competicoes",
+                      null
+                    ]
+                  },
+                  {
+                    "nome": "EVENTOS",
+                    "dest": [
+                      "esp",
+                      "ginastica_ritmica|eventos",
+                      null
+                    ]
+                  }
+                ]
+              },
+              {
+                "nome": "BALLET GUTIERRES",
+                "filhos": [
+                  {
+                    "nome": "SERVICOS ESPORTIVOS",
+                    "dest": [
+                      "esp",
+                      "ballet_gutierres|servicosEsportivos",
+                      null
+                    ]
+                  }
+                ]
+              },
+              {
+                "nome": "HIDROGINÁSTICA",
+                "filhos": [
+                  {
+                    "nome": "SERVICOS ESPORTIVOS",
+                    "dest": [
+                      "esp",
+                      "hidroginastica|servicosEsportivos",
+                      null
+                    ]
+                  }
+                ]
+              },
+              {
+                "nome": "GINÁSTICA ARTÍSTICA",
+                "filhos": [
+                  {
+                    "nome": "ALTORENDIMENTO",
+                    "dest": [
+                      "esp",
+                      "ginastica_artistica|altoRendimento",
+                      null
+                    ]
+                  },
+                  {
+                    "nome": "RENDIMENTO",
+                    "dest": [
+                      "esp",
+                      "ginastica_artistica|rendimento",
+                      null
+                    ]
+                  },
+                  {
+                    "nome": "FORMACAO",
+                    "dest": [
+                      "esp",
+                      "ginastica_artistica|formacao",
+                      null
+                    ]
+                  },
+                  {
+                    "nome": "COMPETICOES",
+                    "dest": [
+                      "esp",
+                      "ginastica_artistica|competicoes",
+                      null
+                    ]
+                  },
+                  {
+                    "nome": "EVENTOS",
+                    "dest": [
+                      "esp",
+                      "ginastica_artistica|eventos",
+                      null
+                    ]
+                  }
+                ]
+              },
+              {
+                "nome": "DANÇA COUNTRY",
+                "filhos": [
+                  {
+                    "nome": "SERVICOS ESPORTIVOS",
+                    "dest": [
+                      "esp",
+                      "danca_country|servicosEsportivos",
+                      null
+                    ]
+                  }
+                ]
+              },
+              {
+                "nome": "BEACH TENNIS",
+                "filhos": [
+                  {
+                    "nome": "SERVICOS ESPORTIVOS",
+                    "dest": [
+                      "esp",
+                      "beach_tennis|servicosEsportivos",
+                      null
+                    ]
+                  },
+                  {
+                    "nome": "EVENTOS",
+                    "dest": [
+                      "esp",
+                      "beach_tennis|eventos",
+                      null
+                    ]
+                  }
+                ]
+              },
+              {
+                "nome": "AIKIDO",
+                "filhos": [
+                  {
+                    "nome": "SERVICOS ESPORTIVOS",
+                    "dest": [
+                      "esp",
+                      "aikido|servicosEsportivos",
+                      null
+                    ]
+                  }
+                ]
+              },
+              {
+                "nome": "BOXE",
+                "filhos": [
+                  {
+                    "nome": "SERVICOS ESPORTIVOS",
+                    "dest": [
+                      "esp",
+                      "boxe|servicosEsportivos",
+                      null
+                    ]
+                  }
+                ]
+              },
+              {
+                "nome": "RITMOS",
+                "filhos": [
+                  {
+                    "nome": "SERVICOS ESPORTIVOS",
+                    "dest": [
+                      "esp",
+                      "ritmos|servicosEsportivos",
+                      null
+                    ]
+                  }
+                ]
+              },
+              {
+                "nome": "GINÁSTICA VETERANAS",
+                "filhos": [
+                  {
+                    "nome": "SERVICOS ESPORTIVOS",
+                    "dest": [
+                      "esp",
+                      "ginastica_veteranas|servicosEsportivos",
+                      null
+                    ]
+                  }
+                ]
+              },
+              {
+                "nome": "NATAÇÃO",
+                "filhos": [
+                  {
+                    "nome": "SERVICOS ESPORTIVOS",
+                    "dest": [
+                      "esp",
+                      "natacao|servicosEsportivos",
+                      null
+                    ]
+                  }
+                ]
+              },
+              {
+                "nome": "PATINAÇÃO",
+                "filhos": [
+                  {
+                    "nome": "SERVICOS ESPORTIVOS",
+                    "dest": [
+                      "esp",
+                      "patinacao|servicosEsportivos",
+                      null
+                    ]
+                  }
+                ]
+              },
+              {
+                "nome": "ATHLETIC TRAINING",
+                "filhos": [
+                  {
+                    "nome": "SERVICOS ESPORTIVOS",
+                    "dest": [
+                      "esp",
+                      "athletic_trainning|servicosEsportivos",
+                      null
+                    ]
+                  }
+                ]
+              },
+              {
+                "nome": "TÊNIS",
+                "filhos": [
+                  {
+                    "nome": "RENDIMENTO",
+                    "dest": [
+                      "esp",
+                      "tenis|rendimento",
+                      null
+                    ]
+                  },
+                  {
+                    "nome": "FORMACAO",
+                    "dest": [
+                      "esp",
+                      "tenis|formacao",
+                      null
+                    ]
+                  },
+                  {
+                    "nome": "SERVICOS",
+                    "dest": [
+                      "esp",
+                      "tenis|servicos",
+                      null
+                    ]
+                  },
+                  {
+                    "nome": "COMPETICOES",
+                    "dest": [
+                      "esp",
+                      "tenis|competicoes",
+                      null
+                    ]
+                  },
+                  {
+                    "nome": "EVENTOS",
+                    "dest": [
+                      "esp",
+                      "tenis|eventos",
+                      null
+                    ]
+                  }
+                ]
+              },
+              {
+                "nome": "VÔLEI KIKA",
+                "filhos": [
+                  {
+                    "nome": "SERVICOS ESPORTIVOS",
+                    "dest": [
+                      "esp",
+                      "volei_kika|servicosEsportivos",
+                      null
+                    ]
+                  }
+                ]
+              },
+              {
+                "nome": "PUNHOBOL",
+                "filhos": [
+                  {
+                    "nome": "RENDIMENTO",
+                    "dest": [
+                      "esp",
+                      "punhobol|rendimento",
+                      null
+                    ]
+                  },
+                  {
+                    "nome": "FORMACAO",
+                    "dest": [
+                      "esp",
+                      "punhobol|formacao",
+                      null
+                    ]
+                  },
+                  {
+                    "nome": "COMPETICOES",
+                    "dest": [
+                      "esp",
+                      "punhobol|competicoes",
+                      null
+                    ]
+                  },
+                  {
+                    "nome": "EVENTOS",
+                    "dest": [
+                      "esp",
+                      "punhobol|eventos",
+                      null
+                    ]
+                  }
+                ]
+              },
+              {
+                "nome": "ESGRIMA",
+                "filhos": [
+                  {
+                    "nome": "SERVICOS ESPORTIVOS",
+                    "dest": [
+                      "esp",
+                      "esgrima|servicosEsportivos",
+                      null
+                    ]
+                  }
+                ]
+              },
+              {
+                "nome": "VÔLEI",
+                "filhos": [
+                  {
+                    "nome": "RENDIMENTO",
+                    "dest": [
+                      "esp",
+                      "volei|rendimento",
+                      null
+                    ]
+                  },
+                  {
+                    "nome": "FORMACAO",
+                    "dest": [
+                      "esp",
+                      "volei|formacao",
+                      null
+                    ]
+                  },
+                  {
+                    "nome": "SERVICOS",
+                    "dest": [
+                      "esp",
+                      "volei|servicos",
+                      null
+                    ]
+                  },
+                  {
+                    "nome": "COMPETICOES",
+                    "dest": [
+                      "esp",
+                      "volei|competicoes",
+                      null
+                    ]
+                  },
+                  {
+                    "nome": "EVENTOS",
+                    "dest": [
+                      "esp",
+                      "volei|eventos",
+                      null
+                    ]
+                  }
+                ]
+              },
+              {
+                "nome": "TÊNIS DE MESA",
+                "filhos": [
+                  {
+                    "nome": "ALTORENDIMENTO",
+                    "dest": [
+                      "esp",
+                      "tenis_de_mesa|altoRendimento",
+                      null
+                    ]
+                  },
+                  {
+                    "nome": "RENDIMENTO",
+                    "dest": [
+                      "esp",
+                      "tenis_de_mesa|rendimento",
+                      null
+                    ]
+                  },
+                  {
+                    "nome": "FORMACAO",
+                    "dest": [
+                      "esp",
+                      "tenis_de_mesa|formacao",
+                      null
+                    ]
+                  },
+                  {
+                    "nome": "COMPETICOES",
+                    "dest": [
+                      "esp",
+                      "tenis_de_mesa|competicoes",
+                      null
+                    ]
+                  },
+                  {
+                    "nome": "EVENTOS",
+                    "dest": [
+                      "esp",
+                      "tenis_de_mesa|eventos",
+                      null
+                    ]
+                  }
+                ]
+              },
+              {
+                "nome": "PERCORRER",
+                "filhos": [
+                  {
+                    "nome": "SERVICOS ESPORTIVOS",
+                    "dest": [
+                      "esp",
+                      "percorrer|servicosEsportivos",
+                      null
+                    ]
+                  }
+                ]
+              },
+              {
+                "nome": "KUNG FU",
+                "filhos": [
+                  {
+                    "nome": "SERVICOS ESPORTIVOS",
+                    "dest": [
+                      "esp",
+                      "kung_fu|servicosEsportivos",
+                      null
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "nome": "PATROCINIOS ESPORTIVOS",
+            "dest": [
+              "rub",
+              "24",
+              null
+            ]
+          },
+          {
+            "nome": "LOCAÇÕES ESPORTIVAS",
+            "dest": [
+              "rub",
+              "25",
+              null
+            ]
+          },
+          {
+            "nome": "DEPARTAMENTOS ESPORTIVOS",
+            "dest": [
+              "rub",
+              "26",
+              null
+            ]
+          },
+          {
+            "nome": "OUTRAS RECEITAS ESPORTES",
+            "dest": [
+              "rub",
+              "27",
+              null
+            ]
+          },
+          {
+            "nome": "CARTÃO PRATA ESPORTES",
+            "dest": [
+              "rub",
+              "28",
+              null
+            ]
+          },
+          {
+            "nome": "INSCRIÇÕES ESPORTIVAS",
+            "dest": [
+              "rub",
+              "29",
+              null
+            ]
+          },
+          {
+            "nome": "EVENTOS ESPORTIVOS",
+            "dest": [
+              "rub",
+              "30",
+              null
+            ]
+          },
+          {
+            "nome": "REEMBOLSO COMPETIÇÕES",
+            "dest": [
+              "rub",
+              "31",
+              null
+            ]
+          }
+        ]
+      },
+      {
+        "nome": "RECEITA DE EVENTOS",
+        "filhos": [
+          {
+            "nome": "VENDA DE CONVITES E MESAS"
+          },
+          {
+            "nome": "ARRECADAÇÃO EM EVENTOS"
+          },
+          {
+            "nome": "INSCRIÇÕES"
+          },
+          {
+            "nome": "OUTRAS RECEITAS EM EVENTOS"
+          }
+        ]
+      },
+      {
+        "nome": "OUTRAS RECEITAS (Receitas Financeiras/Taxas e Atualização Fundação)"
+      },
+      {
+        "nome": "DEDUÇÕES DA RECEITA - IMPOSTOS"
+      }
     ]
-   },
-   {
-    "nome": "RECEITA DE EVENTOS",
+  },
+  {
+    "nome": "DESPESAS OPERACIONAIS",
     "filhos": [
-     {
-      "nome": "VENDA DE CONVITES E MESAS"
-     },
-     {
-      "nome": "ARRECADAÇÃO EM EVENTOS"
-     },
-     {
-      "nome": "INSCRIÇÕES"
-     },
-     {
-      "nome": "OUTRAS RECEITAS EM EVENTOS"
-     }
+      {
+        "nome": "PESSOAL DE APOIO",
+        "filhos": [
+          {
+            "nome": "Geral",
+            "dest": [
+              "ger",
+              "Gerência Geral",
+              null
+            ]
+          },
+          {
+            "nome": "Administrativa",
+            "dest": [
+              "ger",
+              "Administrativa",
+              null
+            ]
+          },
+          {
+            "nome": "Manutenção",
+            "dest": [
+              "ger",
+              "Manutenção",
+              null
+            ]
+          },
+          {
+            "nome": "Recursos Humanos",
+            "dest": [
+              "ger",
+              "RH",
+              null
+            ]
+          },
+          {
+            "nome": "Tecnologia da Informação",
+            "dest": [
+              "ger",
+              "TI",
+              null
+            ]
+          },
+          {
+            "nome": "Obras",
+            "dest": [
+              "ger",
+              "Projetos e Obras",
+              null
+            ]
+          },
+          {
+            "nome": "Comunicação",
+            "dest": [
+              "mod",
+              "marketing",
+              null
+            ]
+          },
+          {
+            "nome": "Planejamento e Desenvolvimento",
+            "dest": [
+              "ger",
+              "Projetos e Planejamento",
+              null
+            ]
+          },
+          {
+            "nome": "Operações",
+            "dest": [
+              "ger",
+              "Operações",
+              null
+            ]
+          },
+          {
+            "nome": "Esportes",
+            "dest": [
+              "ger",
+              "Esportes",
+              null
+            ]
+          }
+        ],
+        "nota": "setores · os 66 centros de custo ficam dentro de cada tela"
+      },
+      {
+        "nome": "DESPESAS DE FUNCIONAMENTO",
+        "filhos": [
+          {
+            "nome": "DESPESAS VARIAVEIS DE OPERAÇÃO",
+            "filhos": [
+              {
+                "nome": "SERVIÇOS DE TERCEIROS"
+              },
+              {
+                "nome": "DESPESAS DE VIAGENS"
+              },
+              {
+                "nome": "FEDERAÇÕES E ASSOCIAÇÕES"
+              },
+              {
+                "nome": "MATERIAL DE HIGIENE"
+              },
+              {
+                "nome": "MATERIAL DE CONSUMO"
+              },
+              {
+                "nome": "MATERIAL TRATAMENTO PISCINA"
+              },
+              {
+                "nome": "OUTRAS DESPESAS ( Recarga Extintor, Locação de bens, Material Acess. de Informatica e Ressarc.de terceiros)"
+              }
+            ]
+          },
+          {
+            "nome": "DESPESAS FIXAS DE OPERAÇÕES",
+            "dest": [
+              "ger",
+              "Manutenção",
+              "dfo"
+            ],
+            "filhos": [
+              {
+                "nome": "ÁGUA E ESGOTO"
+              },
+              {
+                "nome": "ENERGIA ELETRICA"
+              },
+              {
+                "nome": "GAS"
+              },
+              {
+                "nome": "COMUNICAÇÃO"
+              },
+              {
+                "nome": "COMBUSTIVEL PISCINAS"
+              },
+              {
+                "nome": "COLETA DE LIXO"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "nome": "COMUNICAÇÃO",
+        "dest": [
+          "mod",
+          "marketing",
+          null
+        ]
+      },
+      {
+        "nome": "CONSERVAÇÃO/MANUTENÇÃO",
+        "filhos": [
+          {
+            "nome": "MANUTENÇÃO"
+          },
+          {
+            "nome": "MELHORIAS CIVIS"
+          }
+        ]
+      },
+      {
+        "nome": "DESPESA DO PROJETO CRIANÇA",
+        "filhos": [
+          {
+            "nome": "MATERIAIS RECREACAO"
+          },
+          {
+            "nome": "ALIMENTACAO E BEBIDA"
+          },
+          {
+            "nome": "SERVIÇOS DE TERCEIROS"
+          },
+          {
+            "nome": "MATERIAL EXPEDIENTE"
+          },
+          {
+            "nome": "MATERIAL HIG E LIMPEZA"
+          },
+          {
+            "nome": "ANUIDADE E MENSALIDADES"
+          },
+          {
+            "nome": "OUTRAS DESPESAS"
+          }
+        ]
+      },
+      {
+        "nome": "DESPESA DE ESPORTE",
+        "filhos": [
+          {
+            "nome": "MATERIAIS ESPORTIVAS",
+            "dest": [
+              "rub",
+              "78",
+              null
+            ]
+          },
+          {
+            "nome": "DIREITO DE IMAGEM - ESPORTE",
+            "dest": [
+              "rub",
+              "79",
+              null
+            ]
+          },
+          {
+            "nome": "FEDERAÇÕES E ASSOCIAÇÕES ESPORTIVAS",
+            "dest": [
+              "rub",
+              "80",
+              null
+            ]
+          },
+          {
+            "nome": "ALIMENTAÇÃO/BEBIDAS ESPORTES",
+            "dest": [
+              "rub",
+              "81",
+              null
+            ]
+          },
+          {
+            "nome": "TRANSPORTES PASSAGENS ESPORTES",
+            "dest": [
+              "rub",
+              "82",
+              null
+            ]
+          },
+          {
+            "nome": "HOSPEDAGENS ESPORTES",
+            "dest": [
+              "rub",
+              "83",
+              null
+            ]
+          },
+          {
+            "nome": "ALUGUEL DE DEPENCIAS ESPORTES",
+            "dest": [
+              "rub",
+              "84",
+              null
+            ]
+          },
+          {
+            "nome": "SERVIÇOS TERCEIROS PJ ESPORTES",
+            "dest": [
+              "rub",
+              "85",
+              null
+            ]
+          },
+          {
+            "nome": "SERVIÇOS TERCEIROS PF ESPORTES",
+            "dest": [
+              "rub",
+              "86",
+              null
+            ]
+          },
+          {
+            "nome": "UNIFORMES ESPORTIVOS",
+            "dest": [
+              "rub",
+              "87",
+              null
+            ]
+          },
+          {
+            "nome": "MATERIAL DE EXPEDIENTE ESPORTES",
+            "dest": [
+              "rub",
+              "88",
+              null
+            ]
+          },
+          {
+            "nome": "ATIVAÇÃO JOGOS ESPORTIVOS",
+            "dest": [
+              "rub",
+              "89",
+              null
+            ]
+          },
+          {
+            "nome": "ASSISTENCIA MEDICA ESPORTES",
+            "dest": [
+              "rub",
+              "90",
+              null
+            ]
+          },
+          {
+            "nome": "SERVIÇOS MENSAIS CONTR.ESPORTES",
+            "dest": [
+              "rub",
+              "91",
+              null
+            ]
+          },
+          {
+            "nome": "OUTRAS DESPESAS ESPORTIVAS",
+            "dest": [
+              "rub",
+              "92",
+              null
+            ]
+          },
+          {
+            "nome": "EVENTOS ESPORTIVOS",
+            "dest": [
+              "rub",
+              "93",
+              null
+            ]
+          },
+          {
+            "nome": "COMPETIÇOES",
+            "dest": [
+              "rub",
+              "94",
+              null
+            ]
+          }
+        ]
+      },
+      {
+        "nome": "DESPESA DE EVENTOS",
+        "filhos": [
+          {
+            "nome": "SERVIÇOS DE TERCEIROS"
+          },
+          {
+            "nome": "PROPAGANDA E PUBLICIDADE"
+          },
+          {
+            "nome": "LOCAÇÕES DE BENS"
+          },
+          {
+            "nome": "GÊNEROS ALIMENTICIOS PARA EVENTOS"
+          },
+          {
+            "nome": "DECORAÇÕES"
+          },
+          {
+            "nome": "CONJUNTOS MUSICAIS"
+          },
+          {
+            "nome": "BEBIDAS PARA EVENTOS"
+          },
+          {
+            "nome": "OUTRAS DESPESAS PARA EVENTOS"
+          }
+        ]
+      },
+      {
+        "nome": "DESPESAS TRIBUTÁRIAS"
+      },
+      {
+        "nome": "DESPESAS FINANCEIRAS"
+      },
+      {
+        "nome": "OUTRAS DESPESAS (Despesas Depart., Endomkt e Atualização Fundação)"
+      },
+      {
+        "nome": "CONTINGÊNCIAS"
+      }
     ]
-   },
-   {
-    "nome": "OUTRAS RECEITAS (Receitas Financeiras/Taxas e Atualização Fundação)"
-   },
-   {
-    "nome": "DEDUÇÕES DA RECEITA - IMPOSTOS"
-   }
-  ]
- },
- {
-  "nome": "DESPESAS OPERACIONAIS",
-  "filhos": [
-   {
-    "nome": "PESSOAL DE APOIO",
-    "filhos": [
-     {
-      "nome": "Geral",
-      "dest": [
-       "ger",
-       "Gerência Geral",
-       null
-      ]
-     },
-     {
-      "nome": "Administrativa",
-      "dest": [
-       "ger",
-       "Administrativa",
-       null
-      ]
-     },
-     {
-      "nome": "Manutenção",
-      "dest": [
-       "ger",
-       "Manutenção",
-       null
-      ]
-     },
-     {
-      "nome": "Recursos Humanos",
-      "dest": [
-       "ger",
-       "RH",
-       null
-      ]
-     },
-     {
-      "nome": "Tecnologia da Informação",
-      "dest": [
-       "ger",
-       "TI",
-       null
-      ]
-     },
-     {
-      "nome": "Obras",
-      "dest": [
-       "ger",
-       "Projetos e Obras",
-       null
-      ]
-     },
-     {
-      "nome": "Comunicação",
-      "dest": [
-       "mod",
-       "marketing",
-       null
-      ]
-     },
-     {
-      "nome": "Planejamento e Desenvolvimento",
-      "dest": [
-       "ger",
-       "Projetos e Planejamento",
-       null
-      ]
-     },
-     {
-      "nome": "Operações",
-      "dest": [
-       "ger",
-       "Operações",
-       null
-      ]
-     },
-     {
-      "nome": "Esportes",
-      "dest": [
-       "ger",
-       "Esportes",
-       null
-      ]
-     }
-    ],
-    "nota": "setores · os 66 centros de custo ficam dentro de cada tela"
-   },
-   {
-    "nome": "DESPESAS DE FUNCIONAMENTO",
-    "filhos": [
-     {
-      "nome": "DESPESAS VARIAVEIS DE OPERAÇÃO",
-      "filhos": [
-       {
-        "nome": "SERVIÇOS DE TERCEIROS"
-       },
-       {
-        "nome": "DESPESAS DE VIAGENS"
-       },
-       {
-        "nome": "FEDERAÇÕES E ASSOCIAÇÕES"
-       },
-       {
-        "nome": "MATERIAL DE HIGIENE"
-       },
-       {
-        "nome": "MATERIAL DE CONSUMO"
-       },
-       {
-        "nome": "MATERIAL TRATAMENTO PISCINA"
-       },
-       {
-        "nome": "OUTRAS DESPESAS ( Recarga Extintor, Locação de bens, Material Acess. de Informatica e Ressarc.de terceiros)"
-       }
-      ]
-     },
-     {
-      "nome": "DESPESAS FIXAS DE OPERAÇÕES",
-      "dest": [
-       "ger",
-       "Manutenção",
-       "dfo"
-      ],
-      "filhos": [
-       {
-        "nome": "ÁGUA E ESGOTO"
-       },
-       {
-        "nome": "ENERGIA ELETRICA"
-       },
-       {
-        "nome": "GAS"
-       },
-       {
-        "nome": "COMUNICAÇÃO"
-       },
-       {
-        "nome": "COMBUSTIVEL PISCINAS"
-       },
-       {
-        "nome": "COLETA DE LIXO"
-       }
-      ]
-     }
-    ]
-   },
-   {
-    "nome": "COMUNICAÇÃO",
-    "dest": [
-     "mod",
-     "marketing",
-     null
-    ]
-   },
-   {
-    "nome": "CONSERVAÇÃO/MANUTENÇÃO",
-    "filhos": [
-     {
-      "nome": "MANUTENÇÃO"
-     },
-     {
-      "nome": "MELHORIAS CIVIS"
-     }
-    ]
-   },
-   {
-    "nome": "DESPESA DO PROJETO CRIANÇA",
-    "filhos": [
-     {
-      "nome": "MATERIAIS RECREACAO"
-     },
-     {
-      "nome": "ALIMENTACAO E BEBIDA"
-     },
-     {
-      "nome": "SERVIÇOS DE TERCEIROS"
-     },
-     {
-      "nome": "MATERIAL EXPEDIENTE"
-     },
-     {
-      "nome": "MATERIAL HIG E LIMPEZA"
-     },
-     {
-      "nome": "ANUIDADE E MENSALIDADES"
-     },
-     {
-      "nome": "OUTRAS DESPESAS"
-     }
-    ]
-   },
-   {
-    "nome": "DESPESA DE ESPORTE",
-    "filhos": [
-     {
-      "nome": "MATERIAIS ESPORTIVAS",
-      "dest": [
-       "rub",
-       "78",
-       null
-      ]
-     },
-     {
-      "nome": "DIREITO DE IMAGEM - ESPORTE",
-      "dest": [
-       "rub",
-       "79",
-       null
-      ]
-     },
-     {
-      "nome": "FEDERAÇÕES E ASSOCIAÇÕES ESPORTIVAS",
-      "dest": [
-       "rub",
-       "80",
-       null
-      ]
-     },
-     {
-      "nome": "ALIMENTAÇÃO/BEBIDAS ESPORTES",
-      "dest": [
-       "rub",
-       "81",
-       null
-      ]
-     },
-     {
-      "nome": "TRANSPORTES PASSAGENS ESPORTES",
-      "dest": [
-       "rub",
-       "82",
-       null
-      ]
-     },
-     {
-      "nome": "HOSPEDAGENS ESPORTES",
-      "dest": [
-       "rub",
-       "83",
-       null
-      ]
-     },
-     {
-      "nome": "ALUGUEL DE DEPENCIAS ESPORTES",
-      "dest": [
-       "rub",
-       "84",
-       null
-      ]
-     },
-     {
-      "nome": "SERVIÇOS TERCEIROS PJ ESPORTES",
-      "dest": [
-       "rub",
-       "85",
-       null
-      ]
-     },
-     {
-      "nome": "SERVIÇOS TERCEIROS PF ESPORTES",
-      "dest": [
-       "rub",
-       "86",
-       null
-      ]
-     },
-     {
-      "nome": "UNIFORMES ESPORTIVOS",
-      "dest": [
-       "rub",
-       "87",
-       null
-      ]
-     },
-     {
-      "nome": "MATERIAL DE EXPEDIENTE ESPORTES",
-      "dest": [
-       "rub",
-       "88",
-       null
-      ]
-     },
-     {
-      "nome": "ATIVAÇÃO JOGOS ESPORTIVOS",
-      "dest": [
-       "rub",
-       "89",
-       null
-      ]
-     },
-     {
-      "nome": "ASSISTENCIA MEDICA ESPORTES",
-      "dest": [
-       "rub",
-       "90",
-       null
-      ]
-     },
-     {
-      "nome": "SERVIÇOS MENSAIS CONTR.ESPORTES",
-      "dest": [
-       "rub",
-       "91",
-       null
-      ]
-     },
-     {
-      "nome": "OUTRAS DESPESAS ESPORTIVAS",
-      "dest": [
-       "rub",
-       "92",
-       null
-      ]
-     },
-     {
-      "nome": "EVENTOS ESPORTIVOS",
-      "dest": [
-       "rub",
-       "93",
-       null
-      ]
-     },
-     {
-      "nome": "COMPETIÇOES",
-      "dest": [
-       "rub",
-       "94",
-       null
-      ]
-     }
-    ]
-   },
-   {
-    "nome": "DESPESA DE EVENTOS",
-    "filhos": [
-     {
-      "nome": "SERVIÇOS DE TERCEIROS"
-     },
-     {
-      "nome": "PROPAGANDA E PUBLICIDADE"
-     },
-     {
-      "nome": "LOCAÇÕES DE BENS"
-     },
-     {
-      "nome": "GÊNEROS ALIMENTICIOS PARA EVENTOS"
-     },
-     {
-      "nome": "DECORAÇÕES"
-     },
-     {
-      "nome": "CONJUNTOS MUSICAIS"
-     },
-     {
-      "nome": "BEBIDAS PARA EVENTOS"
-     },
-     {
-      "nome": "OUTRAS DESPESAS PARA EVENTOS"
-     }
-    ]
-   },
-   {
-    "nome": "DESPESAS TRIBUTÁRIAS"
-   },
-   {
-    "nome": "DESPESAS FINANCEIRAS"
-   },
-   {
-    "nome": "OUTRAS DESPESAS (Despesas Depart., Endomkt e Atualização Fundação)"
-   },
-   {
-    "nome": "CONTINGÊNCIAS"
-   }
-  ]
- },
- {
-  "nome": "RESULTADO OPERACIONAL",
-  "filhos": []
- },
- {
-  "nome": "IMOBILIZADO",
-  "filhos": []
- }
+  },
+  {
+    "nome": "RESULTADO OPERACIONAL",
+    "filhos": []
+  },
+  {
+    "nome": "IMOBILIZADO",
+    "filhos": []
+  }
 ];
 
 var LOC_MATRIZ={"saloes":[{"nome":"Salão Bremen","reajuste":null,"incremento":null,"r25":[null,null,null,null,null,null,null,null,null,null,null,null],"r26":[null,null,null,null,null,null,null,null,null,null,null,null],"p26":[null,null,null,null,null,null,null,null,null,null,null,null],"o27":[null,null,null,null,null,null,null,null,null,null,null,null]},{"nome":"Anfiteatro - Cinema","reajuste":null,"incremento":null,"r25":[null,null,null,null,null,null,null,null,null,null,null,null],"r26":[null,null,null,null,null,null,null,null,null,null,null,null],"p26":[null,null,null,null,null,null,null,null,null,null,null,null],"o27":[null,null,null,null,null,null,null,null,null,null,null,null]},{"nome":"Salão DCG","reajuste":null,"incremento":null,"r25":[null,null,null,null,null,null,null,null,null,null,null,null],"r26":[null,null,null,null,null,null,null,null,null,null,null,null],"p26":[null,null,null,null,null,null,null,null,null,null,null,null],"o27":[null,null,null,null,null,null,null,null,null,null,null,null]},{"nome":"Salão Dona Leopoldina","reajuste":null,"incremento":null,"r25":[null,null,null,null,null,null,null,null,null,null,null,null],"r26":[null,null,null,null,null,null,null,null,null,null,null,null],"p26":[null,null,null,null,null,null,null,null,null,null,null,null],"o27":[null,null,null,null,null,null,null,null,null,null,null,null]},{"nome":"Salão Hannover","reajuste":null,"incremento":null,"r25":[null,null,null,null,null,null,null,null,null,null,null,null],"r26":[null,null,null,null,null,null,null,null,null,null,null,null],"p26":[null,null,null,null,null,null,null,null,null,null,null,null],"o27":[null,null,null,null,null,null,null,null,null,null,null,null]},{"nome":"Salão Baviera","reajuste":null,"incremento":null,"r25":[null,null,null,null,null,null,null,null,null,null,null,null],"r26":[null,null,null,null,null,null,null,null,null,null,null,null],"p26":[null,null,null,null,null,null,null,null,null,null,null,null],"o27":[null,null,null,null,null,null,null,null,null,null,null,null]},{"nome":"Salão Hannover/Baviera","reajuste":null,"incremento":null,"r25":[null,null,null,null,null,null,null,null,null,null,null,null],"r26":[null,null,null,null,null,null,null,null,null,null,null,null],"p26":[null,null,null,null,null,null,null,null,null,null,null,null],"o27":[null,null,null,null,null,null,null,null,null,null,null,null]},{"nome":"Salão Turner","reajuste":null,"incremento":null,"r25":[null,null,null,null,null,null,null,null,null,null,null,null],"r26":[null,null,null,null,null,null,null,null,null,null,null,null],"p26":[null,null,null,null,null,null,null,null,null,null,null,null],"o27":[null,null,null,null,null,null,null,null,null,null,null,null]},{"nome":"Bolão","reajuste":null,"incremento":null,"r25":[null,null,null,null,null,null,null,null,null,null,null,null],"r26":[null,null,null,null,null,null,null,null,null,null,null,null],"p26":[null,null,null,null,null,null,null,null,null,null,null,null],"o27":[null,null,null,null,null,null,null,null,null,null,null,null]},{"nome":"Salão de Festas","reajuste":null,"incremento":null,"r25":[null,null,null,null,null,null,null,null,null,null,null,null],"r26":[null,null,null,null,null,null,null,null,null,null,null,null],"p26":[null,null,null,null,null,null,null,null,null,null,null,null],"o27":[null,null,null,null,null,null,null,null,null,null,null,null]},{"nome":"Sala Multiuso","reajuste":null,"incremento":null,"r25":[null,null,null,null,null,null,null,null,null,null,null,null],"r26":[null,null,null,null,null,null,null,null,null,null,null,null],"p26":[null,null,null,null,null,null,null,null,null,null,null,null],"o27":[null,null,null,null,null,null,null,null,null,null,null,null]}],"controle":{"r25":{"porSalao":[null,null,null,null,null,null,null,null,null,null,null],"total":null},"r26":{"porSalao":[null,null,null,null,null,null,null,null,null,null,null],"total":null},"p26":{"porSalao":[null,null,null,null,null,null,null,null,null,null,null],"total":null},"o27":{"porSalao":[null,null,null,null,null,null,null,null,null,null,null],"total":null},"mensal":{"r25":[null,null,null,null,null,null,null,null,null,null,null,null],"r26":[null,null,null,null,null,null,null,null,null,null,null,null],"p26":[null,null,null,null,null,null,null,null,null,null,null,null],"o27":[null,null,null,null,null,null,null,null,null,null,null,null]}}};
@@ -22480,8 +23003,8 @@ var ASSOC_QUADRO = {"fonte":"ASSOCIAÇÕES 2027.xlsx","abas":{"operacional":"PA"
        no login e não altera as demais peças. */
     carregarBanco: function () {
       var SB = window.SB, AU = window.AUTH;
-      if (!SB || !AU || !AU.carregado || !AU.podeAdministrar || !AU.podeAdministrar())
-        return Promise.resolve({ok:false,motivo:"sem-permissao"});
+      if (!SB || !AU || !AU.carregado || !AU.perfil || !(AU.perfil.acesso_global_leitura === true || (AU.podeAdministrar && AU.podeAdministrar())))
+        return Promise.resolve({ok:false,motivo:"sem-permissao-de-leitura"});
       return SB.from("associacoes_orcamento_pecas_2027")
         .select("atividade,mes,valor").eq("exercicio",2027)
         .then(function (r) {
@@ -28323,6 +28846,7 @@ Object.assign(ESP_MODALIDADES,{"basquete":{"id":"basquete","nome":"Basquete","ge
   function temPendencia() { return ES.REPO.naoSalvas() > 0; }
 
   function render() {
+    if (!S.espRubrica && window.SOGIPA_ESP_PECAS && window.ESPORTES_IMPORT && window.ESPORTES_IMPORT.dados[S.espMod]) return window.SOGIPA_ESP_PECAS.render(S.espMod,S.espOrigem,podeEditar());
     /* Modo rubrica: o gerente entrou por uma conta da árvore, não pela
        modalidade. A tela responde pela rubrica. */
     if (S.espRubrica) return telaRubrica();
@@ -30024,8 +30548,7 @@ function carregar(){if(iniciado||!sb()||!window.AUTH||!window.AUTH.carregado)ret
 function salvar(m,g){if(!autorizado())return Promise.reject(new Error('Perfil sem permissão de edição em Esportes.'));if(!BASE[m]||!BASE[m].grupos[g])return Promise.reject(new Error('Modalidade/origem inválida'));return sb().rpc('orc_2027_esportes_salvar',{p_modalidade:m,p_origem:g,p_dados:registro(m,g)}).then(function(r){if(r.error)throw r.error;return true;});}
 window.ESPORTES_IMPORT={dados:BASE,carregar:carregar,salvar:salvar,grupos:grupos,registros:registros};
 function esc(t){return String(t).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
-function painel(){if(document.getElementById('esp-admin-import-panel'))return;var b=document.createElement('div');b.id='esp-admin-import-panel';b.style.cssText='position:fixed;right:20px;bottom:20px;z-index:99999;background:#fff;color:#183044;border:2px solid #246078;box-shadow:0 8px 32px #0004;border-radius:12px;padding:16px;max-width:430px;max-height:75vh;overflow:auto;font:14px Arial';b.innerHTML='<button id="esp-close" style="float:right">Fechar</button><h3>Esportes 2027 · Matrizes</h3><p>25 modalidades organizadas por pasta e frente. Os valores são gravados na matriz de Esportes, sem alterar a DRE automaticamente.</p><button id="esp-import-all" style="width:100%;padding:10px;background:#185873;color:#fff;border:0;border-radius:6px">Importar todas as 57 frentes (ADM)</button><select id="esp-select" style="width:100%;padding:8px"></select><div id="esp-rows"></div><p id="esp-status" role="status"></p>';document.body.appendChild(b);b.querySelector('#esp-close').onclick=function(){b.remove();};var bulk=b.querySelector('#esp-import-all');if(!adm())bulk.style.display='none';bulk.onclick=async function(){if(!adm()||!confirm('Importar/atualizar as 57 frentes esportivas no Supabase?'))return;bulk.disabled=true;var total=0,falhas=[];for(var m of Object.keys(BASE)){for(var g of grupos(m)){try{await salvar(m,g);total++;b.querySelector('#esp-status').textContent='Gravadas '+total+' de 57 frentes';}catch(e){falhas.push(m+'/'+g+': '+e.message);}}}b.querySelector('#esp-status').textContent='Importação: '+total+' de 57 frentes. '+(falhas.length?'Falhas: '+falhas.join('; '):'Todas as frentes enviadas.');iniciado=false;await carregar();bulk.disabled=false;update();};var sel=b.querySelector('#esp-select');Object.keys(BASE).sort().forEach(function(k){var op=document.createElement('option');op.value=k;op.textContent=BASE[k].nome+(BASE[k].provisorio?' (provisório)':'');sel.appendChild(op);});function update(){var k=sel.value,wrap=b.querySelector('#esp-rows');wrap.innerHTML='';grupos(k).forEach(function(g){var div=document.createElement('div');div.style.cssText='margin:8px 0;padding:8px;border:1px solid #ddd';var key=k+'|'+g;div.innerHTML='<strong>'+esc(BASE[k].grupos[g].nome)+'</strong> · '+BASE[k].grupos[g].linhas.length+' linhas <span>'+ (registros[key]?'✓ registrado':'não registrado')+'</span> ';var btn=document.createElement('button');btn.textContent='Salvar no Supabase';btn.onclick=function(){if(!confirm('Confirmar gravação de '+BASE[k].nome+' / '+BASE[k].grupos[g].nome+'?'))return;btn.disabled=true;salvar(k,g).then(function(){b.querySelector('#esp-status').textContent='Salvo: '+BASE[k].nome+' / '+g;iniciado=false;carregar();}).catch(function(e){b.querySelector('#esp-status').textContent='Falha: '+e.message;}).finally(function(){btn.disabled=false;});};div.appendChild(btn);wrap.appendChild(div);});}sel.onchange=update;update();}
-function boot(){if(!window.AUTH||!window.AUTH.carregado){setTimeout(boot,1000);return;}carregar();if(!autorizado())return;var button=document.createElement('button');button.id='esp-admin-open';button.textContent='Matrizes Esportes 2027';button.style.cssText='position:fixed;right:20px;bottom:20px;z-index:99998;background:#185873;color:#fff;border:0;border-radius:9px;padding:11px 16px;cursor:pointer;box-shadow:0 3px 12px #0004';button.onclick=painel;document.body.appendChild(button);}
+function boot(){if(!window.AUTH||!window.AUTH.carregado){setTimeout(boot,1000);return;}carregar();}
 setTimeout(boot,1000);
 })();
 </script>
@@ -30082,6 +30605,29 @@ function montar(){senha();var top=document.querySelector('.topbar-right');if(!to
 function inicializar(){senha();montar();}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',inicializar);else inicializar();setInterval(montar,12000);document.addEventListener('visibilitychange',function(){if(!document.hidden){montar();buscar(true);}});
 window.SOGIPA_INTELIGENCIA={atualizar:function(){buscar(true);pintar();},diagnostico:function(){return {perfil:perfil(),avisos:compor().length,solicitacoesVisiveis:fila.length};}};
+})();
+</script>
+<style id="sogipa-esportes-pecas-css">
+.esp27-wrap{display:grid;gap:18px}.esp27-card{background:#202332;border:1px solid #3a435b;border-radius:12px;padding:18px}.esp27-title{font-size:20px;font-weight:800;color:#f5f7ff}.esp27-sub{font-size:12px;color:#aab8d2;margin-top:5px}.esp27-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}.esp27-pill{padding:9px 13px;background:#262c3e;border:1px solid #4c5874;border-radius:8px;color:#e8edfa;cursor:pointer}.esp27-pill[aria-pressed="true"]{border-color:#5c9fff;background:#253e65}.esp27-table{overflow:auto;max-height:65vh}.esp27-table table{border-collapse:separate;border-spacing:0;min-width:1120px;width:100%;font-size:12px}.esp27-table th,.esp27-table td{border-bottom:1px solid #39445a;padding:10px;text-align:right;white-space:nowrap}.esp27-table th:first-child,.esp27-table td:first-child{position:sticky;left:0;background:#202332;text-align:left;min-width:220px;max-width:280px;white-space:normal;z-index:1}.esp27-table thead th{position:sticky;top:0;background:#283248;z-index:2}.esp27-table thead th:first-child{z-index:3}.esp27-input{width:100px;padding:7px;border:1px solid #6c7b99;background:#151c2b;color:white;border-radius:5px;text-align:right}.esp27-save{background:#147b78;color:white;border:0;border-radius:8px;padding:11px 18px;cursor:pointer}.esp27-save:disabled{opacity:.45}.esp27-delta-pos{color:#67e1b5}.esp27-delta-neg{color:#ff9a9a}.esp27-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}.esp27-summary>div{background:#252d40;padding:14px;border-radius:9px}.esp27-summary b{display:block;font-size:19px;margin-top:6px}.esp27-summary small{color:#b3c0d8}
+</style>
+<script id="sogipa-esportes-pecas-2027">
+(function(){'use strict';
+var estado={};var meses=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]});}
+function fmt(v){return v==null||!Number.isFinite(Number(v))?'—':Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function sum(a){return (a||[]).reduce(function(s,v){return s+(Number(v)||0)},0)}
+function key(m,g){return m+'|'+g}
+function obter(m,g){var imp=window.ESPORTES_IMPORT;if(!imp||!imp.dados[m]||!imp.dados[m].grupos[g])return null;var d=window.ESP_IMPORTADOS&&window.ESP_IMPORTADOS[key(m,g)];return {dados:d||imp.dados[m].grupos[g],salvo:!!d};}
+function linhaNome(l){return (l.conta||l.codigo||'Linha '+(l.linha||''));}
+function calcDelta(a,b){if(a==null||b==null)return '—';var d=Number(a)-Number(b);return (d>0?'+':'')+fmt(d);}
+function render(m,g,edit){var imp=window.ESPORTES_IMPORT;if(!imp||!imp.dados[m])return '<div class="esp27-card">Modalidade não encontrada.</div>';var mod=imp.dados[m],grupos=Object.keys(mod.grupos),sel=grupos.indexOf(g)>=0?g:grupos[0],r=obter(m,sel);if(!r)return '<div class="esp27-card">Matriz indisponível.</div>';var k=key(m,sel),ls=r.dados.linhas||[],local=estado[k];if(!local||local.versao!==r.dados){local={versao:r.dados,linhas:ls.map(function(l){return (l.orcado_2027_mensal||[]).slice()}),sujo:false};estado[k]=local;}
+var out='<div class="esp27-wrap"><div class="esp27-card"><div class="esp27-title">'+esc(mod.nome).toUpperCase()+' · Orçamento 2027</div><div class="esp27-sub">Matrizes por frente · 2026 histórico / 2027 orçado · variação calculada sobre a mesma linha e competência</div><div class="esp27-row" style="margin-top:15px">';
+grupos.forEach(function(x){out+='<button type="button" class="esp27-pill" data-esp27-front="'+esc(x)+'" aria-pressed="'+(x===sel)+'">'+esc(mod.grupos[x].nome||x)+'</button>'});out+='</div></div>';
+out+='<div class="esp27-card"><div class="esp27-row" style="justify-content:space-between"><div><b>Frente: '+esc(mod.grupos[sel].nome||sel)+'</b><div class="esp27-sub">'+ls.length+' linhas · '+(r.salvo?'registrada no Supabase':'prévia local ainda não confirmada no Supabase')+(mod.provisorio?' · PROVISÓRIO':'')+'</div></div>'+(edit?'<button type="button" class="esp27-save" data-esp27-save="1" '+(!local.sujo?'disabled':'')+'>Salvar alterações da frente</button>':'<span class="esp27-sub">Somente leitura</span>')+'</div><p class="esp27-sub">Os valores são apresentados conforme a planilha de cada modalidade. A variação (Δ) é calculada entre 2027 e 2026, sem aplicar novo reajuste sobre números já projetados. Totais consolidados e suas aberturas não são somados novamente.</p><div class="esp27-table"><table><thead><tr><th>Conta / indicador</th><th>2026 · total</th><th>2027 · total</th><th>Δ anual</th><th>Δ %</th>'+meses.map(function(x){return '<th>'+x+' / 2027</th>'}).join('')+'</tr></thead><tbody>';
+ls.forEach(function(l,i){var old=l.historico_2026_mensal||[],curr=local.linhas[i]||[],a=l.total_2026_planilha!=null?Number(l.total_2026_planilha):sum(old),b=l.total_2027_planilha!=null&&!local.sujo?Number(l.total_2027_planilha):sum(curr),delta=b-a,pc=a!==0?delta/Math.abs(a)*100:null;out+='<tr><td><b>'+esc(linhaNome(l))+'</b><div class="esp27-sub">'+esc(l.grupo||'')+'</div></td><td>'+fmt(a)+'</td><td>'+fmt(b)+'</td><td class="'+(delta>=0?'esp27-delta-pos':'esp27-delta-neg')+'">'+calcDelta(b,a)+'</td><td>'+(pc==null?'—':fmt(pc)+'%')+'</td>';for(var j=0;j<12;j++){var v=curr[j];out+='<td>'+(edit?'<input class="esp27-input" inputmode="decimal" data-esp27-edit="'+i+'|'+j+'" value="'+(v==null?'':fmt(v))+'" aria-label="'+esc(linhaNome(l))+' '+meses[j]+'">':fmt(v))+'</td>'}out+='</tr>'});out+='</tbody></table></div><div class="esp27-sub" id="esp27-feedback" role="status" style="margin-top:12px"></div></div></div>';
+setTimeout(function(){bind(m,sel,edit)},0);return out;}
+function bind(m,g,edit){var root=document.querySelector('.esp27-wrap');if(!root)return;root.querySelectorAll('[data-esp27-front]').forEach(function(btn){btn.onclick=function(){if(estado[key(m,g)]&&estado[key(m,g)].sujo&&!confirm('Existem alterações não salvas. Trocar de frente e manter o rascunho?'))return;var app=window.APP;if(app&&app.state){app.state.espOrigem=btn.getAttribute('data-esp27-front');app.render()}}});if(!edit)return;root.querySelectorAll('[data-esp27-edit]').forEach(function(inp){inp.onchange=function(){var p=inp.getAttribute('data-esp27-edit').split('|'),s=estado[key(m,g)],txt=inp.value.trim(),n=txt===''?null:Number(txt.replace(/\./g,'').replace(',','.'));if(n!==null&&!Number.isFinite(n)){inp.style.borderColor='#f88';return;}s.linhas[Number(p[0])][Number(p[1])]=n;s.sujo=true;var b=root.querySelector('[data-esp27-save]');if(b)b.disabled=false;var f=root.querySelector('#esp27-feedback');if(f)f.textContent='Alteração pendente de salvamento. Os totais e deltas serão atualizados ao salvar.';}});var save=root.querySelector('[data-esp27-save]');if(save)save.onclick=async function(){var imp=window.ESPORTES_IMPORT,s=estado[key(m,g)],f=root.querySelector('#esp27-feedback');if(!s||!s.sujo)return;save.disabled=true;f.textContent='Salvando alterações no Supabase…';try{var base=obter(m,g),payload=JSON.parse(JSON.stringify(base.dados));payload.linhas.forEach(function(l,i){l.orcado_2027_mensal=s.linhas[i].slice();l.total_2027_planilha=sum(s.linhas[i]);});var res=await window.SB.rpc('orc_2027_esportes_salvar',{p_modalidade:m,p_origem:g,p_dados:payload});if(res.error)throw res.error;window.ESP_IMPORTADOS=window.ESP_IMPORTADOS||{};window.ESP_IMPORTADOS[key(m,g)]=payload;delete estado[key(m,g)];if(window.APP&&window.APP.render)window.APP.render();}catch(e){save.disabled=false;f.textContent='Não foi possível salvar: '+(e.message||e)}};}
+window.SOGIPA_ESP_PECAS={render:render};
 })();
 </script>
 </body>
