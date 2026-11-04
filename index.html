@@ -1861,6 +1861,23 @@ tr.hoverable:hover>td{background:rgba(61,123,255,.06);}
 .subtab[data-aba="rastreabilidade"], .subtab[data-aba="pendencia"],
 .subtab[data-espaba="confronto"], .subtab[data-espaba="pendencia"],
 .subtab[data-espaba="dre"], .subtab[data-espaba="fonte"] { display:none !important; }
+
+/* Acoes de solicitacao: sempre visiveis, mesmo com simulacao longa ou zoom. */
+.drawer:has(.so-actions-fixed){display:flex;flex-direction:column;overflow:hidden;}
+.drawer:has(.so-actions-fixed) .drawer-head{position:relative;flex:0 0 auto;}
+.drawer:has(.so-actions-fixed) .drawer-body{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding-bottom:28px;}
+.so-actions-fixed{position:relative;z-index:5;flex:0 0 auto;display:flex;gap:8px;flex-wrap:wrap;padding:12px 18px max(12px,env(safe-area-inset-bottom));background:var(--surface);border-top:2px solid var(--blue);box-shadow:0 -5px 18px rgba(0,0,0,.3);}
+.so-actions-fixed .btn{flex:1 1 190px;min-height:42px;white-space:normal;}
+@media(max-width:450px){.so-actions-fixed{padding:10px}.so-actions-fixed .btn{flex-basis:100%;}}
+
+/* 2026-11-04: formulário de solicitações com ações persistentes em qualquer zoom/viewport. */
+.so-solicitacao-scrim{height:100%;height:100dvh;overflow:hidden;align-items:stretch;}
+.so-solicitacao-drawer{height:100%;height:100dvh;max-height:100dvh;min-height:0;display:flex!important;flex-direction:column!important;overflow:hidden!important;animation:none;}
+.so-solicitacao-drawer>.drawer-head{position:relative!important;top:auto;flex:0 0 auto;min-height:0;}
+.so-solicitacao-drawer>.drawer-body{flex:1 1 0!important;min-height:0!important;overflow-y:auto!important;overflow-x:hidden;overscroll-behavior:contain;padding-bottom:24px;}
+.so-solicitacao-drawer>.so-actions-fixed{display:flex!important;visibility:visible!important;opacity:1!important;position:relative!important;inset:auto!important;z-index:30!important;flex:0 0 auto!important;min-height:68px;max-height:40dvh;overflow-y:auto;background:var(--surface);border-top:2px solid var(--blue);}
+.so-solicitacao-drawer>.so-actions-fixed>.btn{display:inline-flex!important;visibility:visible!important;opacity:1!important;align-items:center;justify-content:center;min-height:44px;}
+@media(max-height:550px){.so-solicitacao-drawer>.so-actions-fixed{padding:7px 12px;min-height:54px}.so-solicitacao-drawer>.so-actions-fixed>.btn{min-height:36px}}
 </style>
 
 <style id="sogipa-esportes-ux-2027">
@@ -10393,7 +10410,8 @@ var APP = (function () {
       '<div class="drawer-head"><div><h3>' + tit + "</h3>" +
       '<div class="s">' + esc(st.gerencia.nome) + "</div></div>" +
       '<button class="btn sm" data-acao="fechar">Fechar</button></div>' +
-      '<div class="drawer-body">' + body + "</div></div></div>";
+      '<div class="drawer-body">' + body + "</div>" +
+      '</div></div>';
   }
   function nota(t) {
     return '<div style="margin-top:18px;font-size:12px;color:var(--neutro);line-height:1.7;' +
@@ -12866,25 +12884,25 @@ var APP = (function () {
     f += '<div class="field"><label>Meses no exercício</label><input class="calc" id="soMeses" readonly value="' +
       (PP.mesesOrc() - (S.sMes || 1) + 1) + '"></div>';
     f += '<div class="field full"><label for="soJust">Justificativa</label>' +
-      '<input id="soJust" type="text" placeholder="por que esta mudança é necessária"></div>';
-    f += '<div class="field full"><label for="soObs">Observação</label><input id="soObs" type="text"></div>';
+      '<input id="soJust" type="text" placeholder="por que esta mudança é necessária" value="' + esc(S.sJustRascunho || "") + '"></div>';
+    f += '<div class="field full"><label for="soObs">Observação</label><input id="soObs" type="text" value="' + esc(S.sObsRascunho || "") + '"></div>';
 
     var body = '<div class="fgrid">' + f + "</div>" +
-      '<div class="row" style="margin-top:16px;gap:8px;flex-wrap:wrap;padding:14px 0;border-bottom:1px solid var(--border)">' +
-      '<button class="btn pri" data-sacao="criar-enviar:' + g.id + '">Registrar e encaminhar solicitação</button>' +
-      '<button class="btn" data-sacao="criar:' + g.id + '">Guardar rascunho nesta sessão</button>' +
-      '<button class="btn" data-acao="fechar">Cancelar</button></div>' +
       '<div id="soPreview" style="margin-top:20px">' + preview() + "</div>" +
       '<div style="margin-top:18px;font-size:12px;color:var(--neutro);line-height:1.7;border-top:1px solid var(--border);padding-top:14px">' +
       "O impacto é calculado pelo mesmo motor de pessoal das matrizes: encargos de <b>" + pct(PP.pctEncargos(), 2) +
       "</b>, provisões de 13º e 1/3 de férias, e o mês de início definindo quantos meses pesam no exercício. " +
       "O rascunho é temporário e não altera o orçamento oficial. Para desligamentos, use <b>Registrar e encaminhar solicitação</b>: o sistema somente confirmará o envio após resposta do banco.</div>";
 
-    return '<div class="scrim" data-acao="fechar-fora"><div class="drawer" role="dialog" aria-modal="true">' +
+    return '<div class="scrim so-solicitacao-scrim" data-acao="fechar-fora"><div class="drawer so-solicitacao-drawer" role="dialog" aria-modal="true">' +
       '<div class="drawer-head"><div><h3>Nova solicitação</h3><div class="s">' + esc(g.nome) +
       " · o sistema calcula o impacto antes do envio</div></div>" +
       '<button class="btn sm" data-acao="fechar">Fechar</button></div>' +
-      '<div class="drawer-body">' + body + "</div></div></div>";
+      '<div class="drawer-body">' + body + "</div>" +
+      '<div class="so-actions-fixed" role="group" aria-label="Ações da nova solicitação">' +
+      '<button type="button" class="btn pri" data-sacao="criar-enviar:' + g.id + '">Registrar e encaminhar solicitação</button>' +
+      '<button type="button" class="btn" data-sacao="criar:' + g.id + '">Guardar rascunho</button>' +
+      '</div></div></div>';
   }
 
   /* Prévia recalculada a cada digitação, sem reconstruir o formulário. */
@@ -13355,10 +13373,13 @@ function enviarDesligamento(s, dados, render) {
     alert("Nao foi possivel identificar a gerencia para o banco. O desligamento NAO foi enviado.");
     render(); return;
   }
-  S.solEnviando = s.id; S.solMensagem = null; render();
+  S.solEnviando = s.id; S.solCliqueEmAndamento = true; S.solMensagem = null;
+  var acoes = document.querySelectorAll('.so-solicitacao-drawer [data-sacao^="criar"]');
+  acoes.forEach(function (b) { b.disabled = true; b.setAttribute("aria-busy", "true"); });
   D.enviar(dados, gid).then(function (res) {
-    S.solEnviando = null;
+    S.solEnviando = null; S.solCliqueEmAndamento = false;
     S.solMensagem = { id: s.id, ok: res.ok, texto: res.mensagem || "" };
+    if (!res.ok) alert(res.mensagem || "Não foi possível encaminhar. Nenhuma confirmação de envio foi recebida.");
     if (res.ok && res.confirmado && res.status) {
       s.idBanco = res.id || null;
       var rt = SO.REPO.registrarTransicao(s.id, res.status,
@@ -13367,14 +13388,17 @@ function enviarDesligamento(s, dados, render) {
           : "Enviada (banco). Status: " + res.status + ".");
       if (!rt.ok) S.solMensagem.texto += " Observacao local: " + rt.erro;
       S.drawer = null; S.sGerAtual = null; S.pAba = "solicitacoes";
+      S.sJustRascunho = ""; S.sObsRascunho = "";
     }
-    render();
+    if (res.ok && res.confirmado) render();
+    else document.querySelectorAll('.so-solicitacao-drawer [data-sacao^="criar"]').forEach(function (b) { b.disabled = false; b.removeAttribute("aria-busy"); });
   })["catch"](function (e) {
-    S.solEnviando = null;
+    S.solEnviando = null; S.solCliqueEmAndamento = false;
     S.solMensagem = { id: s.id, ok: false,
       texto: "Falha ao falar com o banco: " + ((e && e.message) || "erro desconhecido") +
              ". A solicitacao continua em rascunho." };
-    render();
+    alert(S.solMensagem.texto);
+    document.querySelectorAll('.so-solicitacao-drawer [data-sacao^="criar"]').forEach(function (b) { b.disabled = false; b.removeAttribute("aria-busy"); });
   });
 }
 
@@ -13385,6 +13409,7 @@ window.SOL_ACOES = function (cmd, render) {
   if (k[0] === "nova") {
     S.sGerAtual = S.pGer;
     S.sTipo = SO.tiposVisiveis()[0].id; S.sCC = ""; S.sColab = ""; S.sMes = 1;
+    S.sJustRascunho = ""; S.sObsRascunho = ""; S.solCliqueEmAndamento = false;
     S.drawer = "sol-nova:" + S.pGer;
     render(); return;
   }
@@ -13434,6 +13459,7 @@ window.SOL_ACOES = function (cmd, render) {
   }
 
   if (k[0] === "criar" || k[0] === "criar-enviar") {
+    if (S.solCliqueEmAndamento) return;
     var d = SV.coletar(k[1]);
     if (!validarSolicitacao(d)) return;
     var c = SO.calcular(d);
@@ -13443,7 +13469,10 @@ window.SOL_ACOES = function (cmd, render) {
       /* DESLIGAMENTO: vai pelo banco. O status local passa a ser o que a
          releitura trouxe, e enquanto o banco nao confirma a solicitacao
          fica em rascunho — a tela nao diz "enviada" por conta propria. */
-      if (ehDeslig(d)) { enviarDesligamento(s, d, render); return; }
+      if (ehDeslig(d)) {
+        enviarDesligamento(s, d, render);
+        return;
+      }
       var r0 = SO.REPO.registrarTransicao(s.id, "sol_enviada", "Enviada ao Gerente Geral");
       if (!r0.ok) { alert(r0.erro); return; }
     }
@@ -18663,9 +18692,17 @@ window.SOL_ACOES = function (cmd, render) {
       render(); return;
     }
     if (ev.target.id === "soTipo") {
+      var justAnt = document.getElementById("soJust"), obsAnt = document.getElementById("soObs");
+      S.sJustRascunho = justAnt ? justAnt.value : (S.sJustRascunho || "");
+      S.sObsRascunho = obsAnt ? obsAnt.value : (S.sObsRascunho || "");
       S.sTipo = ev.target.value; S.sColab = ""; render(); return;
     }
-    if (ev.target.id === "soCC") { S.sCC = ev.target.value; S.sColab = ""; render(); return; }
+    if (ev.target.id === "soCC") {
+      var justAnt2 = document.getElementById("soJust"), obsAnt2 = document.getElementById("soObs");
+      S.sJustRascunho = justAnt2 ? justAnt2.value : (S.sJustRascunho || "");
+      S.sObsRascunho = obsAnt2 ? obsAnt2.value : (S.sObsRascunho || "");
+      S.sCC = ev.target.value; S.sColab = ""; render(); return;
+    }
     if (ev.target.id === "soColab" || ev.target.id === "soMes") {
       if (ev.target.id === "soColab") S.sColab = ev.target.value;
       else S.sMes = parseInt(ev.target.value, 10) || 1;
@@ -18853,6 +18890,8 @@ window.SOL_ACOES = function (cmd, render) {
       return;
     }
     if (/^so(Sal|SalNovo|Adic|Benef|Qtd|Cargo|CargoNovo|Just|Obs)$/.test(ev.target.id)) {
+      if (ev.target.id === "soJust") S.sJustRascunho = ev.target.value;
+      if (ev.target.id === "soObs") S.sObsRascunho = ev.target.value;
       var box = document.getElementById("soPreview");
       if (box) box.innerHTML = window.SOLICITACOES_VIEW.preview();
       return;
