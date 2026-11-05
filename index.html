@@ -25827,67 +25827,76 @@ if (typeof APP !== "undefined" && APP) {
     return true;
   }
 
-  /* ─── gravação ───
-     Cria entrada nova, sempre. Nunca sobrescreve a anterior. */
-  function registrar(cfg, textoNovo) {
-    if (!podeRegistrar(cfg)) return null;
-    var t = String(textoNovo == null ? "" : textoNovo).trim();
-    if (!t) return null;
-    var k = chaveDe(cfg), p = partesDe(k), agora = new Date().toISOString();
-    var au = autor();
-    var reg = {
-      id: novoId(), chave: k,
-      exercicio: p.exercicio, modulo: p.modulo, peca: p.peca, subpeca: p.subpeca,
-      pecaNome: cfg.pecaNome || null, gerencia: cfg.gerencia || null,
-      texto: t, criadoEm: agora, atualizadoEm: agora,
-      editado: false, versoesAnteriores: [],
-      usuarioId: au.usuarioId, usuarioNome: au.usuarioNome, usuarioCargo: au.usuarioCargo,
-      /* Declarado em cada registro, não inferido pela tela. */
-      persistido: false
-    };
-    if (!DADOS[k]) DADOS[k] = [];
-    DADOS[k].push(reg);
-    rascunho(k).novo = "";
-    return reg;
+  /* Persistência definitiva: a autorização real é validada também por RLS. */
+  var PM_GER={"Administrativa":1,"Gerência Geral":2,"Operações":3,"Esportes":4,"Manutenção":5,"Recursos Humanos":6,"Tecnologia da Informação":7,"Obras":8,"Planejamento e Desenvolvimento":9,"Comunicação":10,"Associações":11};
+  var PM_CARREGANDO={}, PM_CARREGADO={}, PM_ERRO={}, PM_OCUPADO={};
+  function pmGerencia(cfg) {
+    if (typeof cfg.gerencia === "number") return cfg.gerencia;
+    if (PM_GER[cfg.gerencia]) return PM_GER[cfg.gerencia];
+    if (cfg.modulo === "marketing") return 10;
+    if (cfg.modulo === "associacoes") return 11;
+    if (cfg.modulo === "esportes") return 4;
+    if (cfg.modulo === "locacoes") return 1;
+    if (cfg.modulo === "churrasqueiras" || cfg.modulo === "estacionamento") return 3;
+    return null;
   }
-
-  /* Editar preserva o que havia: a versão anterior vai para a pilha e a
-     entrada passa a exibir que foi editada. */
-  function editarRegistro(cfg, id, textoNovo) {
-    if (!podeRegistrar(cfg)) return null;
-    var reg = registroById(cfg, id);
-    if (!reg) return null;
-    var t = String(textoNovo == null ? "" : textoNovo).trim();
-    if (!t || t === reg.texto) { fecharEdicao(cfg); return reg; }
-    reg.versoesAnteriores.push({ texto: reg.texto, em: reg.atualizadoEm,
-      usuarioNome: reg.usuarioNome });
-    reg.texto = t;
-    reg.atualizadoEm = new Date().toISOString();
-    reg.editado = true;
-    var au = autor();
-    reg.editadoPor = au.usuarioNome;
-    fecharEdicao(cfg);
-    return reg;
+  function pmRender() { if (window.APP && typeof window.APP.render === "function") window.APP.render(); }
+  async function pmCarregar(cfg, forcar) {
+    var k=chaveDe(cfg), sb=window.SB, AU=window.AUTH;
+    if (!sb || !AU || !AU.user || !pmGerencia(cfg)) { PM_ERRO[k]="Conexão ou sessão indisponível."; pmRender(); return; }
+    if (PM_CARREGANDO[k] || (!forcar && PM_CARREGADO[k])) return;
+    PM_CARREGANDO[k]=true; delete PM_ERRO[k];
+    try {
+      var q=await sb.from('pro_memoria_registros')
+        .select('id,texto,criado_em,criado_por,atualizado_em,editado_por')
+        .eq('exercicio_id',1).eq('gerencia_id',pmGerencia(cfg))
+        .eq('modulo',cfg.modulo).eq('peca',cfg.peca).eq('subpeca',cfg.subpeca||'')
+        .order('criado_em',{ascending:false});
+      if(q.error)throw q.error;
+      var rows=q.data||[], ids=rows.map(function(r){return r.id}), vers=[];
+      if(ids.length){var v=await sb.from('pro_memoria_versoes').select('registro_id,versao_anterior,alterado_em,alterado_por').in('registro_id',ids).order('alterado_em',{ascending:true});if(v.error)throw v.error;vers=v.data||[];}
+      var autores={};
+      var uids=Array.from(new Set(rows.map(function(r){return r.criado_por;}).concat(vers.map(function(v){return v.alterado_por;})).filter(Boolean)));
+      if(uids.length){var nomes=await sb.from('perfis').select('id,nome').in('id',uids);if(!nomes.error)(nomes.data||[]).forEach(function(a){autores[a.id]=a.nome;});}
+      DADOS[k]=rows.map(function(r){return {
+        id:r.id,texto:r.texto,criadoEm:r.criado_em,atualizadoEm:r.atualizado_em,
+        usuarioId:r.criado_por,usuarioNome:autores[r.criado_por]||(r.criado_por===(AU.user&&AU.user.id)?(AU.perfil&&AU.perfil.nome):null)||'Usuário registrado',
+        editado:!!r.editado_por,editadoPor:r.editado_por,persistido:true,
+        versoesAnteriores:vers.filter(function(v){return v.registro_id===r.id}).map(function(v){return {texto:v.versao_anterior,em:v.alterado_em,usuarioNome:autores[v.alterado_por]||'Usuário registrado'};})
+      };});
+      PM_CARREGADO[k]=true;
+    }catch(e){PM_ERRO[k]='Não foi possível carregar o histórico. Feche e abra a seção para tentar novamente.';PM_CARREGADO[k]=true;}
+    finally{PM_CARREGANDO[k]=false;pmRender();}
   }
-
-  /* Efetiva o que estiver pendente na caixa e na edição aberta. É o que o
-     salvamento da matriz chama antes de navegar. */
-  function efetivarRascunho(cfg) {
-    var k = typeof cfg === "string" ? cfg : chaveDe(cfg);
-    var d = RASC[k];
-    if (!d) return 0;
-    var alvo = typeof cfg === "string" ? partesDe(k) : cfg;
-    var n = 0;
-    if (d.edicaoId) {
-      var orig = registroById(k, d.edicaoId);
-      if (orig && String(d.edicaoTexto || "").trim()
-        && String(d.edicaoTexto).trim() !== orig.texto) {
-        if (editarRegistro(alvo, d.edicaoId, d.edicaoTexto)) n++;
-      } else fecharEdicao(k);
-    }
-    if (String(d.novo || "").trim()) { if (registrar(alvo, d.novo)) n++; }
-    return n;
+  async function registrar(cfg,textoNovo) {
+    var k=chaveDe(cfg), t=String(textoNovo||'').trim(),AU=window.AUTH;
+    if(!t||!podeRegistrar(cfg)||!AU||!AU.user||!pmGerencia(cfg)||PM_OCUPADO[k])return null;
+    PM_OCUPADO[k]=true;delete PM_ERRO[k];pmRender();
+    try {
+      var x=await window.SB.from('pro_memoria_registros').insert({
+        exercicio_id:1,gerencia_id:pmGerencia(cfg),modulo:cfg.modulo,
+        peca:cfg.peca,subpeca:cfg.subpeca||'',peca_nome:cfg.pecaNome||cfg.peca,
+        texto:t,criado_por:AU.user.id
+      }).select('id').single();
+      if(x.error)throw x.error;
+      rascunho(k).novo='';PM_CARREGADO[k]=false;
+      return x.data;
+    }catch(e){PM_ERRO[k]='Não foi possível salvar. A anotação permanece no campo para tentar novamente.';return null;}
+    finally{PM_OCUPADO[k]=false;var erro=PM_ERRO[k];await pmCarregar(cfg,true);if(erro)PM_ERRO[k]=erro;pmRender();}
   }
+  async function editarRegistro(cfg,id,textoNovo) {
+    var k=chaveDe(cfg),reg=registroById(k,id),t=String(textoNovo||'').trim(),AU=window.AUTH;
+    if(!reg||!t||t===reg.texto||!podeRegistrar(cfg)||!AU||!AU.user||reg.usuarioId!==AU.user.id||PM_OCUPADO[k])return null;
+    PM_OCUPADO[k]=true;delete PM_ERRO[k];
+    try{
+      var x=await window.SB.from('pro_memoria_registros').update({texto:t})
+        .eq('id',id).eq('criado_por',AU.user.id).select('id');
+      if(x.error||!x.data||!x.data.length)throw (x.error||new Error('Registro não atualizado'));
+      fecharEdicao(k);return x.data[0];
+    }catch(e){PM_ERRO[k]='Não foi possível editar. O texto anterior foi preservado.';return null;}
+    finally{PM_OCUPADO[k]=false;var erro=PM_ERRO[k];await pmCarregar(cfg,true);if(erro)PM_ERRO[k]=erro;pmRender();}
+  }
+  function efetivarRascunho(){return 0;} // Nunca grava silenciosamente ao salvar outra matriz.
 
   /* ─── EXPORTAÇÃO ───
      Uma linha por registro, com a chave inteira. É o formato que a tabela do
@@ -25967,8 +25976,7 @@ if (typeof APP !== "undefined" && APP) {
           '">' + (aberto ? "Ocultar histórico de edições"
             : "Ver histórico de edições (" + vs.length + ")") + "</button>"
         : "") +
-      '<button class="ass-reg-btn" data-pmacao="editar::' + esc(k) + "::" + r.id +
-      '">Editar</button>' +
+      ((window.AUTH && window.AUTH.user && r.usuarioId===window.AUTH.user.id) ? '<button class="ass-reg-btn" data-pmacao="editar::' + esc(k) + "::" + r.id + '">Editar</button>' : '') +
       "</div>" + bloco + "</div>";
   }
 
@@ -25992,13 +26000,11 @@ if (typeof APP !== "undefined" && APP) {
 
     if (!aberto) return '<div class="pm-sec">' + cab + "</div>";
 
-    /* Aviso obrigatório: o recurso não é operacional enquanto não houver
-       gravação definitiva. Fica no topo, antes da caixa de texto. */
-    var aviso = '<div class="pl-prem"><b>Registros temporários — recurso em preparação.</b>' +
-      "<span>O Pró-Memória ainda não tem gravação definitiva. O que for anotado aqui vive " +
-      "apenas nesta aba do navegador e <b>se perde ao recarregar a página, ao sair ou ao " +
-      "encerrar a sessão</b>. Não utilize este espaço como registro oficial enquanto a " +
-      "persistência no banco não estiver implementada e validada.</span></div>";
+    var aviso = PM_ERRO[k] ? '<div class="pl-prem"><b>Atenção</b><span>'+esc(PM_ERRO[k])+'</span></div>' :
+      (PM_CARREGANDO[k] ? '<div class="ass-dica">Carregando registros...</div>' : '');
+    if (!PM_CARREGADO[k] && !PM_CARREGANDO[k]) {
+      Promise.resolve().then(function(){pmCarregar(cfg,false);});
+    }
 
     var d = rascunho(k);
     var emEdicao = d.edicaoId && registroById(k, d.edicaoId) ? d.edicaoId : null;
@@ -26017,10 +26023,10 @@ if (typeof APP !== "undefined" && APP) {
         'peça orçamentária...">' + esc(d.novo || "") + "</textarea></div>" +
         '<div class="ass-info-acoes">' +
         '<span class="ass-dica">A entrada vai para o histórico abaixo e não substitui as ' +
-        "anteriores. Não há gravação em banco.</span>" +
+        "anteriores. O histórico é salvo no sistema.</span>" +
         '<button class="btn sm pri" data-pmacao="registrar::' + esc(k) + '"' +
-        (String(d.novo || "").trim() ? "" : " disabled") +
-        ">Registrar anotação</button></div></div>";
+        (String(d.novo || "").trim() && !PM_OCUPADO[k] ? "" : " disabled") +
+        ">Salvar anotação no sistema</button></div></div>";
     } else {
       entrada = '<div class="pl-prem"><b>' +
         (window.AUTH && window.AUTH.autenticado && window.AUTH.autenticado()
@@ -26057,33 +26063,21 @@ if (typeof APP !== "undefined" && APP) {
     var p = String(ref).split("::");
     setRascunhoEdicao(p[0], texto);
   }
-  function acao(cmd, render) {
-    var p = String(cmd).split("::");
-    var nome = p[0], k = p[1], id = p[2];
-    var cfg = partesDe(k);
-    if (nome === "registrar") {
-      var d = rascunho(k);
-      registrar(cfg, d.novo);
-    } else if (nome === "editar") {
-      abrirEdicao(k, id);
-    } else if (nome === "cancelarEdicao") {
-      fecharEdicao(k);
-    } else if (nome === "salvarEdicao") {
-      editarRegistro(cfg, id, rascunho(k).edicaoTexto);
-    } else if (nome === "verHist") {
-      if (!S.pmHist) S.pmHist = {};
-      S.pmHist[id] = !S.pmHist[id];
-    }
-    if (typeof render === "function") render();
-    else if (window.APP && typeof window.APP.render === "function") window.APP.render();
+  async function acao(cmd, render) {
+    var p=String(cmd).split('::'), nome=p[0],k=p[1],id=p[2],cfg=partesDe(k);
+    cfg.gerencia=PM_GER[cfg.modulo]||({marketing:10,associacoes:11,esportes:4,locacoes:1,churrasqueiras:3,estacionamento:3})[cfg.modulo];
+    if(nome==='registrar') await registrar(cfg,rascunho(k).novo);
+    else if(nome==='editar') abrirEdicao(k,id);
+    else if(nome==='cancelarEdicao') fecharEdicao(k);
+    else if(nome==='salvarEdicao') await editarRegistro(cfg,id,rascunho(k).edicaoTexto);
+    else if(nome==='verHist'){if(!S.pmHist)S.pmHist={};S.pmHist[id]=!S.pmHist[id];}
+    if(typeof render==='function')render();else pmRender();
   }
   function alternar(chave, render) {
-    if (!S.pmAberto) S.pmAberto = {};
-    S.pmAberto[chave] = !S.pmAberto[chave];
-    if (typeof render === "function") render();
-    else if (window.APP && typeof window.APP.render === "function") window.APP.render();
+    if(!S.pmAberto)S.pmAberto={};S.pmAberto[chave]=!S.pmAberto[chave];
+    if(S.pmAberto[chave]){PM_CARREGADO[chave]=false;var cfg=partesDe(chave);cfg.gerencia=({marketing:10,associacoes:11,esportes:4,locacoes:1,churrasqueiras:3,estacionamento:3})[cfg.modulo];pmCarregar(cfg,false);}
+    if(typeof render==='function')render();else pmRender();
   }
-
   window.PROMEMORIA = {
     EXERCICIO: EXERCICIO,
     chaveDe: chaveDe, partesDe: partesDe,
