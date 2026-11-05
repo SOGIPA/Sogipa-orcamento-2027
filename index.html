@@ -25898,8 +25898,8 @@ if (typeof APP !== "undefined" && APP) {
   function efetivarRascunho(){return 0;} // Nunca grava silenciosamente ao salvar outra matriz.
 
   /* ─── EXPORTAÇÃO ───
-     Uma linha por registro, com a chave inteira. É o formato que a tabela do
-     banco receberá quando a persistência for aprovada. Hoje, só exportação. */
+     Uma linha por registro, com a chave inteira. Exportação complementar
+     dos registros persistidos no banco. */
   function exportar() {
     var out = [];
     Object.keys(DADOS).forEach(function (k) {
