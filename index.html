@@ -25713,9 +25713,8 @@ if (typeof APP !== "undefined" && APP) {
    O QUE ESTE MOTOR NÃO FAZ: não altera valor, não recalcula matriz, não toca
    rubrica, não alimenta a DRE, não aprova nada. É documental.
 
-   PERSISTÊNCIA: não existe. Os registros vivem na memória desta aba e se
-   perdem ao recarregar. Nenhuma função daqui afirma o contrário, e a tela
-   diz isso em texto. A gravação definitiva depende da auditoria do Supabase.
+   PERSISTÊNCIA: registros no banco com autorização por usuário e histórico de versões.
+   Nunca considerar uma anotação salva antes da confirmação do banco.
    ═══════════════════════════════════════════════════════════════════════════ */
 (function () {
   "use strict";
@@ -26091,9 +26090,8 @@ if (typeof APP !== "undefined" && APP) {
     secao: secao, acao: acao, alternar: alternar,
     aoDigitar: aoDigitar, aoDigitarEdicao: aoDigitarEdicao,
     exportar: exportar, inventario: inventario,
-    /* Declarado, não inferido: não há persistência. */
-    persistencia: { disponivel: false, modo: "memoria-sessao",
-      motivo: "auditoria do Supabase pendente" }
+    persistencia: { disponivel: true, modo: "banco-autenticado",
+      motivo: "Registros persistidos com controle de acesso e auditoria de versões" }
   };
 })();
 </script>
@@ -26311,14 +26309,13 @@ if (typeof APP !== "undefined" && APP) {
       out += window.PROMEMORIA.secao({
         modulo: "associacoes", peca: p.id, pecaNome: p.nome });
     } else {
-      out += '<div class="gap"></div>' + informacoes(p);
+      out += '<div class="pl-prem"><b>Pró-Memória indisponível.</b><span>Atualize a página e tente novamente. Nenhuma anotação será gravada apenas nesta sessão.</span></div>';
     }
     return out;
   }
 
-  /* ─── Informações do Orçamento ───
-     Registro contínuo da peça: cada informação vira uma entrada datada,
-     com botão próprio. Não sobrescreve nada e não se apaga. */
+  /* ─── Código legado de apresentação: não utilizado pelo planejamento.
+     O Pró-Memória oficial é sempre window.PROMEMORIA.secao. */
   function quando(iso) {
     if (!iso) return "";
     var d = new Date(iso);
@@ -26389,10 +26386,8 @@ if (typeof APP !== "undefined" && APP) {
       'sobre esta peça orçamentária...">' + esc(d.novo || "") + "</textarea></div>" +
       '<div class="ass-info-acoes">' +
       '<span class="ass-dica">' +
-      /* Nenhuma mensagem de salvamento concluído enquanto não houver
-         gravação definitiva: o registro é temporário e a tela diz isso. */
-      "O registro entra no histórico abaixo e não substitui os anteriores. " +
-      "<b>Não há gravação em banco: a anotação se perde ao recarregar.</b>" + "</span>" +
+      /* O registro oficial é realizado exclusivamente pelo componente compartilhado. */
+      "O registro oficial deve ser feito no Pró-Memória do sistema.</span>" +
       '<button class="btn sm pri" data-assacao="registrar"' +
       (String(d.novo || "").trim() ? "" : " disabled") + ">Salvar registro</button></div></div>";
 
