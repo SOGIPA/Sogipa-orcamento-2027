@@ -21511,6 +21511,19 @@ var MKT_PLANO_2027 = {"titulo":"PLANEJAMENTO ORÇAMENTÁRIO DE MARKETING — 202
     }
   };
 
+  /* Integração 2027: substitui a linha 65, nunca soma sobre a BASE.
+     A fonte são as duas frentes efetivas do plano; atualizações do gestor
+     são refletidas na leitura, sem modificar dados históricos. */
+  function paraConsolidado() {
+    if (!D.frentes || D.frentes.length !== 2) return null;
+    var meses = Array.from({length:12},function(_,i){return totalMes(i);});
+    var total = totalGeral();
+    if (!Number.isFinite(total)) return null;
+    return { modulo:'marketing2027', gerencia:'Comunicação',
+      natureza:'Despesa', linhaDRE:'DESPESAS DE FUNCIONAMENTO / MARKETING',
+      orcado2027:total, curva2027:meses, atualizadoEm:PLANO.atualizadoEm,
+      formulaNota:'Plano de Marketing 2027: Institucional + Comercial; substitui a linha 65 sem duplicação.' };
+  }
   window.MKT27 = {
     DADOS: D, PLANO: PLANO, titulo: D.titulo,
     frentes: frentes, frenteById: frenteById,
@@ -21520,7 +21533,7 @@ var MKT_PLANO_2027 = {"titulo":"PLANEJAMENTO ORÇAMENTÁRIO DE MARKETING — 202
     totalFonte: totalFonte, totalCalculado: totalCalculado,
     totalMesFonte: totalMesFonte, totalMes: totalMes,
     totalGeralFonte: totalGeralFonte, totalGeral: totalGeral,
-    paraDRE: paraDRE, situacaoDRE: situacaoDRE,
+    paraDRE: paraDRE, situacaoDRE: situacaoDRE, paraConsolidado: paraConsolidado,
     conferencia: conferencia, REPO: REPO
   };
 
@@ -29111,7 +29124,7 @@ Object.assign(ESP_MODALIDADES,{"basquete":{"id":"basquete","nome":"Basquete","ge
     { linha: 16, peca: "ESTACIONAMENTO", nome: "Estacionamento" },
     { linha: 18, peca: "LOCACOES", nome: "Locações e Eventos" },
     { linha: 19, peca: "CHURRASQUEIRAS", nome: "Churrasqueiras" },
-    { linha: 65, peca: "MARKETING", nome: "Comunicação" }
+    { linha: 65, peca: "MKT27", nome: "Comunicação" }
   ];
 
   /* Adaptadores somente de leitura: motores que já existem e sabem
@@ -30821,7 +30834,19 @@ function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){retur
 function fmt(v){return v==null||!Number.isFinite(Number(v))?'—':Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});}
 function sum(a){return (a||[]).reduce(function(s,v){return s+(Number(v)||0)},0)}
 function key(m,g){return m+'|'+g}
-function obter(m,g){var imp=window.ESPORTES_IMPORT;if(!imp||!imp.dados[m]||!imp.dados[m].grupos[g])return null;var d=window.ESP_IMPORTADOS&&window.ESP_IMPORTADOS[key(m,g)];var fonte=imp.dados[m].lote_20261104;var useSource=fonte&&!window.ESP_LOTE9_CONFIRMADO?.[key(m,g)];return {dados:useSource?imp.dados[m].grupos[g]:(d||imp.dados[m].grupos[g]),salvo:!!d&&!useSource};}
+function obter(m,g){var imp=window.ESPORTES_IMPORT;if(!imp||!imp.dados[m]||!imp.dados[m].grupos[g])return null;var d=window.ESP_IMPORTADOS&&window.ESP_IMPORTADOS[key(m,g)];var fonte=imp.dados[m].lote_20261104;var useSource=fonte&&!window.ESP_LOTE9_CONFIRMADO?.[key(m,g)];
+var src=imp.dados[m].grupos[g], escolhido=useSource?src:(d||src);
+if(!useSource&&d&&Array.isArray(d.linhas)&&Array.isArray(src.linhas)){
+  var faltando=d.linhas.some(function(l){return !Array.isArray(l.orcado_2027_mensal)||l.orcado_2027_mensal.length!==12;});
+  if(faltando){
+    escolhido=Object.assign({},d,{linhas:d.linhas.map(function(l,i){
+      var orig=src.linhas.find(function(x){return x.linha===l.linha&&x.conta===l.conta;})||src.linhas[i];
+      if(Array.isArray(l.orcado_2027_mensal)&&l.orcado_2027_mensal.length===12||!orig)return l;
+      return Object.assign({},l,{orcado_2027_mensal:orig.orcado_2027_mensal||Array(12).fill(null)});
+    })});
+  }
+}
+return {dados:escolhido,salvo:!!d&&!useSource};}
 function espResultadoLinhas(ls){
  if(!Array.isArray(ls))return ls;
  var out=ls.filter(function(l){return String(l.conta||'').toUpperCase()!=='RESULTADO OPERACIONAL'});
