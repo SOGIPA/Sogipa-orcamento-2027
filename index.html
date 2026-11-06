@@ -28850,6 +28850,10 @@ Object.assign(ESP_MODALIDADES,{"basquete":{"id":"basquete","nome":"Basquete","ge
      o que as matrizes esportivas têm para esta rubrica? Pode ser nada. */
   function telaRubrica() {
     var linha = parseInt(S.espRubrica, 10);
+    if (linha >= 78 && linha <= 94 && window.SOGIPA_ESP_DESPESAS) {
+      var painelNovo = window.SOGIPA_ESP_DESPESAS.render(linha);
+      if (painelNovo) return painelNovo;
+    }
     var c = ES.conteudoDaRubrica(linha);
     if (!c) return A.vazio("Rubrica não encontrada",
       "Esta conta não consta no catálogo de rubricas esportivas.");
@@ -30960,6 +30964,45 @@ async function editar(){
 document.addEventListener('click',function(ev){var b=ev.target&&ev.target.closest&&ev.target.closest('[data-ded-editar]');if(!b)return;ev.preventDefault();ev.stopPropagation();ev.stopImmediatePropagation();editar();},true);
 var tentativas=0;var espera=setInterval(function(){tentativas++;if(window.AUTH&&window.AUTH.user&&window.SB){clearInterval(espera);carregar();}else if(tentativas>120)clearInterval(espera);},500);
 window.SOGIPA_DEDUCOES_2027={podeEditar:podeEditar,valor:valor,curva:curva,carregar:carregar};
+})();
+</script>
+<script id="sogipa-esportes-despesas-2027-todas-modalidades">
+/* Fonte: matrizes originais de Esportes 2027 incorporadas ao INDEX, com prioridade
+   para registros efetivamente recuperados do banco. Nunca ratear totais agregados. */
+(function(){'use strict';
+var RUB={78:['MATERIAIS ESPORTIVAS',/^(MATERIAL ESPORTIVO|MATERIAIS ESPORTIVOS)$/],79:['DIREITO DE IMAGEM - ESPORTE',/DIREITO DE IMAGEM/],80:['FEDERAÇÕES E ASSOCIAÇÕES ESPORTIVAS',/^FEDERAÇÕES$/],81:['ALIMENTAÇÃO\/BEBIDAS ESPORTES',/^(ALIMENTAÇÃO|ALIMENTAÇÃO\/BEBIDAS)$/],82:['TRANSPORTES PASSAGENS ESPORTES',/^TRANSPORTE(S)?$/],83:['HOSPEDAGENS ESPORTES',/^HOSPEDAGEM(S)?$/],84:['ALUGUEL DE DEPENDÊNCIAS ESPORTES',/^(ALUGUEL|LOCAÇÕES|ALUGUEL DE DEPENDÊNCIAS)$/],85:['SERVIÇOS TERCEIROS PJ ESPORTES',/^SERVIÇOS DE TERCEIROS PJ$/],86:['SERVIÇOS TERCEIROS PF ESPORTES',/^SERVIÇOS DE TERCEIROS PF$/],87:['UNIFORMES ESPORTIVOS',/^UNIFORMES$/],88:['MATERIAL DE EXPEDIENTE ESPORTES',/^MATERIAL DE EXPEDIENTE$/],89:['ATIVAÇÃO JOGOS ESPORTIVOS',/^ATIVAÇÃO JOGOS ESPORTIVOS$/],90:['ASSISTÊNCIA MÉDICA ESPORTES',/^ASSISTÊNCIA MÉDICA$/],91:['SERVIÇOS MENSAIS CONTR. ESPORTES',/^SERVIÇOS MENSAIS CONTRATADOS$/],92:['OUTRAS DESPESAS ESPORTIVAS',/^(DEMAIS CONTAS|MATERIAIS DIVERSOS|DECORAÇÕES|DIVULGAÇÃO|CONSERVAÇÃO \/ MANUTENÇÃO|BRINDES\/PREMIAÇÕES|PREMIAÇÕES\/BRINDES|MATERIAIS\/SERVIÇOS)$/],93:['EVENTOS ESPORTIVOS',null],94:['COMPETIÇÕES',null]};
+var MESES=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+function esc(x){return String(x==null?'':x).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function fmt(x){return x===null||x===undefined||!isFinite(Number(x))?'—':Number(x).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function normalize(x){return String(x||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().trim()}
+function series(l){return Array.isArray(l.orcado_2027_mensal)?l.orcado_2027_mensal:[]}
+function total(a){return a.reduce(function(n,v){return n+(v===null||v===undefined?0:Number(v)||0)},0)}
+function view(id){var r=RUB[id],imp=window.ESPORTES_IMPORT;if(!r||!imp||!imp.dados)return null;
+ var rows=[],unclassified=[],sourceCount=0,seen={};
+ Object.keys(imp.dados).forEach(function(mod){var m=imp.dados[mod];Object.keys(m.grupos||{}).forEach(function(fr){sourceCount++;
+  var base=m.grupos[fr],saved=window.ESP_IMPORTADOS&&window.ESP_IMPORTADOS[mod+'|'+fr];
+  var linhas=saved&&Array.isArray(saved.linhas)?saved.linhas:base.linhas;
+  (linhas||[]).forEach(function(l){var conta=String(l.conta||''),name=normalize(conta),isTotal=/^(DESPESA|DESPESAS ESPORTIVAS|DESPESAS PESSOAL DE APOIO|RESULTADO|RESULTADO OPERACIONAL|CUSTO TOTAL)/.test(name);
+   var match=id===93?(/EVENTOS?/i.test(fr)&&name==='DESPESA'):id===94?(/COMPETI/i.test(fr)&&name==='DESPESA'):(r[1]&&r[1].test(name));
+   // Generic third-party services are intentionally not labelled PJ or PF without source evidence.
+   if(id===85||id===86){if(name==='SERVICOS DE TERCEIROS'){unclassified.push({m:m.nome||mod,fr:base.nome||fr,l:l});return}}
+   if(match){var k=mod+'|'+fr+'|'+(l.linha||conta);if(!seen[k]){seen[k]=true;rows.push({m:m.nome||mod,fr:base.nome||fr,l:l})}}
+   else if(id===92&&!isTotal&&name==='SERVICOS DE TERCEIROS')unclassified.push({m:m.nome||mod,fr:base.nome||fr,l:l});
+  });
+ })});
+ var out='<div class="pl-ctx"><div><h2>'+esc(r[0])+'</h2><span>Despesa de Esportes · rubrica DRE '+id+' · matrizes 2027</span></div></div>';
+ out+='<div class="row" style="margin:12px 0 18px"><button class="btn" data-espvolta="1">← Matriz da modalidade</button></div>';
+ out+='<div class="pl-prem"><b>Despesas das planilhas de Esportes — 2027</b><span>Valores por modalidade e frente, conforme as linhas originais. Os totais de bloco e suas aberturas não são somados duas vezes. Valores salvos no sistema têm prioridade sobre a fonte inicial. Esta visualização não efetua lançamentos no DRE.</span></div><div class="gap"></div>';
+ if(rows.length){var sum=Array(12).fill(0);out+='<div class="tw"><table><thead><tr><th>Modalidade</th><th>Frente</th><th>Conta na matriz</th>'+MESES.map(function(x){return '<th class="num">'+x+'</th>'}).join('')+'<th class="num">Total 2027</th></tr></thead><tbody>';
+ rows.forEach(function(x){var a=series(x.l),has=a.some(function(v){return v!==null&&v!==undefined}),tt=has?total(a):null;if(has)a.forEach(function(v,i){sum[i]+=Number(v)||0});out+='<tr><td>'+esc(x.m)+'</td><td>'+esc(x.fr)+'</td><td>'+esc(x.l.conta)+'</td>'+MESES.map(function(_,i){return '<td class="num">'+fmt(a[i])+'</td>'}).join('')+'<td class="num"><b>'+fmt(tt)+'</b></td></tr>'});
+ out+='<tr class="grp"><td colspan="3"><b>Total das linhas correspondentes</b></td>'+sum.map(function(v){return '<td class="num"><b>'+fmt(v)+'</b></td>'}).join('')+'<td class="num"><b>'+fmt(total(sum))+'</b></td></tr></tbody></table></div>';
+ }else{out+='<div class="pl-prem"><b>Não há linha individual com esta classificação nas matrizes importadas.</b><span>A conta permanece sem atribuição automática. Consulte as despesas originais da modalidade; não foi criado rateio ou valor fictício.</span></div>'}
+ if(id===85||id===86){out+='<div class="gap"></div><div class="pl-prem"><b>Serviços de terceiros sem distinção PJ/PF</b><span>As planilhas contêm contas chamadas “SERVIÇOS DE TERCEIROS”, sem identificação jurídica. Essas despesas estão disponíveis nas matrizes das modalidades, mas não foram atribuídas artificialmente a PJ ou PF.</span></div>';
+ if(unclassified.length){out+='<div class="tw"><table><thead><tr><th>Modalidade</th><th>Frente</th><th>Conta original</th><th class="num">2027</th></tr></thead><tbody>'+unclassified.map(function(x){return '<tr><td>'+esc(x.m)+'</td><td>'+esc(x.fr)+'</td><td>'+esc(x.l.conta)+'</td><td class="num">'+fmt(total(series(x.l)))+'</td></tr>'}).join('')+'</tbody></table></div>'}}
+ out+='<div class="gap"></div><div class="pl-prem"><b>Rastreabilidade</b><span>'+sourceCount+' frentes examinadas. Fonte: planilhas de 2027 importadas para Esportes. A vinculação contábil definitiva deve ser confirmada antes de alimentar automaticamente o DRE Consolidado.</span></div>';
+ return out;
+}
+window.SOGIPA_ESP_DESPESAS={render:view};
 })();
 </script>
 </body>
