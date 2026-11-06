@@ -30416,7 +30416,7 @@ function bloco(){
  if(!autorizado())return '';
  var fila=pendentes(),hist=registros.filter(function(x){return x.status!=='sol_enviada';});
  var out='<section id="gg-pa-fila-real" style="margin:18px 0 24px;border:1px solid #465271;border-radius:12px;background:#1e2230;padding:18px;color:#f5f6fb">'+
- '<div style="display:flex;gap:12px;justify-content:space-between;align-items:center;flex-wrap:wrap"><div><h3 style="margin:0 0 6px">Solicitações aguardando decisão</h3><div style="font-size:12px;color:#adb8d0">Fila oficial do Supabase · desligamentos passam pelo RH; demais pedidos seguem a alçada configurada</div></div><button class="btn sm" data-gg-pa-refresh="1">Atualizar solicitações</button></div>';
+ '<div style="display:flex;gap:12px;justify-content:space-between;align-items:center;flex-wrap:wrap"><div><h3 style="margin:0 0 6px">Solicitações aguardando decisão</h3><div style="font-size:12px;color:#adb8d0">Solicitações registradas no sistema · desligamentos passam pelo RH; demais pedidos seguem a alçada configurada</div></div><button class="btn sm" data-gg-pa-refresh="1">Atualizar solicitações</button></div>';
  if(estado==='aguardando'||estado==='carregando')return out+'<p>Consultando solicitações…</p></section>';
  if(estado==='erro')return out+'<p style="color:#f9b3b3">Não foi possível consultar a fila: '+esc(erro)+'</p></section>';
  out+='<p><strong>'+fila.length+'</strong> aguardando decisão · <strong>'+hist.length+'</strong> já movimentadas pelo Gerente Geral</p>';
@@ -30460,7 +30460,7 @@ function atualizarAvisos(){
  var cont={};fila.forEach(function(x){var k=ger(x);(cont[k]||(cont[k]=[])).push(x);});
  var painel=document.createElement('section');painel.id='gg-pa-resumo-gerencias';painel.style.cssText='border:1px solid #465271;border-radius:12px;padding:18px;margin:12px 0 24px;background:#1e2230';
  var grupos=Object.keys(cont);var texto='<h3 style="margin:0 0 12px">Solicitações por gerência — fila oficial</h3>';
- if(!grupos.length)texto+='<p style="color:#aeb9ce">Nenhuma gerência com solicitação pendente no Supabase.</p>';
+ if(!grupos.length)texto+='<p style="color:#aeb9ce">Nenhuma gerência com solicitação pendente no sistema.</p>';
  grupos.forEach(function(g){texto+='<div style="padding:10px 0;border-top:1px solid #38435a"><strong>'+esc(g)+'</strong> · '+cont[g].length+' pendente(s)<div style="font-size:13px;color:#b9c6df">'+cont[g].map(function(x){return esc(nome(x))+' ('+esc((x.dados||{}).tipo||'pedido')+')';}).join(' · ')+'</div></div>';});
  painel.innerHTML=texto;
  alvo.insertBefore(painel,raiz.nextSibling);
