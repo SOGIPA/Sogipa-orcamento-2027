@@ -30916,7 +30916,7 @@ async function carregar(){
   var r=await sb.from('orcamento_matrizes').select('id,dados').eq('chave',CHAVE).limit(1);
   if(r.error)throw r.error;
   var d=r.data&&r.data[0]&&r.data[0].dados;
-  if(d&&d.exercicio===2027&&Number.isFinite(Number(d.totalMil))&&Array.isArray(d.mesesMil)&&d.mesesMil.length===12){estado={totalMil:Number(d.totalMil),mesesMil:d.mesesMil.map(Number)};}
+  if(d&&d.exercicio===2027&&Number.isFinite(Number(d.totalMil))&&Array.isArray(d.mesesMil)&&d.mesesMil.length===12){estado={totalMil:Number(d.totalMil),mesesMil:d.mesesMil.map(Number),impostoReais:d.impostoReais==null?null:Number(d.impostoReais)};}
   usuarioCarregado=a.user.id;erro=null;atualizar();
  }catch(e){erro=e.message||String(e);console.warn('Deducoes: consulta nao confirmada',erro);}finally{carregando=false;}
 }
@@ -30926,27 +30926,36 @@ async function editar(){
  var sb=window.SB,a=auth();if(!sb||!a.user){alert('Conexão indisponível.');return;}
  var atual=valor();if(atual===null){var d=window.DRE_CONSOLIDADA.valorLinha(38,'orcado2027');atual=d&&d.valor;}
  if(!Number.isFinite(atual)){alert('A referência atual não está disponível.');return;}
- var entrada=prompt('DEDUÇÕES DA RECEITA — total anual de 2027 em R$ (valor negativo).\nExemplo: -736105,00',String((atual*1000).toFixed(2)).replace('.',','));
- if(entrada===null)return;
- var reais=numero(entrada);if(!Number.isFinite(reais)||reais>0){alert('Informe um valor numérico negativo ou zero, em reais.');return;}
- var totalMil=reais/1000;
- /* Preserva a sazonalidade do orçamento anterior; nunca inventa rateio uniforme. */
- var anterior=curva()||(window.DRE_CONSOLIDADA.curvaLinha(38,'orcado2027')||[]);
- if(anterior.length!==12||anterior.some(function(x){return !Number.isFinite(x);})){alert('A distribuição mensal não está disponível. Não foi salvo nenhum valor.');return;}
- var soma=anterior.reduce(function(x,y){return x+y;},0);
- if(!Number.isFinite(soma)||Math.abs(soma)<0.0000001){alert('Sem base mensal para distribuir a alteração. Nada foi salvo.');return;}
- var mesesMil=anterior.map(function(v){return v/soma*totalMil;});
- var dados={exercicio:2027,totalMil:totalMil,mesesMil:mesesMil,origem:'ajuste_controladoria_deducoes',atualizado_por:a.user.id,atualizado_em:new Date().toISOString()};
- if(!confirm('Salvar Deduções da Receita 2027: R$ '+reais.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})+'? O DRE será recalculado após confirmação do banco.'))return;
- try{
-  var q=await sb.from('orcamento_matrizes').select('id').eq('chave',CHAVE).limit(1);if(q.error)throw q.error;
-  var gravacao=q.data&&q.data.length?await sb.from('orcamento_matrizes').update({dados:dados}).eq('id',q.data[0].id).select('id'):await sb.from('orcamento_matrizes').insert({chave:CHAVE,gerencia_id:9,dados:dados}).select('id');
-  if(gravacao.error)throw gravacao.error;
-  if(!gravacao.data||gravacao.data.length!==1)throw Error('O banco não confirmou a gravação.');
-  var check=await sb.from('orcamento_matrizes').select('dados').eq('id',gravacao.data[0].id).single();if(check.error)throw check.error;
-  if(!check.data||Math.abs(Number(check.data.dados.totalMil)-totalMil)>0.000001)throw Error('Verificação de leitura divergente.');
-  estado={totalMil:totalMil,mesesMil:mesesMil};erro=null;atualizar();alert('Deduções salvas e confirmadas no Supabase. DRE recalculado.');
- }catch(e){console.error('Falha ao salvar deduções:',e);alert('Não foi possível confirmar o salvamento no Supabase. Nenhum valor foi aplicado na tela. Verifique as permissões de gravação: '+(e.message||e));}
+ var existente=document.getElementById('sogipa-ded-editor');if(existente){existente.remove();return;}
+ var mask=document.createElement('div');mask.id='sogipa-ded-editor';mask.style.cssText='position:fixed;inset:0;z-index:999999;background:rgba(0,0,0,.75);display:flex;align-items:center;justify-content:center;padding:20px';
+ var panel=document.createElement('section');panel.style.cssText='width:min(530px,100%);background:#171d30;color:#f5f7ff;border:1px solid #59688b;border-radius:14px;padding:24px;box-shadow:0 18px 70px #0009';
+ panel.innerHTML='<h2 style="margin:0 0 8px">Deduções da Receita · 2027</h2><p style="font-size:13px;color:#bbc7e1">Valores anuais em reais. O imposto informado é uma composição do total, não um acréscimo automático para evitar duplicidade.</p><label style="display:block;margin:16px 0 6px">Total das deduções (R$)</label><input id="ded-total" inputmode="decimal" style="width:100%;padding:12px;background:#0b1020;color:white;border:1px solid #6d7b9d;border-radius:7px"><label style="display:block;margin:16px 0 6px">Parcela referente a impostos (R$)</label><input id="ded-imposto" inputmode="decimal" style="width:100%;padding:12px;background:#0b1020;color:white;border:1px solid #6d7b9d;border-radius:7px"><p id="ded-msg" role="status" style="min-height:20px;font-size:13px;color:#e6c17b"></p><div style="display:flex;justify-content:flex-end;gap:10px"><button type="button" id="ded-cancelar" style="padding:11px 16px;background:#333c54;color:white;border:0;border-radius:7px">Cancelar</button><button type="button" id="ded-salvar" style="padding:11px 18px;background:#2666e8;color:white;border:0;border-radius:7px;font-weight:700">Salvar no Supabase</button></div>';
+ mask.appendChild(panel);document.body.appendChild(mask);
+ var total=panel.querySelector('#ded-total'),imposto=panel.querySelector('#ded-imposto'),msg=panel.querySelector('#ded-msg'),salvar=panel.querySelector('#ded-salvar');
+ function fmt(v){return Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});}
+ total.value=fmt(atual*1000);imposto.value=estado&&Number.isFinite(estado.impostoReais)?fmt(estado.impostoReais):'';
+ panel.querySelector('#ded-cancelar').onclick=function(){mask.remove()};
+ salvar.onclick=async function(){
+  var reais=numero(total.value),tax=imposto.value.trim()?numero(imposto.value):null;
+  if(!Number.isFinite(reais)||reais>0||tax!==null&&(!Number.isFinite(tax)||tax>0)){msg.textContent='Informe valores negativos ou zero em reais.';return;}
+  if(tax!==null&&Math.abs(tax)>Math.abs(reais)){msg.textContent='O imposto não pode ultrapassar o total das deduções. Ajuste o total ou a parcela.';return;}
+  var totalMil=reais/1000,anterior=curva()||(window.DRE_CONSOLIDADA.curvaLinha(38,'orcado2027')||[]);
+  if(anterior.length!==12||anterior.some(function(x){return !Number.isFinite(Number(x))})){msg.textContent='Não há curva mensal validada. Nada foi salvo.';return;}
+  var soma=anterior.reduce(function(x,y){return x+Number(y)},0);
+  if(!Number.isFinite(soma)||Math.abs(soma)<1e-8){msg.textContent='Curva mensal sem base para cálculo. Nada foi salvo.';return;}
+  var mesesMil=anterior.map(function(v){return Number(v)/soma*totalMil});
+  salvar.disabled=true;msg.textContent='Gravando e conferindo no banco...';
+  var dados={exercicio:2027,totalMil:totalMil,mesesMil:mesesMil,impostoReais:tax,origem:'ajuste_controladoria_deducoes',atualizado_por:a.user.id,atualizado_em:new Date().toISOString()};
+  try{
+   var q=await sb.from('orcamento_matrizes').select('id').eq('chave',CHAVE).limit(1);if(q.error)throw q.error;
+   var gravacao=q.data&&q.data.length?await sb.from('orcamento_matrizes').update({dados:dados}).eq('id',q.data[0].id).select('id'):await sb.from('orcamento_matrizes').insert({chave:CHAVE,gerencia_id:9,dados:dados}).select('id');
+   if(gravacao.error)throw gravacao.error;
+   if(!gravacao.data||gravacao.data.length!==1)throw Error('Banco não confirmou gravação. Verifique a permissão da Controladoria.');
+   var check=await sb.from('orcamento_matrizes').select('dados').eq('id',gravacao.data[0].id).single();if(check.error)throw check.error;
+   if(!check.data||Math.abs(Number(check.data.dados.totalMil)-totalMil)>0.000001||tax!==null&&Math.abs(Number(check.data.dados.impostoReais)-tax)>.001)throw Error('Leitura de conferência divergente.');
+   estado={totalMil:totalMil,mesesMil:mesesMil,impostoReais:tax};erro=null;mask.remove();atualizar();alert('Deduções salvas e confirmadas no Supabase.');
+  }catch(e){msg.textContent='NÃO SALVO: '+(e.message||String(e));console.error('Deduções: falha na persistência',e)}finally{salvar.disabled=false}
+ };
 }
 document.addEventListener('click',function(ev){var b=ev.target&&ev.target.closest&&ev.target.closest('[data-ded-editar]');if(!b)return;ev.preventDefault();ev.stopPropagation();ev.stopImmediatePropagation();editar();},true);
 var tentativas=0;var espera=setInterval(function(){tentativas++;if(window.AUTH&&window.AUTH.user&&window.SB){clearInterval(espera);carregar();}else if(tentativas>120)clearInterval(espera);},500);
