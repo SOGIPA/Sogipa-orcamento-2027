@@ -3654,6 +3654,7 @@ var ARVORE_ORC = [
           {
             "nome": "MODALIDADES ESPORTIVAS",
             "filhos": [
+              {"nome":"CONSOLIDADO","dest":["esp","consolidado",null]},
               {
                 "nome": "MUSCULAÇÃO",
                 "filhos": [
@@ -12613,14 +12614,12 @@ var APP = (function () {
     var lista = SO.filtrar({ gerenciaId: g.id });
     var out = "";
 
-    /* ─── FILA DO RH ───
-       Entra no alto desta aba, e nao numa sub-aba nova, para nao mexer na
-       navegacao ja validada. Aparece so para quem pode analisar; a lista vem
-       de pa_2027_listar, que devolve apenas o que o perfil pode ver, e cobre
-       TODAS as gerencias — por isso o bloco nao e filtrado por g. A carga e
-       disparada aqui e a tela repinta quando o banco responde. */
+    /* Fila transversal de desligamentos: exibicao EXCLUSIVA na pasta RH (id 6).
+       Administradores podem analisar a fila no RH, mas jamais em Esportes,
+       Operacoes ou qualquer outra gerencia. A lista comum abaixo permanece
+       obrigatoriamente filtrada por g.id. */
     var D = window.DESLIGAMENTO;
-    if (D && typeof D.podeAnalisar === "function" && D.podeAnalisar()) {
+    if (Number(g.id) === 6 && D && typeof D.podeAnalisar === "function" && D.podeAnalisar()) {
       if (D.estadoFila === "nao-carregada") {
         D.carregarFila(function () {
           if (typeof window.render === "function") { try { window.render(); } catch (e) { } }
@@ -29055,6 +29054,7 @@ Object.assign(ESP_MODALIDADES,{"basquete":{"id":"basquete","nome":"Basquete","ge
   function temPendencia() { return ES.REPO.naoSalvas() > 0; }
 
   function render() {
+    if (!S.espRubrica && S.espMod === "consolidado") return window.SOGIPA_ESP_CONSOLIDADO.render();
     if (!S.espRubrica && window.SOGIPA_ESP_PECAS && window.ESPORTES_IMPORT && window.ESPORTES_IMPORT.dados[S.espMod]) return window.SOGIPA_ESP_PECAS.render(S.espMod,S.espOrigem,podeEditar());
     /* Modo rubrica: o gerente entrou por uma conta da árvore, não pela
        modalidade. A tela responde pela rubrica. */
@@ -31005,5 +31005,44 @@ function view(id){var r=RUB[id],imp=window.ESPORTES_IMPORT;if(!r||!imp||!imp.dad
 window.SOGIPA_ESP_DESPESAS={render:view};
 })();
 </script>
+<style id="sogipa-esportes-consolidado-css">
+.esc27{display:grid;gap:16px}.esc27-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.esc27-head h2{font-size:24px;margin:0;color:#f7f9ff}.esc27-muted{color:#a6b5d3;font-size:12px}.esc27-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}.esc27-kpi{border:1px solid #36405a;border-radius:12px;padding:16px;background:#1c2335}.esc27-kpi strong{display:block;font-size:23px;margin-top:8px;font-variant-numeric:tabular-nums}.esc27-tablewrap{overflow:auto;border:1px solid #36405a;border-radius:12px;max-height:65vh}.esc27-table{width:100%;border-collapse:collapse;font-size:13px}.esc27-table th{position:sticky;top:0;background:#26324a;color:#e5edff;text-align:right;padding:13px 12px;white-space:nowrap}.esc27-table td{padding:11px 12px;text-align:right;border-bottom:1px solid #303a50;font-variant-numeric:tabular-nums;white-space:nowrap}.esc27-table th:first-child,.esc27-table td:first-child{text-align:left;position:sticky;left:0;background:#1d2638;min-width:165px}.esc27-table th:first-child{background:#26324a;z-index:2}.esc27-table tfoot td{background:#28344b;font-weight:800;position:sticky;bottom:0}.esc27-pos{color:#64dfab}.esc27-neg{color:#ff858b}.esc27-nodata{color:#9ba8c2}.esc27-filter{background:#202a3d;color:#eef4ff;border:1px solid #465675;padding:9px 12px;border-radius:8px}.esc27-note{border-left:3px solid #6683ba;padding:10px 13px;background:#1d2636;font-size:12px;color:#aab9d5}
+</style>
+<script id="sogipa-esportes-consolidado-2027">
+(function(){'use strict';
+/* Histórico anual fornecido pelo gerente na planilha consolidada (2026).
+   Nunca se confunde com realizado 2027, ainda não importado. */
+var HIST=[['AIKIDO',5188,'aikido'],['ATHLETIC TRAINING',-83635,'athletic'],['ATLETISMO',-326913,'atletismo'],['BALLET GUTIERRES',6853,'ballet'],['BASQUETE',4023,'basquete'],['BEACH TENNIS',-23853,'beach_tennis'],['BOXE',71109,'boxe'],['DANÇA COUNTRY',244,'danca_country'],['ESGRIMA',2477,'esgrima'],['FITNESS',-20174,'fitness'],['FUTEBOL',-52179,'futebol'],['GINÁSTICA ARTÍSTICA',54525,'ginastica_artistica'],['GINÁSTICA RÍTMICA',53955,'ginastica_ritmica'],['GINÁSTICA VETERANAS',23188,'ginastica_veteranas'],['HIDROGINÁSTICA',63982,'hidroginastica'],['JUDÔ',-280227,'judo'],['KUNG FU',3318,'kung_fu'],['LEVANTAMENTO DE PESO',33226,'levantamento_de_peso'],['MUSCULAÇÃO',1005142,'musculacao'],['NATAÇÃO',112183,'natacao'],['PATINAÇÃO',18004,'patinacao'],['PERCORRER',78511,'percorrer'],['PERSONAL POSTURA',95771,'personal_postura'],['PERSONAL TÊNIS RODRIGO',21540,'personal_tenis_rodrigo'],['PERSONAL VAQUEIRO',7665,'personal_vaqueiro'],['PUNHOBOL',-16270,'punhobol'],['RITMOS',4463,'ritmos'],['TÊNIS',49713,'tenis'],['TÊNIS DE MESA',16477,'tenis_de_mesa'],['VÔLEI',-4432,'volei'],['VÔLEI KIKA',19622,'volei_kika'],['VÔLEI VETERANAS',2749,'volei_veteranas'],['YOGA',2111,'yoga']];
+var filtro='todas';
+function esc(x){return String(x==null?'':x).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function moeda(x){return x==null?'—':Number(x).toLocaleString('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:0})}
+function num(x){return typeof x==='number'&&isFinite(x)?x:null}
+function total(l,campo){if(!l)return null;var a=l[campo];if(Array.isArray(a)){var valid=a.filter(function(x){return x!==null&&x!==undefined&&x!==''&&isFinite(Number(x))});return valid.length?valid.reduce(function(t,v){return t+Number(v)},0):null;}return num(l[campo==='orcado_2027_mensal'?'total_2027_planilha':'total_2026_planilha']);}
+function linha(ls,nome){return ls.find(function(l){return String(l.conta||'').trim().toUpperCase()===nome})}
+function resultado(m){var imp=window.ESPORTES_IMPORT,mod=imp&&imp.dados&&imp.dados[m];if(!mod)return null;var soma=0,achou=false;
+ Object.keys(mod.grupos||{}).forEach(function(g){var base=mod.grupos[g],salvo=window.ESP_IMPORTADOS&&window.ESP_IMPORTADOS[m+'|'+g];var linhas=(salvo&&Array.isArray(salvo.linhas)?salvo.linhas:base.linhas)||[];
+ var r=linha(linhas,'RECEITA'),d=linha(linhas,'DESPESA');var vr=total(r,'orcado_2027_mensal'),vd=total(d,'orcado_2027_mensal');
+ /* Prioriza resultado operacional explícito somente quando não há par receita/despesa.
+    Nunca soma componentes e subtotais juntos. */
+ var v=(vr!==null||vd!==null)?(vr||0)+(vd||0):total(linha(linhas,'RESULTADO OPERACIONAL'),'orcado_2027_mensal');
+ if(v!==null){soma+=v;achou=true;}
+ });return achou?soma:null;}
+function render(){var imp=window.ESPORTES_IMPORT,rows=HIST.map(function(h){return {nome:h[0],historico:h[1],orcado:resultado(h[2]),id:h[2]}});
+ var ids={};rows.forEach(function(r){ids[r.id]=true});
+ /* Modalidades novas na fonte entram sem criar históricos fictícios. */
+ if(imp&&imp.dados)Object.keys(imp.dados).forEach(function(k){if(!ids[k])rows.push({nome:imp.dados[k].nome||k,historico:null,orcado:resultado(k),id:k})});
+ var selecionadas=rows.filter(function(r){return filtro==='todas'||(filtro==='favoraveis'&&r.orcado!==null&&r.historico!==null&&r.orcado>r.historico)||(filtro==='desfavoraveis'&&r.orcado!==null&&r.historico!==null&&r.orcado<r.historico)||(filtro==='sem'&&r.orcado===null)});
+ var v27=rows.filter(function(r){return r.orcado!==null}),total27=v27.reduce(function(a,r){return a+r.orcado},0),v26=rows.filter(function(r){return r.historico!==null}),total26=v26.reduce(function(a,r){return a+r.historico},0),comparaveis=rows.filter(function(r){return r.historico!==null&&r.orcado!==null}),dcomp=comparaveis.reduce(function(a,r){return a+r.orcado-r.historico},0);
+ var out='<section class="esc27"><div class="esc27-head"><div><h2>Consolidado das Modalidades Esportivas</h2><div class="esc27-muted">Resultado anual por modalidade · Orçamento 2027 × referência 2026</div></div><span class="esc27-muted">Somente visualização</span></div>';
+ out+='<div class="esc27-kpis"><div class="esc27-kpi"><span class="esc27-muted">Resultado 2026 · referência</span><strong>'+moeda(total26)+'</strong></div><div class="esc27-kpi"><span class="esc27-muted">Orçado 2027 · matrizes disponíveis</span><strong>'+moeda(v27.length?total27:null)+'</strong><small class="esc27-muted">'+v27.length+' modalidades com dados</small></div><div class="esc27-kpi"><span class="esc27-muted">Delta · modalidades comparáveis</span><strong class="'+(dcomp>=0?'esc27-pos':'esc27-neg')+'">'+(comparaveis.length?moeda(dcomp):'—')+'</strong><small class="esc27-muted">'+comparaveis.length+' modalidades comparáveis</small></div></div>';
+ out+='<div class="esc27-head"><strong>Resultados por modalidade</strong><label class="esc27-muted">Exibir <select id="esc27-filtro" class="esc27-filter"><option value="todas"'+(filtro==='todas'?' selected':'')+'>Todas</option><option value="favoraveis"'+(filtro==='favoraveis'?' selected':'')+'>Delta favorável</option><option value="desfavoraveis"'+(filtro==='desfavoraveis'?' selected':'')+'>Delta desfavorável</option><option value="sem"'+(filtro==='sem'?' selected':'')+'>Sem orçamento 2027</option></select></label></div>';
+ out+='<div class="esc27-tablewrap"><table class="esc27-table"><thead><tr><th>Modalidade</th><th>Resultado 2026</th><th>Orçado 2027</th><th>Delta (R$)</th><th>Delta (%)</th><th>Situação</th></tr></thead><tbody>';
+ selecionadas.forEach(function(r){var ok=r.orcado!==null&&r.historico!==null,delta=ok?r.orcado-r.historico:null,percent=ok&&r.historico!==0?100*delta/Math.abs(r.historico):null,classe=delta===null?'esc27-nodata':delta>=0?'esc27-pos':'esc27-neg';out+='<tr><td>'+esc(r.nome)+'</td><td class="'+(r.historico<0?'esc27-neg':'')+'">'+moeda(r.historico)+'</td><td class="'+(r.orcado<0?'esc27-neg':'')+'">'+moeda(r.orcado)+'</td><td class="'+classe+'">'+(delta===null?'—':moeda(delta))+'</td><td class="'+classe+'">'+(percent===null?'—':(percent>0?'+':'')+percent.toLocaleString('pt-BR',{maximumFractionDigits:1})+'%')+'</td><td class="'+classe+'">'+(delta===null?'Sem comparação':delta>0?'Favorável':delta<0?'Desfavorável':'Estável')+'</td></tr>'});
+ out+='</tbody></table></div><div class="esc27-note">O resultado de 2027 é calculado pelas linhas de Receita e Despesa de cada frente importada, sem somar novamente subtotais. Os valores de 2026 são a referência anual da planilha enviada; o realizado de 2027 ainda não foi importado. Modalidades sem valores disponíveis não são estimadas. O delta positivo indica melhora do resultado, inclusive redução de prejuízo.</div></section>';return out;}
+ document.addEventListener('change',function(e){if(e.target&&e.target.id==='esc27-filtro'){filtro=e.target.value;if(window.render)window.render()}});
+ window.SOGIPA_ESP_CONSOLIDADO={render:render};
+})();
+</script>
+
 </body>
 </html>
