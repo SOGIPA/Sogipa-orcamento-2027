@@ -15512,12 +15512,12 @@ window.SOL_ACOES = function (cmd, render) {
   var SECOES = [
     { id: "situacao", nome: "Situação orçamentária" },
     { id: "ccs", nome: "Centros de custo" }, { id: "movs", nome: "Movimentações 2027" },
-    { id: "turnover", nome: "Turnover" }, { id: "premissas", nome: "Premissas" },
-    { id: "controles", nome: "Controles e completude" }
+    { id: "turnover", nome: "Turnover" }
   ];
   function secoesDe(g) {
     if (!g.executiva) return SECOES;
-    return [SECOES[0], SECOES[1], { id: "quadro", nome: "Quadro funcional" }].concat(SECOES.slice(2));
+    /* Quadro de colaboradores fica exclusivamente na aba principal Quadro Atual. */
+    return SECOES;
   }
   function detalhes(g, fns) {
     var secs = secoesDe(g);
@@ -30390,7 +30390,7 @@ Object.assign(ESP_MODALIDADES,{"basquete":{"id":"basquete","nome":"Basquete","ge
    Nao altera matrizes, DRE, valores conciliados nem fluxo de RH. */
 (function(){
 'use strict';
-var registros=[], estado='aguardando', erro='', emCarga=false, ultimo=0;
+var registros=[], aguardandoRH=[], estado='aguardando', erro='', emCarga=false, ultimo=0;
 var A=function(){return window.APP;};
 function esc(x){return A()&&A().esc?A().esc(String(x==null?'':x)):String(x==null?'':x).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 function dinheiro(x){var n=Number(x);return Number.isFinite(n)?n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}):'Não informado';}
@@ -30402,6 +30402,8 @@ function ler(force){
  window.SB.rpc('pa_2027_listar').then(function(r){
   if(r.error)throw Error(r.error.message||'Falha na consulta');
   var rows=Array.isArray(r.data)?r.data:[];
+  /* RH pendente e uma fila informativa: nao integra as decisoes do GG. */
+  aguardandoRH=rows.filter(function(x){return x.status==='sol_aguardando_rh';});
   registros=rows.filter(function(x){var d=x.dados||{};return ['sol_enviada','sol_aprovada','sol_reprovada','sol_ajuste'].indexOf(x.status)>=0&&(d.tipo!=='desligamento'||d.rh_validado===true);});
   estado='pronto';erro='';
  }).catch(function(e){estado='erro';erro=e.message||String(e);}).then(function(){emCarga=false;atualizarBloco();});
@@ -30429,7 +30431,27 @@ function bloco(){
  if(hist.length){out+='<details style="margin-top:14px"><summary>Histórico de solicitações movimentadas ('+hist.length+')</summary>';hist.forEach(function(x){out+='<p>'+esc(nome(x))+' · '+esc(ger(x))+' · '+esc(x.status)+'</p>';});out+='</details>';}
  return out+'</section>';
 }
-function atualizarBloco(){var el=document.getElementById('gg-pa-fila-real');if(el)el.outerHTML=bloco();atualizarAvisos();}
+function blocoRH(){
+ if(!autorizado())return '';
+ var out='<section id="gg-pa-rh-resumo" style="border:1px solid #465271;border-radius:12px;padding:18px;margin:14px 0;background:#1e2230;color:#f5f6fb">'+
+ '<h3 style="margin:0 0 8px">Solicitações aguardando validação do RH</h3>'+
+ '<div style="font-size:12px;color:#adb8d0;margin-bottom:12px">Acompanhamento por gerência · somente consulta · a análise permanece sob responsabilidade do RH</div>';
+ if(estado==='aguardando'||estado==='carregando')return out+'<p>Consultando solicitações…</p></section>';
+ if(estado==='erro')return out+'<p>Não foi possível consultar as solicitações neste momento.</p></section>';
+ if(!aguardandoRH.length)return out+'<p>Nenhuma solicitação aguardando validação do RH.</p></section>';
+ var grupos={};
+ aguardandoRH.forEach(function(x){var id=String(x.gerencia_id||'');var k=id||'sem identificação';if(!grupos[k])grupos[k]={nome:ger(x),n:0};grupos[k].n++;});
+ out+='<p><strong>'+aguardandoRH.length+'</strong> aguardando validação do RH</p>';
+ Object.keys(grupos).sort(function(a,b){return grupos[a].nome.localeCompare(grupos[b].nome,'pt-BR');}).forEach(function(k){
+  var g=grupos[k];out+='<div style="padding:10px 0;border-top:1px solid #38435a"><strong>'+esc(g.nome)+'</strong> · '+g.n+' solicitação(ões) aguardando RH</div>';
+ });
+ return out+'</section>';
+}
+function atualizarResumoRH(){
+ var alvo=document.getElementById('gg-pa-rh-resumo');
+ if(alvo)alvo.outerHTML=blocoRH();
+}
+function atualizarBloco(){var el=document.getElementById('gg-pa-fila-real');if(el)el.outerHTML=bloco();atualizarAvisos();atualizarResumoRH();}
 function atualizarAvisos(){
  if(!autorizado()||estado!=='pronto')return;
  var fila=pendentes(), raiz=document.getElementById('gg-pa-fila-real');if(!raiz)return;
@@ -30452,6 +30474,16 @@ function atualizarAvisos(){
 
 function envolver(obj,key){if(!obj||typeof obj[key]!=='function')return;var fn=obj[key];obj[key]=function(){var html=fn.apply(this,arguments);if(autorizado()){ler(false);setTimeout(atualizarAvisos,0);return bloco()+html;}return html;};}
 envolver(window.GERAL_EXEC,'visaoExec');envolver(window.DECISOES,'render');
+/* Resumo de pendencias RH visivel somente na Gerencia Geral, sem conceder acesso a outras pastas. */
+if(window.GERAL_EXEC&&typeof window.GERAL_EXEC.porGerencia==='function'){
+ var porGerenciaOriginal=window.GERAL_EXEC.porGerencia;
+ window.GERAL_EXEC.porGerencia=function(){var html=porGerenciaOriginal.apply(this,arguments);if(!autorizado())return html;ler(false);return blocoRH()+html;};
+}
+/* A visao executiva ja contem a fila de decisao; incluir o resumo RH sem misturar os status. */
+if(window.GERAL_EXEC&&typeof window.GERAL_EXEC.visaoExec==='function'){
+ var visaoOriginal=window.GERAL_EXEC.visaoExec;
+ window.GERAL_EXEC.visaoExec=function(){var html=visaoOriginal.apply(this,arguments);return autorizado()?blocoRH()+html:html;};
+}
 function fechar(){var el=document.getElementById('gg-pa-modal');if(el)el.remove();}
 function modal(id){var x=registros.filter(function(v){return String(v.id)===String(id)&&v.status==='sol_enviada';})[0];if(!x)return;
  fechar();var el=document.createElement('div');el.id='gg-pa-modal';el.style.cssText='position:fixed;inset:0;z-index:999999;background:rgba(0,0,0,.78);display:flex;align-items:center;justify-content:center;padding:18px';
