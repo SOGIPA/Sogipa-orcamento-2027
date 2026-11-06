@@ -8373,7 +8373,19 @@ var APP = (function () {
       r.pessoas = temRep ? 0 : -1;
 
       /* Rescisão: desembolso extraordinário, jamais somado ao recorrente. */
-      r.rescisao = s.rescisaoValor || 0;
+      /* Valor validado pelo RH prevalece sobre a estimativa original.
+         Não modifica a solicitação, o orçamento oficial ou o histórico. */
+      var rhValido = s.rh_rescisao !== null && s.rh_rescisao !== undefined && s.rh_rescisao !== '' && isFinite(Number(s.rh_rescisao)) && Number(s.rh_rescisao) >= 0;
+      r.rescisao = rhValido ? Number(s.rh_rescisao) : (Number(s.rescisaoValor) || 0);
+      r.fonteRescisao = rhValido ? 'RH' : 'Estimativa original';
+      r.curvaFinanceira = curva.map(function(v,i){return v + (i+1 === mesSaida ? r.rescisao : 0);});
+      var saldo = 0, compensou = null;
+      r.recuperacaoMensal = r.curvaFinanceira.map(function(v,i){
+        saldo += v;
+        if (r.rescisao > 0 && compensou === null && i+1 >= mesSaida && saldo <= 0) compensou = i+1;
+        return {mes:i+1, recorrente:curva[i], rescisao:i+1===mesSaida?r.rescisao:0, liquido:v, acumulado:saldo};
+      });
+      r.mesRecuperacaoExercicio = compensou;
       r.impactoRecorrenteExercicio = curva.reduce(function (a, b) { return a + b; }, 0);
       r.exercicio = r.impactoRecorrenteExercicio + r.rescisao;
       r.anualizado = -r.economiaMensal * mm;
@@ -25290,6 +25302,30 @@ if (typeof APP !== "undefined" && APP) {
     S.rhDetalhe=id; S.rhMensagem=null;
     DESLIG.renderDetalhe();
   };
+  /* Projeção financeira de consulta. Fonte: registro real do Supabase e motor
+     institucional. Nunca grava na DRE, nunca antecipa decisão do Gerente Geral. */
+  DESLIG.rescisaoFinanceiraHTML=function(registro,valorDigitado){
+    var d=registro&&registro.dados||{}, SO=window.SOLICITACOES, PP=window.PESSOAL;
+    var e=window.APP&&window.APP.esc||function(v){return String(v);};
+    if(d.tipo!=='desligamento'||!SO||!PP)return '';
+    var valor=valorDigitado;
+    if(valor===undefined||valor===null||valor==='')valor=d.rh_rescisao;
+    if(valor===undefined||valor===null||valor==='')valor=d.rescisaoValor;
+    var n=Number(valor);
+    if(!isFinite(n)||n<0)return '<p class="muted">Informe um valor de rescisão válido para calcular a recuperação.</p>';
+    var x=Object.assign({},d,{gerenciaId:Number(registro.gerencia_id),rh_rescisao:n});
+    var c;
+    try{c=SO.calcular(x);}catch(err){c=null;}
+    if(!c||!c.conclusivo||!Array.isArray(c.recuperacaoMensal))return '<p class="muted">Projeção ainda não conclusiva: o colaborador precisa estar identificado na matriz de pessoal da gerência. Nenhuma economia foi presumida.</p>';
+    function br(v){return Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});}
+    var rows=c.recuperacaoMensal.filter(function(m){return m.mes>=c.mesSaida&&m.mes<=PP.mesesOrc();}).map(function(m){return '<tr><td>'+m.mes+'</td><td>'+br(m.rescisao)+'</td><td>'+br(-m.recorrente)+'</td><td>'+br(m.acumulado)+'</td></tr>';}).join('');
+    var aviso=c.mesRecuperacaoExercicio!==null?'Recuperação acumulada no mês '+c.mesRecuperacaoExercicio+' do exercício.':'Não há recuperação integral dentro do exercício; o prazo posterior depende da economia e da reposição efetivas.';
+    return '<section style="margin-top:16px;padding:12px;border:1px solid #586078;border-radius:8px">'+
+      '<h4 style="margin:0 0 8px">Projeção mensal da rescisão — simulação</h4>'+
+      '<p style="font-size:12px">Valor considerado: <b>'+br(n)+'</b> · Fonte: '+(d.rh_rescisao!==undefined&&d.rh_rescisao!==null&&valorDigitado===undefined?'RH salvo':'valor informado na simulação')+'.</p>'+
+      '<div style="overflow-x:auto"><table style="width:100%"><thead><tr><th>Mês</th><th>Rescisão</th><th>Economia líquida</th><th>Saldo acumulado</th></tr></thead><tbody>'+rows+'</tbody></table></div>'+
+      '<p style="font-size:12px"><b>'+e(aviso)+'</b></p><p class="muted" style="font-size:11px">Saldo negativo significa economia acumulada superior ao desembolso. Projeção não altera a DRE ou o orçamento aprovado. Custos e datas efetivas devem ser confirmados pelo RH.</p></section>';
+  };
   DESLIG.renderDetalhe=function(){
     var A=window.APP,S=A.state,id=S.rhDetalhe;
     if(!id)return;
@@ -25304,7 +25340,7 @@ if (typeof APP !== "undefined" && APP) {
       '<p><b>Justificativa do gestor:</b> '+esc(d.justificativa||'Não informada')+'</p>'+
       '<div class="field"><label>Valor da rescisão (R$)</label><input id="rhDetalheRescisao" inputmode="decimal" placeholder="0,00" value="'+esc(v)+'"></div>'+
       '<div class="field"><label>Parecer / justificativa do RH</label><textarea id="rhDetalheParecer" rows="3">'+esc(d.rh_parecer||'')+'</textarea></div>'+
-      '<p class="muted">Salvar mantém a solicitação no RH. Somente Autorizar envio libera a decisão do Gerente Geral. A rescisão é uma despesa extraordinária simulada, sem alterar a base oficial.</p>'+msg+
+      '<p class="muted">Salvar mantém a solicitação no RH. Somente Autorizar envio libera a decisão do Gerente Geral. A rescisão é uma despesa extraordinária simulada, sem alterar a base oficial.</p>'+'<div id="rhSimulacaoFinanceira">'+DESLIG.rescisaoFinanceiraHTML(x)+'</div>'+msg+
       '<div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn" data-rh-salvar="'+esc(id)+'">Salvar cálculo</button> '+
       '<button class="btn pri" data-rh-validar="'+esc(id)+'">Autorizar envio ao Gerente Geral</button> '+
       '<button class="btn" data-rh-devolver="'+esc(id)+'">Devolver ao gestor</button> '+
@@ -25334,6 +25370,15 @@ if (typeof APP !== "undefined" && APP) {
       else DESLIG.renderDetalhe();
     }).catch(function(e){DESLIG.rhProcessando=false;S.rhMensagem={id:id,ok:false,texto:'Não foi possível concluir a operação. Tente novamente.'};DESLIG.renderDetalhe();});
   };
+  document.addEventListener('change',function(ev){
+    if(!ev.target||ev.target.id!=='rhDetalheRescisao')return;
+    var id=window.APP&&window.APP.state&&window.APP.state.rhDetalhe;
+    var x=DESLIG.fila.filter(function(v){return String(v.id||v.uuid)===String(id);})[0];
+    var box=document.getElementById('rhSimulacaoFinanceira');if(!x||!box)return;
+    var raw=String(ev.target.value||'').trim();
+    if(raw.indexOf(',')>=0)raw=raw.replace(/\./g,'').replace(',','.');
+    box.innerHTML=DESLIG.rescisaoFinanceiraHTML(x,raw===''?NaN:Number(raw));
+  },true);
   document.addEventListener('click',function(ev){
     var t=ev.target;if(!t||!t.closest)return;var a;
     if((a=t.closest('[data-rh-abrir]'))){ev.stopImmediatePropagation();DESLIG.abrir(a.getAttribute('data-rh-abrir'));return;}
@@ -30513,7 +30558,7 @@ function modal(id){var x=registros.filter(function(v){return String(v.id)===Stri
  fechar();var el=document.createElement('div');el.id='gg-pa-modal';el.style.cssText='position:fixed;inset:0;z-index:999999;background:rgba(0,0,0,.78);display:flex;align-items:center;justify-content:center;padding:18px';
  el.innerHTML='<div role="dialog" aria-modal="true" style="background:#202431;color:#fff;border:1px solid #536079;border-radius:12px;padding:24px;max-width:660px;width:100%;max-height:90vh;overflow:auto">'+
  '<h3>Decisão do Gerente Geral — solicitação</h3><p><strong>'+esc(nome(x))+'</strong> · '+esc(ger(x))+'</p><p>Rescisão informada pelo RH: <strong>'+dinheiro((x.dados||{}).rh_rescisao)+'</strong></p>'+
- ((x.dados||{}).tipo==='desligamento'?'<p>Parecer do RH: '+esc((x.dados||{}).rh_parecer||'Não informado')+'</p>':'')+'<p style="font-size:12px;color:#e5ca87">Registro de decisão orçamentária. Não efetiva desligamento na folha ou na Intranet.</p>'+
+ ((x.dados||{}).tipo==='desligamento'?'<p>Parecer do RH: '+esc((x.dados||{}).rh_parecer||'Não informado')+'</p>':'')+ ((x.dados||{}).tipo==='desligamento'&&window.DESLIGAMENTO&&window.DESLIGAMENTO.rescisaoFinanceiraHTML?window.DESLIGAMENTO.rescisaoFinanceiraHTML(x):'')+'<p style="font-size:12px;color:#e5ca87">Registro de decisão orçamentária. Não efetiva desligamento na folha ou na Intranet.</p>'+
  '<label for="gg-pa-comentario">Comentário / justificativa</label><textarea id="gg-pa-comentario" rows="3" style="width:100%;margin:8px 0 14px;background:#141720;color:#fff;border:1px solid #59637a;border-radius:6px;padding:10px"></textarea>'+
  '<p id="gg-pa-erro" style="color:#ffb4b4"></p><div class="row" style="gap:8px;flex-wrap:wrap">'+
  '<button class="btn pri" data-gg-pa-acao="sol_aprovada" data-id="'+esc(id)+'">Aprovar proposta</button>'+
