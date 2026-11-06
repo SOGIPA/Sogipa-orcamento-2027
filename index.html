@@ -30390,7 +30390,7 @@ Object.assign(ESP_MODALIDADES,{"basquete":{"id":"basquete","nome":"Basquete","ge
    Nao altera matrizes, DRE, valores conciliados nem fluxo de RH. */
 (function(){
 'use strict';
-var registros=[], aguardandoRH=[], estado='aguardando', erro='', emCarga=false, ultimo=0;
+var registros=[], aguardandoRH=[], demaisStatus=[], estado='aguardando', erro='', emCarga=false, ultimo=0;
 var A=function(){return window.APP;};
 function esc(x){return A()&&A().esc?A().esc(String(x==null?'':x)):String(x==null?'':x).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 function dinheiro(x){var n=Number(x);return Number.isFinite(n)?n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}):'Não informado';}
@@ -30404,6 +30404,7 @@ function ler(force){
   var rows=Array.isArray(r.data)?r.data:[];
   /* RH pendente e uma fila informativa: nao integra as decisoes do GG. */
   aguardandoRH=rows.filter(function(x){return x.status==='sol_aguardando_rh';});
+  demaisStatus=rows.filter(function(x){return x.status!=='sol_aguardando_rh'&&['sol_enviada','sol_aprovada','sol_reprovada','sol_ajuste'].indexOf(x.status)<0;});
   registros=rows.filter(function(x){var d=x.dados||{};return ['sol_enviada','sol_aprovada','sol_reprovada','sol_ajuste'].indexOf(x.status)>=0&&(d.tipo!=='desligamento'||d.rh_validado===true);});
   estado='pronto';erro='';
  }).catch(function(e){estado='erro';erro=e.message||String(e);}).then(function(){emCarga=false;atualizarBloco();});
@@ -30447,11 +30448,34 @@ function blocoRH(){
  });
  return out+'</section>';
 }
+/* Painel executivo de acompanhamento: todas as etapas da fila autorizada pela RPC.
+   Nao concede acoes, nao altera estados nem dados persistidos. */
+function painelTodasGerencias(){
+ if(!autorizado())return '';
+ var todos=aguardandoRH.concat(registros,demaisStatus), grupos={};
+ var rotulos={sol_aguardando_rh:'Aguardando RH',sol_enviada:'Aguardando Gerente Geral',sol_aprovada:'Aprovada',sol_reprovada:'Reprovada',sol_ajuste:'Devolvida para ajustes'};
+ var out='<section id="gg-pa-acompanhamento" style="border:1px solid #465271;border-radius:12px;padding:18px;margin:14px 0 22px;background:#1e2230;color:#f5f6fb">'+
+ '<h3 style="margin:0 0 8px">Acompanhamento de solicitações por gerência</h3><p style="font-size:12px;color:#adb8d0">Todas as etapas disponíveis para consulta no sistema. Aprovações permanecem exclusivamente na aba Decisões / Aprovações.</p>';
+ if(estado==='aguardando'||estado==='carregando')return out+'<p>Consultando solicitações…</p></section>';
+ if(estado==='erro')return out+'<p style="color:#f9b3b3">Não foi possível consultar solicitações: '+esc(erro)+'</p></section>';
+ if(!todos.length)return out+'<p>Nenhuma solicitação disponível para acompanhamento.</p></section>';
+ todos.forEach(function(x){var k=String(x.gerencia_id==null?'sem-id':x.gerencia_id);if(!grupos[k])grupos[k]={nome:ger(x),itens:[]};grupos[k].itens.push(x);});
+ out+='<p><strong>'+todos.length+'</strong> solicitações registradas · <strong>'+aguardandoRH.length+'</strong> no RH · <strong>'+pendentes().length+'</strong> aguardando decisão</p>';
+ Object.keys(grupos).sort(function(a,b){return grupos[a].nome.localeCompare(grupos[b].nome,'pt-BR');}).forEach(function(k){var g=grupos[k],cont={};g.itens.forEach(function(x){cont[x.status]=(cont[x.status]||0)+1;});
+ out+='<details style="border-top:1px solid #38435a;padding:12px 0" open><summary style="cursor:pointer;font-weight:700">'+esc(g.nome)+' · '+g.itens.length+' solicitação(ões)</summary>'+
+ '<div style="font-size:12px;color:#b9c6df;margin:8px 0">'+Object.keys(cont).map(function(st){return esc(rotulos[st]||st)+': '+cont[st];}).join(' · ')+'</div>'+
+ '<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12px"><thead><tr><th style="text-align:left;padding:8px">Solicitação</th><th style="text-align:left;padding:8px">Tipo</th><th style="text-align:left;padding:8px">Etapa atual</th></tr></thead><tbody>';
+ g.itens.forEach(function(x){var d=x.dados||{};out+='<tr style="border-top:1px solid #38435a"><td style="padding:8px">'+esc(nome(x))+'</td><td style="padding:8px">'+esc(d.tipo||'Solicitação')+'</td><td style="padding:8px">'+esc(rotulos[x.status]||x.status||'Não informado')+'</td></tr>';});
+ out+='</tbody></table></div></details>';
+ });
+ return out+'</section>';
+}
+function atualizarAcompanhamento(){var el=document.getElementById('gg-pa-acompanhamento');if(el)el.outerHTML=painelTodasGerencias();}
 function atualizarResumoRH(){
  var alvo=document.getElementById('gg-pa-rh-resumo');
  if(alvo)alvo.outerHTML=blocoRH();
 }
-function atualizarBloco(){var el=document.getElementById('gg-pa-fila-real');if(el)el.outerHTML=bloco();atualizarAvisos();atualizarResumoRH();}
+function atualizarBloco(){var el=document.getElementById('gg-pa-fila-real');if(el)el.outerHTML=bloco();atualizarAvisos();atualizarResumoRH();atualizarAcompanhamento();}
 function atualizarAvisos(){
  if(!autorizado()||estado!=='pronto')return;
  var fila=pendentes(), raiz=document.getElementById('gg-pa-fila-real');if(!raiz)return;
@@ -30477,7 +30501,7 @@ envolver(window.GERAL_EXEC,'visaoExec');envolver(window.DECISOES,'render');
 /* Resumo de pendencias RH visivel somente na Gerencia Geral, sem conceder acesso a outras pastas. */
 if(window.GERAL_EXEC&&typeof window.GERAL_EXEC.porGerencia==='function'){
  var porGerenciaOriginal=window.GERAL_EXEC.porGerencia;
- window.GERAL_EXEC.porGerencia=function(){var html=porGerenciaOriginal.apply(this,arguments);if(!autorizado())return html;ler(false);return blocoRH()+html;};
+ window.GERAL_EXEC.porGerencia=function(){if(!autorizado())return porGerenciaOriginal.apply(this,arguments);ler(false);return painelTodasGerencias();};
 }
 /* A visao executiva ja contem a fila de decisao; incluir o resumo RH sem misturar os status. */
 if(window.GERAL_EXEC&&typeof window.GERAL_EXEC.visaoExec==='function'){
