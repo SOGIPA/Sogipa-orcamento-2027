@@ -29227,6 +29227,11 @@ Object.assign(ESP_MODALIDADES,{"basquete":{"id":"basquete","nome":"Basquete","ge
      Base — é assim que ponte e fallback nunca se somam na mesma
      parcela. Linha-mãe sem filhas cai na Base. */
   function valorLinha(id, camada, INT) {
+    /* Contingência 2027 aprovada: R$ 1.373.000,00 (DRE em R$ mil).
+       Somente valor ANUAL; não criar rateio mensal sem premissa. */
+    if (Number(id) === 108 && camada === "orcado2027") {
+      return { valor: 1373, fonte: "PEÇA", integra: {nome:"Contingências 2027", gerencia:"Controladoria", orcado2027:1373, curva2027:null, observacoes:["Valor anual informado; distribuição mensal pendente."]} };
+    }
     INT = INT || integracoes();
     var i = INT[id];
     if (i) {
@@ -29910,11 +29915,7 @@ Object.assign(ESP_MODALIDADES,{"basquete":{"id":"basquete","nome":"Basquete","ge
     var out = ""; /* Avisos tecnicos preservados no diagnostico, ocultos da interface gerencial. */
     out += stitle("DRE Gerencial 2027",
       "com o orçamento construído pelas áreas · valores em R$ mil · cenário " + esc(S.cenario));
-    /* Atualização manual segura: refaz a leitura das peças e do banco ao
-       reabrir a sessão. Não grava nem altera premissas. */
-    out += '<div class="row" style="justify-content:flex-end;margin:8px 0 12px">' +
-      '<button type="button" class="subtab" data-dre-atualizar="1" title="Recarregar dados autorizados do orçamento">&#8635; Atualizar dados da DRE</button>' +
-      '</div>';
+    /* O DRE não oferece botão manual de atualização. */
     out += cardsTopo(t);
     out += '<div class="gap"></div>';
     out += '<div class="row" style="margin-bottom:14px;flex-wrap:wrap">' +
@@ -29934,12 +29935,7 @@ Object.assign(ESP_MODALIDADES,{"basquete":{"id":"basquete","nome":"Basquete","ge
     if (alvo0) alvo0.innerHTML = render();
   }
 
-  document.addEventListener("click", function (ev) {
-    var b = ev.target && ev.target.closest ? ev.target.closest("[data-dre-atualizar]") : null;
-    if (!b) return;
-    /* Recarga completa evita números de cache da sessão; não altera dados. */
-    window.location.reload();
-  });
+
 
   window.DRE_VIEW = { render: render, tabelaAnual: tabelaAnual, tabelaMensal: tabelaMensal,
     cardsTopo: cardsTopo, graficos: graficos, painelIntegracao: painelIntegracao };
