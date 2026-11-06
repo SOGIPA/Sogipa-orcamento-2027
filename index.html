@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- SOGIPA ORCAMENTO 2027 | Revisao 2026-11-06 | DRE: recarga de dados disponivel; integracoes existentes preservadas -->
 <!-- SOGIPA 2027 · ETAPA 3 — CANDIDATA
      A base da DRE foi retirada deste arquivo: 5224 valores mensais de
      112 contas, mais o indexador. A DRE passa a ser lida de
@@ -29896,6 +29897,11 @@ Object.assign(ESP_MODALIDADES,{"basquete":{"id":"basquete","nome":"Basquete","ge
     var out = ""; /* Avisos tecnicos preservados no diagnostico, ocultos da interface gerencial. */
     out += stitle("DRE Gerencial 2027",
       "com o orçamento construído pelas áreas · valores em R$ mil · cenário " + esc(S.cenario));
+    /* Atualização manual segura: refaz a leitura das peças e do banco ao
+       reabrir a sessão. Não grava nem altera premissas. */
+    out += '<div class="row" style="justify-content:flex-end;margin:8px 0 12px">' +
+      '<button type="button" class="subtab" data-dre-atualizar="1" title="Recarregar dados autorizados do orçamento">&#8635; Atualizar dados da DRE</button>' +
+      '</div>';
     out += cardsTopo(t);
     out += '<div class="gap"></div>';
     out += '<div class="row" style="margin-bottom:14px;flex-wrap:wrap">' +
@@ -29914,6 +29920,13 @@ Object.assign(ESP_MODALIDADES,{"basquete":{"id":"basquete","nome":"Basquete","ge
     var alvo0 = document.getElementById("main");
     if (alvo0) alvo0.innerHTML = render();
   }
+
+  document.addEventListener("click", function (ev) {
+    var b = ev.target && ev.target.closest ? ev.target.closest("[data-dre-atualizar]") : null;
+    if (!b) return;
+    /* Recarga completa evita números de cache da sessão; não altera dados. */
+    window.location.reload();
+  });
 
   window.DRE_VIEW = { render: render, tabelaAnual: tabelaAnual, tabelaMensal: tabelaMensal,
     cardsTopo: cardsTopo, graficos: graficos, painelIntegracao: painelIntegracao };

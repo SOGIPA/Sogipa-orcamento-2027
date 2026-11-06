@@ -2288,6 +2288,9 @@ tr.hoverable:hover>td{background:rgba(61,123,255,.06);}
                do módulo. */
             if (window.SBDATA && typeof window.SBDATA.carregar === "function") {
               try { window.SBDATA.carregar(); } catch (e) { avisar("sbdata", e); }
+              if (typeof window.SBDATA.carregarDRE === "function") {
+                try { window.SBDATA.carregarDRE(); } catch (e) { avisar("sbdata:dre", e); }
+              }
             }
             return { ok: true };
           });
@@ -2835,7 +2838,7 @@ tr.hoverable:hover>td{background:rgba(61,123,255,.06);}
 <script>/* Base DRE e séries do modelo. A chave quadroSocial saiu daqui: a
    quantidade de associados passou a ter uma fonte só, ASSOC_QUADRO,
    e este bloco não guarda mais cópia dela. */
-var DB={"IDX":null,"linhas":{"5":{"id":5,"nome":"RECEITA BRUTA","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"6":{"id":6,"nome":"ASSOCIAÇÕES","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"7":{"id":7,"nome":"MENSALIDADES","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"8":{"id":8,"nome":"COTA DE INVESTIMENTO","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"9":{"id":9,"nome":"MENSALIDADE DEPENDENTE","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"10":{"id":10,"nome":"REINGRESSOS","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"11":{"id":11,"nome":"DESLIGAMENTO","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"12":{"id":12,"nome":"CARTEIRAS SOCIAIS","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"13":{"id":13,"nome":"SOCIO TEMPORARIO","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"14":{"id":14,"nome":"JOIA","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"15":{"id":15,"nome":"VENDA DE SERVIÇOS","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"16":{"id":16,"nome":"ESTACIONAMENTO","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"17":{"id":17,"nome":"ECONOMATOS","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"18":{"id":18,"nome":"LOCAÇÕES DE DEPENDENCIAS","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"19":{"id":19,"nome":"CHURRASQUEIRAS","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"20":{"id":20,"nome":"PATROCINIOS","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"21":{"id":21,"nome":"PROJETO CRIANÇA","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"22":{"id":22,"nome":"ESPORTE","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"23":{"id":23,"nome":"MODALIDADES ESPORTIVAS","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"24":{"id":24,"nome":"PATROCINIOS ESPORTIVOS","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"25":{"id":25,"nome":"LOCAÇÕES ESPORTIVAS","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"26":{"id":26,"nome":"DEPARTAMENTOS ESPORTIVOS","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null]},"27":{"id":27,"nome":"OUTRAS RECEITAS ESPORTES","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"28":{"id":28,"nome":"CARTÃO PRATA ESPORTES","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null]},"29":{"id":29,"nome":"INSCRIÇÕES ESPORTIVAS","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"30":{"id":30,"nome":"EVENTOS ESPORTIVOS","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"31":{"id":31,"nome":"REEMBOLSO COMPETIÇÕES","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"32":{"id":32,"nome":"EVENTOS","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"33":{"id":33,"nome":"VENDA DE CONVITES E MESAS","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"34":{"id":34,"nome":"ARRECADAÇÃO EM EVENTOS","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"35":{"id":35,"nome":"INSCRIÇÕES","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"36":{"id":36,"nome":"OUTRAS RECEITAS EM EVENTOS","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"37":{"id":37,"nome":"OUTRAS RECEITAS (Receitas Financeiras/Taxas e Atualização Fundação)","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"38":{"id":38,"nome":"DEDUÇÕES DA RECEITA - COFINS E BONUS","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"39":{"id":39,"nome":"(-) DEDUÇÕES DA RECEITA BRUTA","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"40":{"id":40,"nome":"(-) BONUS FIDELIDADE","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"41":{"id":41,"nome":"RECEITAS LÍQUIDAS","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"43":{"id":43,"nome":"DESPESAS OPERACIONAIS","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"44":{"id":44,"nome":"PESSOAL DE APOIO","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"45":{"id":45,"nome":"SALARIOS","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"46":{"id":46,"nome":"ENCARGOS","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"47":{"id":47,"nome":"RESCISÕES CONTRATUAIS","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"48":{"id":48,"nome":"OUTROS GASTOS COM PESSOAL (VT, Alimentação, Estagiarios e Assistencia Médica)","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"49":{"id":49,"nome":"DESPESAS DE FUNCIONAMENTO","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"50":{"id":50,"nome":"DESPESAS VARIAVEIS DE OPERAÇÃO","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"51":{"id":51,"nome":"SERVIÇOS DE TERCEIROS","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"52":{"id":52,"nome":"DESPESAS DE VIAGENS","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"53":{"id":53,"nome":"FEDERAÇÕES E ASSOCIAÇÕES","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"54":{"id":54,"nome":"MATERIAL DE HIGIENE","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"55":{"id":55,"nome":"MATERIAL DE CONSUMO","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"56":{"id":56,"nome":"MATERIAL TRATAMENTO PISCINA","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"57":{"id":57,"nome":"OUTRAS DESPESAS ( Recarga Extintor, Locação de bens, Material Acess. de Informatica e Ressarc.de terceiros)","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"58":{"id":58,"nome":"DESPESAS FIXAS DE OPERAÇÕES","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"59":{"id":59,"nome":"ÁGUA E ESGOTO","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"60":{"id":60,"nome":"ENERGIA ELETRICA","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"61":{"id":61,"nome":"GAS","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"62":{"id":62,"nome":"COMUNICAÇÃO","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"63":{"id":63,"nome":"COMBUSTIVEL PISCINAS","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"64":{"id":64,"nome":"COLETA DE LIXO","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"65":{"id":65,"nome":"MARKETING","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"66":{"id":66,"nome":"CONSERVAÇÃO/MANUTENÇÃO","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"67":{"id":67,"nome":"MANUTENÇÃO","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"68":{"id":68,"nome":"MELHORIAS CIVIS","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"69":{"id":69,"nome":"PROJETO CRIANÇA","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"70":{"id":70,"nome":"MATERIAIS RECREACAO","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"71":{"id":71,"nome":"ALIMENTACAO E BEBIDA","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"72":{"id":72,"nome":"SERVIÇOS DE TERCEIROS","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"73":{"id":73,"nome":"MATERIAL EXPEDIENTE","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"74":{"id":74,"nome":"MATERIAL HIG E LIMPEZA","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"75":{"id":75,"nome":"ANUIDADE E MENSALIDADES","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"76":{"id":76,"nome":"OUTRAS DESPESAS","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"77":{"id":77,"nome":"ESPORTE","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"78":{"id":78,"nome":"MATERIAIS ESPORTIVAS","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"79":{"id":79,"nome":"DIREITO DE IMAGEM - ESPORTE","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"80":{"id":80,"nome":"FEDERAÇÕES E ASSOCIAÇÕES ESPORTIVAS","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"81":{"id":81,"nome":"ALIMENTAÇÃO/BEBIDAS ESPORTES","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"82":{"id":82,"nome":"TRANSPORTES PASSAGENS ESPORTES","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"83":{"id":83,"nome":"HOSPEDAGENS ESPORTES","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"84":{"id":84,"nome":"ALUGUEL DE DEPENCIAS ESPORTES","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"85":{"id":85,"nome":"SERVIÇOS TERCEIROS PJ ESPORTES","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"86":{"id":86,"nome":"SERVIÇOS TERCEIROS PF ESPORTES","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"87":{"id":87,"nome":"UNIFORMES ESPORTIVOS","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"88":{"id":88,"nome":"MATERIAL DE EXPEDIENTE ESPORTES","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"89":{"id":89,"nome":"ATIVAÇÃO JOGOS ESPORTIVOS","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"90":{"id":90,"nome":"ASSISTENCIA MEDICA ESPORTES","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"91":{"id":91,"nome":"SERVIÇOS MENSAIS CONTR.ESPORTES","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"92":{"id":92,"nome":"OUTRAS DESPESAS ESPORTIVAS","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"93":{"id":93,"nome":"EVENTOS ESPORTIVOS","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"94":{"id":94,"nome":"COMPETIÇOES","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"95":{"id":95,"nome":"EVENTOS","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"96":{"id":96,"nome":"SERVIÇOS DE TERCEIROS","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"97":{"id":97,"nome":"PROPAGANDA E PUBLICIDADE","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"98":{"id":98,"nome":"LOCAÇÕES DE BENS","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"99":{"id":99,"nome":"GÊNEROS ALIMENTICIOS PARA EVENTOS","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"100":{"id":100,"nome":"DECORAÇÕES","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"101":{"id":101,"nome":"CONJUNTOS MUSICAIS","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"102":{"id":102,"nome":"BEBIDAS PARA EVENTOS","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"103":{"id":103,"nome":"OUTRAS DESPESAS PARA EVENTOS","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"104":{"id":104,"nome":"COMISSÕES S/ TÍTULOS E JÓIAS","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null]},"105":{"id":105,"nome":"DESPESAS TRIBUTÁRIAS","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"106":{"id":106,"nome":"DESPESAS FINANCEIRAS","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"107":{"id":107,"nome":"OUTRAS DESPESAS (Despesas Div., Endomkt e Atualização Fundação)","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"108":{"id":108,"nome":"CONTINGÊNCIAS","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"110":{"id":110,"nome":"RESULTADO OPERACIONAL","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"112":{"id":112,"nome":"JUROS DA DÍVIDA","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"113":{"id":113,"nome":"JUROS S/ EMPRÉSTIMO BANCÁRIOS","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"114":{"id":114,"nome":"JUROS S/ CONTRATOS DE MÚTUOS","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"116":{"id":116,"nome":"RESULTADO LÍQUIDO","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"119":{"id":119,"nome":"RECEBIDO - INDICES CONSTRUTIVOS","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"121":{"id":121,"nome":"RECEITA A RECEBER - INDICES CONSTRUTIVOS","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null],"hist":[null,null,null,null]},"123":{"id":123,"nome":"RESULTADO LÍQUIDO + RECEBIDO DE INDICES CONSTRUTIVOS","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null]},"126":{"id":126,"nome":"IMOBILIZADO + INDICES CONSTRUTIVOS UTILIZADOS","r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[null,null,null,null,null,null,null,null,null,null,null,null]}},"m27":{"6":[null,null,null,null,null,null,null,null,null,null,null,null],"15":[null,null,null,null,null,null,null,null,null,null,null,null],"21":[null,null,null,null,null,null,null,null,null,null,null,null],"22":[null,null,null,null,null,null,null,null,null,null,null,null],"32":[null,null,null,null,null,null,null,null,null,null,null,null],"37":[null,null,null,null,null,null,null,null,null,null,null,null],"38":[null,null,null,null,null,null,null,null,null,null,null,null],"44":[null,null,null,null,null,null,null,null,null,null,null,null],"49":[null,null,null,null,null,null,null,null,null,null,null,null],"66":[null,null,null,null,null,null,null,null,null,null,null,null],"69":[null,null,null,null,null,null,null,null,null,null,null,null],"77":[null,null,null,null,null,null,null,null,null,null,null,null],"95":[null,null,null,null,null,null,null,null,null,null,null,null],"105":[null,null,null,null,null,null,null,null,null,null,null,null],"106":[null,null,null,null,null,null,null,null,null,null,null,null],"107":[null,null,null,null,null,null,null,null,null,null,null,null],"108":[null,null,null,null,null,null,null,null,null,null,null,null],"112":[null,null,null,null,null,null,null,null,null,null,null,null],"119":[null,null,null,null,null,null,null,null,null,null,null,null],"126":[null,null,null,null,null,null,null,null,null,null,null,null]},"indexador":[["Pessoal",null,null,null,null,null,"Dissídio / INPC"],["Funcionamento",null,null,null,null,null,"70% IPCA + 30% IGP-M"],["Conservação / Manutenção",null,null,null,null,null,"IGP-M + incremento"],["Projeto Criança",null,null,null,null,null,"IPCA"],["Esportes",null,null,null,null,null,"IPCA + incremento"],["Eventos",null,null,null,null,null,"IPCA + incremento"],["Tributárias",null,null,null,null,null,"IPCA"],["Financeiras",null,null,null,null,null,"Sem indexação automática"],["Outras despesas",null,null,null,null,null,"IPCA"],["Contingências",null,null,null,null,null,"Tratamento por risco"]]};</script>
+var DB={"IDX":0.05265278888515793,"linhas":{"5":{"id":5,"nome":"RECEITA BRUTA","r25":[3299.113,3230.043,3623.575,3261.133,3590.4,3198.503,3052.557,3153.947,3249.657,3732.84,3560.251,3603.285],"o26":[3411.981,3228.7,3563.108,3395.583,3618.305,3387.482,3283.038,3404.241,3562.557,3954.532,3829.633,3882.693],"g26":[3366.519,3106.001,3534.925,3127.764,3379.113,3535.753,3214.114,0,0,0,0,0],"base26":[3366.519,3106.001,3534.925,3127.764,3379.113,3535.753,3214.114,3404.241,3562.557,3954.532,3829.633,3882.693],"hist":[28661.4,33313.2,36195.3,41044.6]},"6":{"id":6,"nome":"ASSOCIAÇÕES","r25":[1951.047,1927.964,1886.2,1750.799,1671.68,1564.718,1620.26,1580.777,1602.29,1749.76,1771.728,2077.1],"o26":[2045.582,1999.781,1991.248,1878.199,1772.591,1729.229,1841.718,1778.491,1851.063,1898.002,2013.666,2370.501],"g26":[2070.03,1907.2,2013.342,1740.973,1806.7,1736.7,1753.789,0,0,0,0,0],"base26":[2070.03,1907.2,2013.342,1740.973,1806.7,1736.7,1753.789,1778.491,1851.063,1898.002,2013.666,2370.501],"hist":[15590.7,17734.9,19103.8,21154.6]},"7":{"id":7,"nome":"MENSALIDADES","r25":[1525,1517.7,1517.3,1427.9,1362,1273.8,1326.6,1278,1289,1379.8,1366.2,1560.5],"o26":[1589.5,1576.3,1599,1528.2,1432.2,1404.6,1506.8,1436.6,1491.4,1509.5,1572,1849.1],"g26":[1614.2,1507.4,1624.012,1442.9,1471.2,1409,1418.749,null,null,null,null,null],"base26":[1614.2,1507.4,1624.012,1442.9,1471.2,1409,1418.749,1436.6,1491.4,1509.5,1572,1849.1],"hist":[12461.5,14139.1,15212.1,16823.8]},"8":{"id":8,"nome":"COTA DE INVESTIMENTO","r25":[29.2,31.7,29.9,29.7,28.8,27.931,29.7,26.573,28,28.1,25.9,29.1],"o26":[28.7,28.7,28.7,28.7,28.7,28.7,28.7,28.7,28.7,28.7,28.7,28.7],"g26":[30.7,28.6,30.2,25.5,26.1,28.2,27.6,null,null,null,null,null],"base26":[30.7,28.6,30.2,25.5,26.1,28.2,27.6,28.7,28.7,28.7,28.7,28.7],"hist":[289.9,318.5,356.2,344.6]},"9":{"id":9,"nome":"MENSALIDADE DEPENDENTE","r25":[277.3,289.5,276.9,262.9,253.5,246.4,236.1,243,239.1,267.7,255,287.4],"o26":[296,296.9,295.3,288,281.6,277.7,275.6,276.7,280.2,288.3,300,316],"g26":[312.3,295.4,299.7,245.7,277.1,268.7,270.3,null,null,null,null,null],"base26":[312.3,295.4,299.7,245.7,277.1,268.7,270.3,276.7,280.2,288.3,300,316],"hist":[2105.0,2565.3,2780.4,3134.8]},"10":{"id":10,"nome":"REINGRESSOS","r25":[51.8,24.8,15.8,14.819,9.3,8.787,13.5,16.7,27.3,39.3,76,112.8],"o26":[56.928,27.255,17.364,16.286,10.221,9.657,14.837,18.353,30.003,33.191,73.524,106.967],"g26":[46.4,23.6,28.1,11.9,17.9,11.1,14.7,null,null,null,null,null],"base26":[46.4,23.6,28.1,11.9,17.9,11.1,14.7,18.353,30.003,33.191,73.524,106.967],"hist":[325.8,306.3,366.9,410.9]},"11":{"id":11,"nome":"DESLIGAMENTO","r25":[0.347,0.964,1.1,0.41,2.6,0,0.69,0.964,0.69,0,1.6,2.6],"o26":[0.381,1.059,1.209,0.451,2.857,0,0.758,1.059,0.758,0,1.758,2.857],"g26":[0,3,0.33,-0.952,1.1,null,2,null,null,null,null,null],"base26":[0,3,0.33,-0.952,1.1,0,2,1.059,0.758,0,1.758,2.857],"hist":[26.1,33.9,19.6,12.0]},"12":{"id":12,"nome":"CARTEIRAS SOCIAIS","r25":[1.1,1.2,1.8,1.3,1.2,1.2,0.87,1.7,1.5,1.6,0.728,1.1],"o26":[1.209,1.319,1.978,1.429,1.319,1.319,0.956,1.868,1.649,1.758,0.8,0],"g26":[0.83,2.1,7.3,1.8,1.1,1.7,0.74,null,null,null,null,null],"base26":[0.83,2.1,7.3,1.8,1.1,1.7,0.74,1.868,1.649,1.758,0.8,0],"hist":[19.5,18.7,13.2,15.3]},"13":{"id":13,"nome":"SOCIO TEMPORARIO","r25":[23.5,22.2,18.6,0.27,0.18,0,0,0.12,0,0.96,7.7,20.2],"o26":[25.826,24.398,20.441,0.297,0.198,0,0,0.132,0,1.055,4.462,18.2],"g26":[16.8,13.7,7.4,0.825,0,3.3,null,null,null,null,null,null],"base26":[16.8,13.7,7.4,0.825,0,3.3,0,0.132,0,1.055,4.462,18.2],"hist":[66.9,77,77,94]},"14":{"id":14,"nome":"JOIA","r25":[42.8,39.9,24.8,13.5,14.1,6.6,12.8,13.72,16.7,32.3,38.6,63.4],"o26":[47.037,43.85,27.255,14.837,15.496,7.253,14.067,15.078,18.353,35.498,32.421,48.677],"g26":[48.8,33.4,16.3,13.3,12.2,14.7,19.7,null,null,null,null,null],"base26":[48.8,33.4,16.3,13.3,12.2,14.7,19.7,15.078,18.353,35.498,32.421,48.677],"hist":[296.1,276.2,278.4,319.2]},"15":{"id":15,"nome":"VENDA DE SERVIÇOS","r25":[280.5,309.2,332.1,235.7,289.2,249.122,213.1,275,238.4,298.1,480.6,541.6],"o26":[251.244,317.324,330.667,290.765,289.857,250.384,229.517,317.906,255.139,295.837,469.659,531.025],"g26":[277.8,327.8,300,264.2,420.7,190.1,202.9,0,0,0,0,0],"base26":[277.8,327.8,300,264.2,420.7,190.1,202.9,317.906,255.139,295.837,469.659,531.025],"hist":[2622.9,3414.1,3472.1,3743.6]},"16":{"id":16,"nome":"ESTACIONAMENTO","r25":[82.8,96.1,103.6,98.7,95.3,104.4,90.3,109.5,87.5,127.9,122.1,164.8],"o26":[67,102.4,110.4,105.3,101.6,111.3,96.3,116.4,97.6,136.4,130.2,174.6],"g26":[80.8,81.6,108.9,80.2,123.2,104.1,94.1,null,null,null,null,null],"base26":[80.8,81.6,108.9,80.2,123.2,104.1,94.1,116.4,97.6,136.4,130.2,174.6],"hist":[902.0,1171.4,1180.9,1282.0]},"17":{"id":17,"nome":"ECONOMATOS","r25":[73.3,91,74.4,82.1,70.1,64.422,70.3,83.6,67.9,82.4,116.4,87.8],"o26":[80.557,100.009,81.766,90.228,77.04,70.8,77.26,91.876,74.622,71.558,107.924,66.492],"g26":[88.1,112.9,53.1,72.4,88.1,61.7,63.5,null,null,null,null,null],"base26":[88.1,112.9,53.1,72.4,88.1,61.7,63.5,91.876,74.622,71.558,107.924,66.492],"hist":[637.5,737.5,822.6,963.7]},"18":{"id":18,"nome":"LOCAÇÕES DE DEPENDENCIAS","r25":[72.6,85,99,63,83,45.3,32.9,80.1,52.9,50.3,204.4,246.8],"o26":[79.787,93.415,108.801,69.237,91.217,49.785,36.157,88.03,58.137,55.28,198.636,251.233],"g26":[47.3,67,56.3,41,148.5,8,29.2,null,null,null,null,null],"base26":[47.3,67,56.3,41,148.5,8,29.2,88.03,58.137,55.28,198.636,251.233],"hist":[854.9,1268.3,1103.4,1115.3]},"19":{"id":19,"nome":"CHURRASQUEIRAS","r25":[22.4,19.7,27.7,24.4,18.7,17.2,18.5,20.2,23.1,30.5,30.7,36.2],"o26":[23.9,21.5,29.7,26,20,18.5,19.8,21.6,24.78,32.6,32.9,38.7],"g26":[21.6,26.3,41.7,28.6,22.9,16.3,16.1,null,null,null,null,null],"base26":[21.6,26.3,41.7,28.6,22.9,16.3,16.1,21.6,24.78,32.6,32.9,38.7],"hist":[215.6,236.9,237.5,290.3]},"20":{"id":20,"nome":"PATROCINIOS","r25":[29.4,17.4,27.4,-32.5,22.1,17.8,1.1,-18.4,7,7,7,7],"o26":[0,0,0,0,0,0,0,0,0,0,0,0],"g26":[40,40,40,42,38,0,0,null,null,null,null,null],"base26":[40,40,40,42,38,0,0,0,0,0,0,0],"hist":[12.9,0,127.7,92.3]},"21":{"id":21,"nome":"PROJETO CRIANÇA","r25":[312.8,192,209.8,210.7,208.3,212.2,215.9,225,216.6,231.3,209,199.6],"o26":[318.767,211.008,230.57,231.559,228.922,233.208,237.274,247.275,238.043,254.199,229.691,219.36],"g26":[223.3,224.8,220.9,221.4,211.6,217.2,222,null,null,null,null,null],"base26":[223.3,224.8,220.9,221.4,211.6,217.2,222,247.275,238.043,254.199,229.691,219.36],"hist":[2890.8,2600.0,2510.2,2643.2]},"22":{"id":22,"nome":"ESPORTE","r25":[659.541,538.759,752.775,817.616,888.92,898.213,834.673,886.43,912.807,940.28,874.923,656.485],"o26":[691.736,471.517,724.096,804.356,841.938,873.26,813.211,855.341,912.075,942.268,870.44,632.674],"g26":[622.468,470.598,747.487,729.081,788.213,854.504,954.008,0,0,0,0,0],"base26":[622.468,470.598,747.487,729.081,788.213,854.504,954.008,855.341,912.075,942.268,870.44,632.674],"hist":[6072.2,7918.4,8737.4,9664.4]},"23":{"id":23,"nome":"MODALIDADES ESPORTIVAS","r25":[277.9,415.5,630.3,673.8,690.8,677.6,671.4,677.8,678.4,732.6,647.7,503.8],"o26":[272.312,423.534,659.6,707.406,726.089,711.582,704.769,711.802,712.462,772.027,678.722,519.576],"g26":[282.5,401.9,664.3,659,685.5,702.6,704.7,null,null,null,null,null],"base26":[282.5,401.9,664.3,659,685.5,702.6,704.7,711.802,712.462,772.027,678.722,519.576],"hist":[4446.1,5927.1,6486.3,7277.6]},"24":{"id":24,"nome":"PATROCINIOS ESPORTIVOS","r25":[46.5,70.5,46.5,46.5,64.5,73.5,55.5,89.4,75,80.5,98,74.5],"o26":[51.103,0,0,0,0,0,0,20,24.425,30.469,49.702,23.876],"g26":[null,3,18,null,5,null,6,null,null,null,null,null],"base26":[51.103,3,18,0,5,0,6,20,24.425,30.469,49.702,23.876],"hist":[471.9,653.1,814.9,820.9]},"25":{"id":25,"nome":"LOCAÇÕES ESPORTIVAS","r25":[41.5,37.7,36.7,48.3,83.8,51.7,45.5,42.3,57.8,70.9,65.1,61.1],"o26":[45.608,31.432,30.333,43.082,66.096,56.818,50.005,46.488,63.522,77.919,71.545,67.149],"g26":[41.4,50.9,30.4,56.5,50.5,75.8,38.2,null,null,null,null,null],"base26":[41.4,50.9,30.4,56.5,50.5,75.8,38.2,46.488,63.522,77.919,71.545,67.149],"hist":[464.0,560.0,635.1,642.4]},"26":{"id":26,"nome":"DEPARTAMENTOS ESPORTIVOS","r25":[0.43,0.959,0.65,0.815,2.4,0.79,0.85,5,1.184,0.86,1,0.78],"o26":[0.473,1.054,0.714,0.896,2.638,0.868,0.934,4,1.301,0.945,1.099,0.857],"g26":[0.11,0.03,0.47,2.1,1.9,0.77,0.007,null,null,null,null,null],"base26":[0.11,0.03,0.47,2.1,1.9,0.77,0.007,4,1.301,0.945,1.099,0.857]},"27":{"id":27,"nome":"OUTRAS RECEITAS ESPORTES","r25":[0.588,1.6,14.402,1.3,1.5,1.3,1.3,1.2,4.3,1.3,1.2,1.2],"o26":[0.646,1.758,12.828,1.429,1.649,1.429,1.429,1.319,4.726,1.429,1.319,1.319],"g26":[0.035,0.045,0.194,0.002,0.013,2.243,0.015,null,null,null,null,null],"base26":[0.035,0.045,0.194,0.002,0.013,2.243,0.015,1.319,4.726,1.429,1.319,1.319],"hist":[2.2,21.1,17.8,31.2]},"28":{"id":28,"nome":"CARTÃO PRATA ESPORTES","r25":[0.223,0.223,0.223,0.2,0.22,0.223,0.223,0.23,0.223,0.22,0.223,0.223],"o26":[0.245,0.245,0.245,0.22,0.242,0.245,0.245,0.253,0.245,0.242,0.245,0.245],"g26":[0.223,0.223,0.223,null,0,null,null,null,null,null,null,null],"base26":[0.223,0.223,0.223,0.22,0,0.245,0.245,0.253,0.245,0.242,0.245,0.245]},"29":{"id":29,"nome":"INSCRIÇÕES ESPORTIVAS","r25":[257.2,-0.282,18.9,0,0,10.6,5,6.1,20.5,20.9,2.4,0.182],"o26":[282.663,-0.31,15.771,0,0,11.649,5.495,6.704,22.529,22.969,2.638,0.2],"g26":[270.2,null,3.6,0.18,null,null,null,null,null,null,null,null],"base26":[270.2,-0.31,3.6,0.18,0,11.649,5.495,6.704,22.529,22.969,2.638,0.2],"hist":[326.7,338.2,282.7,341.5]},"30":{"id":30,"nome":"EVENTOS ESPORTIVOS","r25":[25.7,7.243,2.1,39.1,37.4,70.4,29.1,20.2,18.2,12.9,42,5.8],"o26":[28.244,7.96,1.308,42.971,41.103,77.37,31.981,22.2,20.002,14.177,46.158,6.374],"g26":[21.4,7.8,26.6,7.8,44.1,45.591,162.886,null,null,null,null,null],"base26":[21.4,7.8,26.6,7.8,44.1,45.591,162.886,22.2,20.002,14.177,46.158,6.374],"hist":[284.4,219,278.8,310.1]},"31":{"id":31,"nome":"REEMBOLSO COMPETIÇÕES","r25":[9.5,5.316,3,7.601,8.3,12.1,25.8,44.2,57.2,20.1,17.3,11.9],"o26":[10.441,5.842,3.297,8.353,4.122,13.298,18.354,42.576,62.863,22.09,19.013,13.078],"g26":[6.6,6.7,3.7,3.5,1.2,27.5,42.2,null,null,null,null,null],"base26":[6.6,6.7,3.7,3.5,1.2,27.5,42.2,42.576,62.863,22.09,19.013,13.078],"hist":[0,0,177.9,222.3]},"32":{"id":32,"nome":"EVENTOS","r25":[0.825,105.42,99.9,76.7,283.2,175.29,38.824,58.94,90.56,311.2,36.1,27.9],"o26":[0.907,115.857,109.79,84.293,311.237,192.644,18.668,64.775,98.525,342.009,39.674,31.761],"g26":[3.085,35.323,68,18.809,6,348.549,10.53,0,0,0,0,0],"base26":[3.085,35.323,68,18.809,6,348.549,10.53,64.775,98.525,342.009,39.674,31.761],"hist":[592.8,723.0,1091.0,1305.9]},"33":{"id":33,"nome":"VENDA DE CONVITES E MESAS","r25":[0,7.92,4.7,8.5,272,38.5,5.9,34.2,61.8,61.4,14.6,10.2],"o26":[0,8.704,5.165,9.341,298.928,42.312,6.484,37.586,66.918,67.479,16.045,11.21],"g26":[0.07,7.5,32.7,17.2,6,250.5,10.53,null,null,null,null,null],"base26":[0.07,7.5,32.7,17.2,6,250.5,10.53,37.586,66.918,67.479,16.045,11.21],"hist":[291.2,320.8,459.4,518.7]},"34":{"id":34,"nome":"ARRECADAÇÃO EM EVENTOS","r25":[0,85.8,67.7,0.1,0,112.5,-7.091,0.6,0.26,216.5,1.6,0],"o26":[0,94.294,74.402,0.11,0,123.638,-7.793,0.659,0.286,237.934,1.758,0],"g26":[null,null,null,null,null,97.5,null,null,null,null,null,null],"base26":[0,94.294,74.402,0.11,0,97.5,-7.793,0.659,0.286,237.934,1.758,0],"hist":[232.9,233.9,298.4,478.0]},"35":{"id":35,"nome":"INSCRIÇÕES","r25":[0,0.1,20.2,3.1,1.2,0,0,0,0.7,7.7,15.8,1.3],"o26":[0,0.11,22.2,3.407,1.319,0,0,0,0.769,8.462,17.364,1.429],"g26":[null,7.6,29.2,1.1,null,null,null,null,null,null,null,null],"base26":[0,7.6,29.2,1.1,1.319,0,0,0,0.769,8.462,17.364,1.429],"hist":[44.5,48.2,60.1,50.1]},"36":{"id":36,"nome":"OUTRAS RECEITAS EM EVENTOS","r25":[0.825,11.6,7.3,65,10,24.29,40.015,24.14,27.8,25.6,4.1,17.4],"o26":[0.907,12.748,8.023,71.435,10.99,26.695,19.976,26.53,30.552,28.134,4.506,19.123],"g26":[3.015,20.223,6.1,0.509,null,0.549,null,null,null,null,null,null],"base26":[3.015,20.223,6.1,0.509,10.99,0.549,19.976,26.53,30.552,28.134,4.506,19.123],"hist":[24.2,120.2,273.2,259.1]},"37":{"id":37,"nome":"OUTRAS RECEITAS (Receitas Financeiras/Taxas e Atualização Fundação)","r25":[94.4,156.7,342.8,169.618,249.1,98.96,129.8,127.8,189,202.2,187.9,88.6],"o26":[103.746,113.213,176.737,106.41,173.761,108.757,142.65,140.452,207.711,222.218,206.502,97.371],"g26":[169.836,140.28,186.196,153.3,145.9,188.7,70.887,null,null,null,null,null],"base26":[169.836,140.28,186.196,153.3,145.9,188.7,70.887,140.452,207.711,222.218,206.502,97.371],"hist":[892,922.6,1280.7,2532.9]},"38":{"id":38,"nome":"DEDUÇÕES DA RECEITA - COFINS E BONUS","r25":[-48.696,-53.5,-65.4,-56.9,-66.37,-60.1,-53.5,-62.559,-58.72,-72,-78.6,-72.246],"o26":[-52.642,-57.368,-64.457,-57.533,-62.864,-61.05,-57.697,-66.302,-63.522,-66.82,-65.94,-73.579],"g26":[-41.425,-52,-56.9,-50.037,-61.4,-50.305,-51.056,0,0,0,0,0],"base26":[-41.425,-52,-56.9,-50.037,-61.4,-50.305,-51.056,-66.302,-63.522,-66.82,-65.94,-73.579],"hist":[-221.7,-657.8,-717.6,-737]},"39":{"id":39,"nome":"(-) DEDUÇÕES DA RECEITA BRUTA","r25":[-47.9,-52.2,-63.2,-56.9,-66.3,-60.1,-52.5,-60.329,-57.8,-69.9,-60,-71.5],"o26":[-52.642,-57.368,-64.457,-57.533,-62.864,-61.05,-57.697,-66.302,-63.522,-66.82,-65.94,-73.579],"g26":[-41.6,-50.4,-56.9,-49.875,-61.2,-50.305,-51.056,null,null,null,null,null],"base26":[-41.6,-50.4,-56.9,-49.875,-61.2,-50.305,-51.056,-66.302,-63.522,-66.82,-65.94,-73.579],"hist":[-203.3,-644.2,-700.6,-737.8]},"40":{"id":40,"nome":"(-) BONUS FIDELIDADE","r25":[-0.796,-1.3,-2.2,0,-0.07,0,-1,-2.23,-0.92,-2.1,-0.581,-0.746],"o26":[0,0,0,0,0,0,0,0,0,0,0,0],"g26":[0.175,-1.6,null,-0.162,-0.2,null,null,null,null,null,null,null],"base26":[0.175,-1.6,0,-0.162,-0.2,0,0,0,0,0,0,0],"hist":[-18.4,-13.6,-16.9,-11.9]},"41":{"id":41,"nome":"RECEITAS LÍQUIDAS","r25":[3250.417,3176.543,3558.175,3204.233,3524.03,3138.403,2999.057,3091.388,3190.937,3660.84,3481.651,3531.039],"o26":[3359.339,3171.332,3498.651,3338.05,3555.441,3326.432,3225.34,3337.939,3499.035,3887.712,3763.693,3809.115],"g26":[3325.094,3054.001,3478.025,3077.727,3317.713,3485.448,3163.057,0,0,0,0,0],"base26":[3325.094,3054.001,3478.025,3077.727,3317.713,3485.448,3163.057,3337.939,3499.035,3887.712,3763.693,3809.115],"hist":[28438.4,32655.9,35477.4,40307.3]},"43":{"id":43,"nome":"DESPESAS OPERACIONAIS","r25":[2339.56,2579.447,2666.125,2855.677,3007.487,2757.203,2783.378,3162.585,3032.726,3166.358,2917.049,4725.222],"o26":[2747.206,3155.278,3213.739,3385.751,3404.738,3273.988,3308.485,3751.39,3524.59,3513.196,3216.078,3883.669],"g26":[2947.207,2726.798,3398.648,2984.551,3523.568,3482.82,3505.922,0,0,0,0,0],"base26":[2947.207,2726.798,3398.648,2984.551,3523.568,3482.82,3505.922,3751.39,3524.59,3513.196,3216.078,3883.669],"hist":[24581.0,28533.5,31518.7,36257.8]},"44":{"id":44,"nome":"PESSOAL DE APOIO","r25":[1135,1194.8,1220.4,1405.1,1479.8,1365.1,1341.6,1445.7,1442.7,1429.1,1434.3,1323],"o26":[1447.365,1613.085,1591.22,1794.205,1865.3,1775.245,1774.418,1888.824,1885.527,1720.581,1727.296,1586.725],"g26":[1439.1,1407.0,1492.7,1651.8,1814.4,1741.5,1760.3,0,0,0,0,0],"base26":[1439.1,1407.0,1492.7,1651.8,1814.4,1741.5,1760.3,1888.824,1885.527,1720.581,1727.296,1586.725],"hist":[13041.5,14459.5,15500.6,16219.6]},"45":{"id":45,"nome":"SALARIOS","r25":[503.7,533.9,589.1,675.8,677.7,684.2,666.7,701.6,727,750.5,722.2,588.3],"o26":[603.566,736.756,747.421,842.704,844.792,876.936,882.703,921.058,948.973,874.799,843.698,696.542],"g26":[625.5,682,740.3,859.1,911.8,898.1,889.1,null,null,null,null,null],"base26":[625.5,682,740.3,859.1,911.8,898.1,889.1,921.058,948.973,874.799,843.698,696.542],"hist":[6518.9,7088.3,7434.2,7820.7]},"46":{"id":46,"nome":"ENCARGOS","r25":[469.5,469.7,434.2,546.2,570.5,495.7,477.7,534.8,520.8,491.4,525,579.6],"o26":[615.981,616.2,577.186,700.274,726.98,644.774,624.992,687.745,672.359,640.049,676.975,666.98],"g26":[609.8,540.1,560.2,579.3,673.8,630.5,654.5,null,null,null,null,null],"base26":[609.8,540.1,560.2,579.3,673.8,630.5,654.5,687.745,672.359,640.049,676.975,666.98],"hist":[4865.6,5379.1,5896.0,6115.1]},"47":{"id":47,"nome":"RESCISÕES CONTRATUAIS","r25":[3.6,16.9,23.4,17.9,52.4,9.1,16.1,27.7,11.4,2.1,8.1,3],"o26":[3.956,18.573,25.717,19.672,46.588,10.001,17.694,30.442,12.529,2.308,8.902,3.297],"g26":[25,17.8,35.6,8.2,16.1,6.5,12.8,null,null,null,null,null],"base26":[25,17.8,35.6,8.2,16.1,6.5,12.8,30.442,12.529,2.308,8.902,3.297],"hist":[96.3,86.9,226.7,191.7]},"48":{"id":48,"nome":"OUTROS GASTOS COM PESSOAL (VT, Alimentação, Estagiarios e Assistencia Médica)","r25":[158.2,174.3,173.7,165.2,179.2,176.1,181.1,181.6,183.5,185.1,179,154.6],"o26":[223.862,241.556,240.896,231.555,246.941,243.534,249.029,249.578,251.666,203.425,197.721,219.905],"g26":[178.8,167.1,156.6,205.2,212.7,206.4,203.9,null,null,null,null,null],"base26":[178.8,167.1,156.6,205.2,212.7,206.4,203.9,249.578,251.666,203.425,197.721,219.905],"hist":[0,1905.2,1943.6,2092.1]},"49":{"id":49,"nome":"DESPESAS DE FUNCIONAMENTO","r25":[852.082,836,857.61,950.3,849.2,699.373,817.386,819.27,809.7,829.5,870.967,1037.1],"o26":[886.205,978.764,981.513,1035.38,993.271,808.611,948.307,953.378,929.86,928.62,960.62,1155.773],"g26":[912.475,819.9,1141.4,837.6,939.5,910.5,915.2,0,0,0,0,0],"base26":[912.475,819.9,1141.4,837.6,939.5,910.5,915.2,953.378,929.86,928.62,960.62,1155.773],"hist":[7154.9,8318.8,8838.2,10231.5]},"50":{"id":50,"nome":"DESPESAS VARIAVEIS DE OPERAÇÃO","r25":[595.1,591.8,599.21,639.3,619.9,533.193,575.686,570,604.2,647.1,588.414,813.6],"o26":[614.015,700.388,687.532,752.591,731.27,625.979,682.679,676.43,704.016,728.163,706.667,945.047],"g26":[614.425,582.2,753.3,571.4,628.6,624.2,610,0,0,0,0,0],"base26":[614.425,582.2,753.3,571.4,628.6,624.2,610,676.43,704.016,728.163,706.667,945.047],"hist":[4806.2,5670.4,6390.1,7379.9]},"51":{"id":51,"nome":"SERVIÇOS DE TERCEIROS","r25":[437.2,434.7,426.9,452.3,434,392.7,407.6,444,463.1,477.1,458.6,612.1],"o26":[440.483,517.735,509.163,537.078,516.966,471.577,487.952,527.956,548.947,564.333,544.001,733.698],"g26":[446.3,435.2,517.4,407.3,461.8,447.2,477.6,null,null,null,null,null],"base26":[446.3,435.2,517.4,407.3,461.8,447.2,477.6,527.956,548.947,564.333,544.001,733.698],"hist":[3365.1,4146.6,4770.2,5443.7]},"52":{"id":52,"nome":"DESPESAS DE VIAGENS","r25":[2.5,0,0.61,6.9,9,9,3.9,6.2,6.7,3.7,0.314,20.5],"o26":[2.748,0,0.67,7.583,9.891,9.891,4.286,6.814,7.363,4.066,0.345,16.529],"g26":[0.028,15,null,14.5,1.8,11,0,null,null,null,null,null],"base26":[0.028,15,0.67,14.5,1.8,11,0,6.814,7.363,4.066,0.345,16.529],"hist":[25.4,70.7,55.0,69.3]},"53":{"id":53,"nome":"FEDERAÇÕES E ASSOCIAÇÕES","r25":[4.4,5.2,4.1,34.6,3.7,3.712,3.986,8.4,3.2,4.2,8.2,5.8],"o26":[4.836,5.715,4.506,38.025,4.066,4.079,4.381,9.232,3.517,4.616,9.012,3.374],"g26":[6,5.8,6.5,9,3.6,11.2,4.1,null,null,null,null,null],"base26":[6,5.8,6.5,9,3.6,11.2,4.1,9.232,3.517,4.616,9.012,3.374],"hist":[85.8,102.1,131.0,89.5]},"54":{"id":54,"nome":"MATERIAL DE HIGIENE","r25":[48.1,53.8,43.7,50.4,51,54.7,55.9,39.4,43.4,61.8,50.4,25.1],"o26":[52.862,59.126,48.026,55.39,56.049,60.115,61.434,43.301,47.697,42.918,55.39,27.585],"g26":[39.2,52.1,41.9,33.6,55.4,47.9,41.2,null,null,null,null,null],"base26":[39.2,52.1,41.9,33.6,55.4,47.9,41.2,43.301,47.697,42.918,55.39,27.585],"hist":[455.1,474.3,515.3,577.7]},"55":{"id":55,"nome":"MATERIAL DE CONSUMO","r25":[17.1,18.7,40.3,26.8,60,16.3,40.3,18.9,17.8,19.9,18,25.3],"o26":[18.793,20.551,33.29,29.453,65.94,17.914,44.29,20.771,19.562,21.87,19.782,27.805],"g26":[22.1,8.7,26.6,18,15.244,13,10.8,null,null,null,null,null],"base26":[22.1,8.7,26.6,18,15.244,13,10.8,20.771,19.562,21.87,19.782,27.805],"hist":[117.1,151.6,171.9,319.4]},"56":{"id":56,"nome":"MATERIAL TRATAMENTO PISCINA","r25":[20.7,33.7,19.4,14.2,18,0.798,14.2,9,13.8,40.7,18.7,22.1],"o26":[22.749,37.036,21.321,15.606,19.782,0.877,15.606,9.891,15.166,36.729,20.551,24.288],"g26":[27,25.8,19.7,24.9,18.5,9.6,9.3,null,null,null,null,null],"base26":[27,25.8,19.7,24.9,18.5,9.6,9.3,9.891,15.166,36.729,20.551,24.288],"hist":[0,204.1,225.0,225.3]},"57":{"id":57,"nome":"OUTRAS DESPESAS ( Recarga Extintor, Locação de bens, Material Acess. de Informatica e Ressarc.de terceiros)","r25":[65.1,45.7,64.2,54.1,44.2,55.983,49.8,44.1,56.2,39.7,34.2,101.7],"o26":[71.545,60.224,70.556,69.456,58.576,61.525,64.73,58.466,61.764,53.63,57.586,111.768],"g26":[73.797,39.6,141.2,64.1,72.256,84.3,67.0,null,null,null,null,null],"base26":[73.797,39.6,141.2,64.1,72.256,84.3,67.0,58.466,61.764,53.63,57.586,111.768],"hist":[0,521.0,521.5,655.0]},"58":{"id":58,"nome":"DESPESAS FIXAS DE OPERAÇÕES","r25":[250.282,242.3,255.9,308.6,226.5,158.18,238.3,248.3,203.9,179.4,282.353,220],"o26":[264.827,266.288,281.234,270.151,248.924,173.84,261.892,275.882,224.086,197.161,246.733,206.879],"g26":[294.85,236.6,377.2,255.6,293.6,276.7,301.8,0,0,0,0,0],"base26":[294.85,236.6,377.2,255.6,293.6,276.7,301.8,275.882,224.086,197.161,246.733,206.879],"hist":[2320.4,2635.4,2404.1,2814.6]},"59":{"id":59,"nome":"ÁGUA E ESGOTO","r25":[74.5,117.5,102.7,141.2,88.2,0.08,80.5,69.8,64.2,68.7,127,92.8],"o26":[81.876,129.132,132.867,116.179,96.932,0.088,88.469,76.71,70.556,75.501,100,91.987],"g26":[113.6,100.9,209.7,95.4,81.8,87.2,102.3,null,null,null,null,null],"base26":[113.6,100.9,209.7,95.4,81.8,87.2,102.3,76.71,70.556,75.501,100,91.987],"hist":[758.8,969.8,632.5,1027.2]},"60":{"id":60,"nome":"ENERGIA ELETRICA","r25":[136.7,105.1,118.2,122.8,99.6,101,88.7,90.1,95.9,89.2,105.2,108.7],"o26":[140,115.505,109.902,104.957,109.46,110.999,97.481,109.02,105.394,98.031,99.615,99.461],"g26":[140.05,119,128.1,138.1,147.2,69.5,96.6,null,null,null,null,null],"base26":[140.05,119,128.1,138.1,147.2,69.5,96.6,109.02,105.394,98.031,99.615,99.461],"hist":[1275.3,1222.3,1227.3,1261.2]},"61":{"id":61,"nome":"GAS","r25":[0.182,3.8,-0.5,6.3,-1,3.8,4.1,-1.6,4.4,3.5,4,-2],"o26":[0.2,4.176,-0.549,6.924,-1.099,4.176,4.506,-1.758,4.836,3.846,4.396,-2.198],"g26":[4.9,-3.1,2,3.2,6.4,6.9,7.4,null,null,null,null,null],"base26":[4.9,-3.1,2,3.2,6.4,6.9,7.4,-1.758,4.836,3.846,4.396,-2.198],"hist":[80.6,55.7,38.4,25.0]},"62":{"id":62,"nome":"COMUNICAÇÃO","r25":[7.4,7.7,8,6.8,8.9,7.7,7.5,8.4,7.3,8.4,7.653,10.3],"o26":[8.133,8.462,8.792,7.473,9.781,8.462,8.242,9.232,8.023,9.232,8.411,5.32],"g26":[9.3,9.4,10.6,9.4,10.8,9.3,9.4,null,null,null,null,null],"base26":[9.3,9.4,10.6,9.4,10.8,9.3,9.4,9.232,8.023,9.232,8.411,5.32],"hist":[126.7,115.8,121.8,96.1]},"63":{"id":63,"nome":"COMBUSTIVEL PISCINAS","r25":[16.9,0,16.9,19.5,16.9,33.8,48.3,72.4,21.8,0,5.9,0],"o26":[18.573,0,18.573,21.43,18.573,37.146,53.082,72.568,23.958,0,6.484,0],"g26":[16.4,null,16.4,null,38.7,95.1,79.9,null,null,null,null,null],"base26":[16.4,0,16.4,21.43,38.7,95.1,79.9,72.568,23.958,0,6.484,0],"hist":[0,0,0,252.4]},"64":{"id":64,"nome":"COLETA DE LIXO","r25":[14.6,8.2,10.6,12,13.9,11.8,9.2,9.2,10.3,9.6,32.6,11.2],"o26":[16.045,9.012,11.649,13.188,15.276,12.968,10.111,10.111,11.32,10.55,27.827,12.309],"g26":[10.6,10.4,10.4,9.5,8.7,8.7,6.2,null,null,null,null,null],"base26":[10.6,10.4,10.4,9.5,8.7,8.7,6.2,10.111,11.32,10.55,27.827,12.309],"hist":[63.8,114.7,146.1,152.8]},"65":{"id":65,"nome":"MARKETING","r25":[6.7,1.9,2.5,2.4,2.8,8,3.4,0.97,1.6,3,0.2,3.5],"o26":[7.363,12.088,12.748,12.638,13.077,8.792,3.737,1.066,1.758,3.297,7.22,3.846],"g26":[3.2,1.1,10.9,10.6,17.3,9.6,3.4,null,null,null,null,null],"base26":[3.2,1.1,10.9,10.6,17.3,9.6,3.4,1.066,1.758,3.297,7.22,3.846],"hist":[28.3,12.9,44.1,37.0]},"66":{"id":66,"nome":"CONSERVAÇÃO/MANUTENÇÃO","r25":[129.9,133.7,126.1,147.2,131.2,136.5,108.1,108.249,137,139.9,140.9,135.8],"o26":[162.76,146.936,138.584,161.773,144.189,150.013,118.802,118.966,150.563,153.75,154.849,149.244],"g26":[272.5,147.1,141.1,85.505,89.5,130.586,157.1,0,0,0,0,0],"base26":[272.5,147.1,141.1,85.505,89.5,130.586,157.1,118.966,150.563,153.75,154.849,149.244],"hist":[1060.4,1093.6,1305.3,1574.5]},"67":{"id":67,"nome":"MANUTENÇÃO","r25":[129.9,133.7,126.1,147.2,131.2,136.5,108.1,108.249,137,139.9,140.9,135.8],"o26":[162.76,146.936,138.584,161.773,144.189,150.013,118.802,118.966,150.563,153.75,154.849,149.244],"g26":[237.3,112.1,130.4,85.505,84.4,101.2,125.7,null,null,null,null,null],"base26":[237.3,112.1,130.4,85.505,84.4,101.2,125.7,118.966,150.563,153.75,154.849,149.244],"hist":[703.4,955.9,1223.0,1574.5]},"68":{"id":68,"nome":"MELHORIAS CIVIS","r25":[0,0,0,0,0,0,0,0,0,0,0,0],"o26":[0,0,0,0,0,0,0,0,0,0,0,0],"g26":[35.2,35,10.7,null,5.1,29.386,31.4,null,null,null,null,null],"base26":[35.2,35,10.7,0,5.1,29.386,31.4,0,0,0,0,0],"hist":[357.0,137.7,82.3,0]},"69":{"id":69,"nome":"PROJETO CRIANÇA","r25":[4.608,21.741,46.533,45.682,45.897,41.981,47.73,44.793,51.483,50.763,51.5,52.548],"o26":[5.064,23.894,50.908,50.205,50.441,46.137,46.455,49.228,56.58,50.789,56.599,45.935],"g26":[22.303,24.771,57.544,40.877,45.009,54.692,46.111,0,0,0,0,0],"base26":[22.303,24.771,57.544,40.877,45.009,54.692,46.111,49.228,56.58,50.789,56.599,45.935],"hist":[414.1,437.5,443.8,505.2]},"70":{"id":70,"nome":"MATERIAIS RECREACAO","r25":[0,0.041,0,0,0,0,1.1,1,1,0.11,1.7,0.742],"o26":[0,0.046,0,0,0,0,1.209,1.099,3.099,0.121,1.868,0],"g26":[0.34,null,3.1,0.899,null,null,0.845,null,null,null,null,null],"base26":[0.34,0.046,3.1,0.899,0,0,0.845,1.099,3.099,0.121,1.868,0],"hist":[0.2,2.8,1.7,6.7]},"71":{"id":71,"nome":"ALIMENTACAO E BEBIDA","r25":[0.011,4.1,8.4,8.8,9.8,9.1,7.4,10,11.9,11.1,8.6,7.2],"o26":[0.012,4.506,19,9.671,10.77,10.001,8.133,10.99,11.078,9.199,9.451,7.913],"g26":[null,2.9,9.3,5,10.9,9.7,9.5,null,null,null,null,null],"base26":[0.012,2.9,9.3,5,10.9,9.7,9.5,10.99,11.078,9.199,9.451,7.913],"hist":[67.9,93.2,65.2,94.4]},"72":{"id":72,"nome":"SERVIÇOS DE TERCEIROS","r25":[3.4,13.7,35.8,28.8,29.7,28.6,37,29,33.183,32.3,36.4,34.6],"o26":[3.737,15.056,29.344,31.651,32.64,31.431,34.663,31.871,36.468,35.498,40.004,28.025],"g26":[13.4,19.9,37.6,33.5,32.5,42.9,34.1,null,null,null,null,null],"base26":[13.4,19.9,37.6,33.5,32.5,42.9,34.1,31.871,36.468,35.498,40.004,28.025],"hist":[216.8,277.1,309.4,343.5]},"73":{"id":73,"nome":"MATERIAL EXPEDIENTE","r25":[0.545,1,0.44,0.689,3.4,3.2,0.935,2.8,1.6,4.7,2.7,0.922],"o26":[0.599,1.099,0.484,0.757,3.737,3.517,1.028,3.077,1.758,4.165,2.967,1.013],"g26":[7.072,0.671,0.551,0.341,1.3,0.992,1.045,null,null,null,null,null],"base26":[7.072,0.671,0.551,0.341,1.3,0.992,1.045,3.077,1.758,4.165,2.967,1.013],"hist":[24.8,33.1,37.1,22.9]},"74":{"id":74,"nome":"MATERIAL HIG E LIMPEZA","r25":[0.555,2.8,1.8,2.6,2.9,0.99,1.1,1.9,2.2,1.7,2.1,1.7],"o26":[0.61,3.077,1.978,2.857,3.187,1.088,1.209,2.088,2.418,0.868,2.308,1.868],"g26":[1.4,1.3,2.7,1.1,0.269,1.1,0.621,null,null,null,null,null],"base26":[1.4,1.3,2.7,1.1,0.269,1.1,0.621,2.088,2.418,0.868,2.308,1.868],"hist":[26.4,29.0,18.6,22.3]},"75":{"id":75,"nome":"ANUIDADE E MENSALIDADES","r25":[0.097,0.1,0.093,0,0.097,0.091,0.195,0.093,0,0.093,0,0.184],"o26":[0.107,0.11,0.102,0,0.107,0.1,0.214,0.102,0,0.102,0,0.202],"g26":[0.091,null,0.093,null,null,null,null,null,null,null,null,null],"base26":[0.091,0.11,0.093,0,0.107,0.1,0.214,0.102,0,0.102,0,0.202],"hist":[1.3,1.6,1.6,1.0]},"76":{"id":76,"nome":"OUTRAS DESPESAS","r25":[0,0,0,4.793,0,0,0,0,1.6,0.76,0,7.2],"o26":[0,0,0,5.268,0,0,0,0,1.758,0.835,0,6.913],"g26":[null,null,4.2,0.037,0.04,null,null,null,null,null,null,null],"base26":[0,0,4.2,0.037,0.04,0,0,0,1.758,0.835,0,6.913],"hist":[757.6,0.7,11.9,14.4]},"77":{"id":77,"nome":"ESPORTE","r25":[70.51,78.911,123.033,239.655,184.01,217.335,187.385,163.485,324.828,309.515,279.818,239.102],"o26":[103.753,95.656,118.362,179.251,113.756,175.857,106.113,122.379,228.61,243.526,163.334,219.718],"g26":[139.677,109.694,182.327,186.294,317.931,305.441,342.545,0,0,0,0,0],"base26":[139.677,109.694,182.327,186.294,317.931,305.441,342.545,122.379,228.61,243.526,163.334,219.718],"hist":[1323.1,1777.0,2222.9,2668.2]},"78":{"id":78,"nome":"MATERIAIS ESPORTIVAS","r25":[3.7,13.2,2,10.4,7.7,5.9,12.9,0.692,18,1.8,1.2,12.3],"o26":[4.066,14.507,2.198,11.43,8.462,6.484,14.177,0.761,19.782,1.978,1.319,11],"g26":[13.6,0.179,16.2,9.8,27,18,15.7,null,null,null,null,null],"base26":[13.6,0.179,16.2,9.8,27,18,15.7,0.761,19.782,1.978,1.319,11],"hist":[51.3,164.8,213.6,89.8]},"79":{"id":79,"nome":"DIREITO DE IMAGEM - ESPORTE","r25":[3,14.6,29.6,20.6,16.6,24.6,25.6,20.6,20,16.6,20.6,22],"o26":[0,0,0,0,0,0,0,0,0,0,0,0],"g26":[10.6,null,null,null,null,null,null,null,null,null,null,null],"base26":[10.6,0,0,0,0,0,0,0,0,0,0,0],"hist":[217.5,247.4,242.4,234.4]},"80":{"id":80,"nome":"FEDERAÇÕES E ASSOCIAÇÕES ESPORTIVAS","r25":[14,0.022,6.595,0.595,2.69,0.595,0.595,0.979,0.595,8.99,0.5,0],"o26":[15.386,0.024,7.248,0.654,2.956,0.654,0.654,1.076,0.654,9.88,0.549,15],"g26":[26.9,35.6,10.9,15.7,17.8,23.6,17.8,null,null,null,null,null],"base26":[26.9,35.6,10.9,15.7,17.8,23.6,17.8,1.076,0.654,9.88,0.549,15],"hist":[178.2,256.0,169.7,59.6]},"81":{"id":81,"nome":"ALIMENTAÇÃO/BEBIDAS ESPORTES","r25":[0,2.469,0,0.35,0.31,0.517,0.13,0.627,0.154,0.835,0.518,0.386],"o26":[0,0,0,0,0,0,0,0,0,0,0,0],"g26":[0.039,null,1.7,1.8,0.571,0.201,0.481,null,null,null,null,null],"base26":[0.039,0,1.7,1.8,0.571,0.201,0.481,0,0,0,0,0],"hist":[6.6,9.1,7.0,6.3]},"82":{"id":82,"nome":"TRANSPORTES PASSAGENS ESPORTES","r25":[0,0,0.03,0,0.29,6.2,-6.5,4.6,3.754,-7.85,0,0],"o26":[0,0,0,0,0,0,0,0,0,0,0,0],"g26":[null,null,2.2,0.594,2.7,4.2,-0.7,null,null,null,null,null],"base26":[0,0,2.2,0.594,2.7,4.2,-0.7,0,0,0,0,0],"hist":[153.9,221.9,37.8,0.5]},"83":{"id":83,"nome":"HOSPEDAGENS ESPORTES","r25":[0,0,0,0,7.2,0,0,0,0,0,0,0],"o26":[0,0,0,0,0,0,0,0,0,0,0,0],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[0,0,0,0,0,0,0,0,0,0,0,0],"hist":[25.2,52.7,16.1,7.2]},"84":{"id":84,"nome":"ALUGUEL DE DEPENCIAS ESPORTES","r25":[0,0,0,0,0,0,0,0,0,0,0,0],"o26":[0,0,0,0,0,0,0,0,0,0,0,0],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[0,0,0,0,0,0,0,0,0,0,0,0],"hist":[0,0,15.2,0]},"85":{"id":85,"nome":"SERVIÇOS TERCEIROS PJ ESPORTES","r25":[5.6,19.9,28.4,106.7,11.2,34.3,25.1,30.4,25.8,40.8,30.4,80.3],"o26":[6.154,21.87,31.212,117.263,12.309,37.696,27.585,33.41,28.354,44.839,33.41,46.25],"g26":[21.5,29,12.5,32.3,28.1,33.6,27.5,null,null,null,null,null],"base26":[21.5,29,12.5,32.3,28.1,33.6,27.5,33.41,28.354,44.839,33.41,46.25],"hist":[228.2,351,308.3,438.9]},"86":{"id":86,"nome":"SERVIÇOS TERCEIROS PF ESPORTES","r25":[4.6,2,0,3.9,5.8,5.8,5.6,7.5,7.1,5.5,3.7,3.6],"o26":[5.055,2.198,0,4.286,6.374,6.374,6.154,8.242,7.803,6.045,4.066,0.956],"g26":[0.48,4.5,1.8,2.6,1.2,5.3,0.57,null,null,null,null,null],"base26":[0.48,4.5,1.8,2.6,1.2,5.3,0.57,8.242,7.803,6.045,4.066,0.956],"hist":[49.8,36.6,36.7,55.1]},"87":{"id":87,"nome":"UNIFORMES ESPORTIVOS","r25":[0,0,0.18,6.5,12.1,8.2,13.1,0.942,4.8,1.4,0,0],"o26":[0,0,0.198,7.144,13.298,9.012,14.397,1.035,5.275,4.539,0,0],"g26":[4.2,0.687,null,1.3,1.78,6.3,5.048,null,null,null,null,null],"base26":[4.2,0.687,0.198,1.3,1.78,6.3,5.048,1.035,5.275,4.539,0,0],"hist":[0.4,34.1,66.0,47.2]},"88":{"id":88,"nome":"MATERIAL DE EXPEDIENTE ESPORTES","r25":[0.765,2.3,1.3,3.1,2.9,5.4,3.8,3.9,4.4,48.9,3.1,5.1],"o26":[0.841,2.528,1.429,3.407,3.187,5.935,4.176,4.286,4.836,48.741,3.407,5.605],"g26":[9.7,0.531,4.5,1.1,2.2,2.3,13.7,null,null,null,null,null],"base26":[9.7,0.531,4.5,1.1,2.2,2.3,13.7,4.286,4.836,48.741,3.407,5.605],"hist":[43.5,37.9,34.8,85.0]},"89":{"id":89,"nome":"ATIVAÇÃO JOGOS ESPORTIVOS","r25":[0,0,0,0,0,0,0,0,4,0,0,0],"o26":[0,0,0,0,0,0,0,0,4.396,0,0,0],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[0,0,0,0,0,0,0,0,4.396,0,0,0],"hist":[0,0,0,4]},"90":{"id":90,"nome":"ASSISTENCIA MEDICA ESPORTES","r25":[0,0,0,0,0,0,0,0,0,0,0,0],"o26":[0,0,0,0,0,0,0,0,0,0,0,0],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[0,0,0,0,0,0,0,0,0,0,0,0],"hist":[7.4,0.3,0,0]},"91":{"id":91,"nome":"SERVIÇOS MENSAIS CONTR.ESPORTES","r25":[0,0,0,0,0,2.4,2.4,0,0,19.2,2.4,2.4],"o26":[0,0,0,0,0,2.638,2.638,0,0,19.101,2.638,2.638],"g26":[4.079,null,4.9,2.4,5.3,-2.9,2.4,null,null,null,null,null],"base26":[4.079,0,4.9,2.4,5.3,-2.9,2.4,0,0,19.101,2.638,2.638],"hist":[24,28.8,24.2,28.8]},"92":{"id":92,"nome":"OUTRAS DESPESAS ESPORTIVAS","r25":[3.945,3.42,3.128,2.51,1.82,5.623,3.66,21.745,6.425,2.84,19,6.516],"o26":[4.336,3.759,3.438,2.758,2.0,6.18,4.022,23.898,7.061,3.121,16.881,7.161],"g26":[2.679,3.797,3.227,3.5,7.88,5.74,1.446,null,null,null,null,null],"base26":[2.679,3.797,3.227,3.5,7.88,5.74,1.446,23.898,7.061,3.121,16.881,7.161],"hist":[52.7,117.3,61.7,82.6]},"93":{"id":93,"nome":"EVENTOS ESPORTIVOS","r25":[25.4,9.8,29.7,11.2,41.1,64.5,20.3,8.8,100.5,77.6,95.6,92],"o26":[27.915,10.77,32.64,12.309,45.169,70.886,22.31,9.671,110.45,85.282,71.064,101.108],"g26":[31.7,19.6,45.4,24.6,71.8,60.2,105.7,null,null,null,null,null],"base26":[31.7,19.6,45.4,24.6,71.8,60.2,105.7,9.671,110.45,85.282,71.064,101.108],"hist":[0,0,373.4,591.5]},"94":{"id":94,"nome":"COMPETIÇOES","r25":[9.5,11.2,22.1,73.8,74.3,53.3,80.7,62.7,129.3,92.9,102.8,20.5],"o26":[40,40,40,20,20,30,10,40,40,20,30,30],"g26":[14.2,15.8,79,90.6,151.6,148.9,152.9,null,null,null,null,null],"base26":[14.2,15.8,79,90.6,151.6,148.9,152.9,40,40,20,30,30],"hist":[0,0,616,937.3]},"95":{"id":95,"nome":"EVENTOS","r25":[4.757,105.895,97.816,19.468,42.87,106.214,143.177,439.288,103.7,258.04,9.18,57.596],"o26":[5.228,116.379,107.5,21.395,47.114,116.729,157.352,482.778,113.966,271.586,10.089,65.26],"g26":[2.152,66.323,235.52,53.875,178.877,161.7,121.266,0,0,0,0,0],"base26":[2.152,66.323,235.52,53.875,178.877,161.7,121.266,482.778,113.966,271.586,10.089,65.26],"hist":[592.7,782.6,1111.4,1397.0]},"96":{"id":96,"nome":"SERVIÇOS DE TERCEIROS","r25":[0.85,23.6,5.8,4.5,1.4,24.3,10.8,73.3,7.2,29.8,1.4,32.5],"o26":[0.934,25.936,6.374,4.946,1.539,26.706,11.869,80.557,7.913,32.75,1.539,33.718],"g26":[0.688,17.871,19.9,11.1,3.654,43.5,12.2,null,null,null,null,null],"base26":[0.688,17.871,19.9,11.1,3.654,43.5,12.2,80.557,7.913,32.75,1.539,33.718],"hist":[31.4,72.8,163.8,215.5]},"97":{"id":97,"nome":"PROPAGANDA E PUBLICIDADE","r25":[1.1,0.595,0.92,0.18,0.18,0,0,1,0,0,0,2],"o26":[1.209,0.654,1.011,0.198,0.198,0,0,1.099,0,13,0,2.198],"g26":[null,0.25,2.6,2.4,null,1,2.1,null,null,null,null,null],"base26":[1.209,0.25,2.6,2.4,0.198,1,2.1,1.099,0,13,0,2.198],"hist":[1.0,3.0,3.4,6.4]},"98":{"id":98,"nome":"LOCAÇÕES DE BENS","r25":[0,2.6,13.8,4.6,0,0,7.5,36,0,58.04,0,2.1],"o26":[0,2.857,15.166,5.055,0,0,8.242,39.564,0,56.786,0,2.308],"g26":[null,3.3,16.7,14.4,5.9,20.8,23.56,null,null,null,null,null],"base26":[0,3.3,16.7,14.4,5.9,20.8,23.56,39.564,0,56.786,0,2.308],"hist":[48.8,68.6,89.8,124.6]},"99":{"id":99,"nome":"GÊNEROS ALIMENTICIOS PARA EVENTOS","r25":[0,39.3,38.3,0.235,18.5,18.8,54.3,118.4,11.1,70.5,1.2,2.4],"o26":[0,43.191,42.092,0.258,20.331,20.661,59.676,130.122,12.199,77.48,1.319,2.638],"g26":[null,0.115,3.9,0.697,0.515,36.7,48.6,null,null,null,null,null],"base26":[0,0.115,3.9,0.697,0.515,36.7,48.6,130.122,12.199,77.48,1.319,2.638],"hist":[50.1,198.6,257.2,373.0]},"100":{"id":100,"nome":"DECORAÇÕES","r25":[0.067,5.2,0.429,1.8,4.8,45.8,0.528,6.2,7.3,4.1,4.1,10.8],"o26":[0.074,5.715,0.471,1.978,5.275,50.334,0.58,6.814,8.023,4.506,4.506,11.869],"g26":[null,9.4,9.5,3.1,8.2,12.8,28.9,null,null,null,null,null],"base26":[0.074,9.4,9.5,3.1,8.2,12.8,28.9,6.814,8.023,4.506,4.506,11.869],"hist":[17.9,66.5,75.5,91.1]},"101":{"id":101,"nome":"CONJUNTOS MUSICAIS","r25":[0,9.3,9.6,5.6,15.9,5.8,0,200,40.5,3.2,0,8.8],"o26":[0,10.221,10.55,6.154,17.474,6.374,0,219.8,44.51,5.517,0,9.671],"g26":[null,15.1,165.3,16.4,159.7,21.2,null,null,null,null,null,null],"base26":[0,15.1,165.3,16.4,159.7,21.2,0,219.8,44.51,5.517,0,9.671],"hist":[78.7,185.3,304.5,305.7]},"102":{"id":102,"nome":"BEBIDAS PARA EVENTOS","r25":[0,13.2,22.9,0.045,0.78,0.676,48.7,0.362,4.071,44.4,0.42,0.188],"o26":[0,14.507,25.167,0.049,0.857,0.743,53.521,0.398,4.474,39.796,0.462,0.207],"g26":[null,1.6,0.028,0.178,0,7.8,0.706,null,null,null,null,null],"base26":[0,1.6,0.028,0.178,0,7.8,0.706,0.398,4.474,39.796,0.462,0.207],"hist":[6.4,83.9,87.6,135.7]},"103":{"id":103,"nome":"OUTRAS DESPESAS PARA EVENTOS","r25":[2.74,12.1,6.067,2.508,1.31,10.838,21.349,4.026,33.529,48,2.06,2.413],"o26":[3.011,13.298,6.668,2.756,1.44,11.911,23.463,4.425,36.848,41.752,2.264,2.652],"g26":[1.464,18.687,17.592,5.6,0.908,17.9,5.2,null,null,null,null,null],"base26":[1.464,18.687,17.592,5.6,0.908,17.9,5.2,4.425,36.848,41.752,2.264,2.652],"hist":[27.0,103.9,129.7,144.9]},"104":{"id":104,"nome":"COMISSÕES S/ TÍTULOS E JÓIAS","r25":[0,0,0,0,0,0,0,0,0,0,0,0],"o26":[0,0,0,0,0,0,0,0,0,0,0,0],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[0,0,0,0,0,0,0,0,0,0,0,0]},"105":{"id":105,"nome":"DESPESAS TRIBUTÁRIAS","r25":[22.3,10.5,12.7,16.2,7.4,14.7,20.5,19.6,15.1,11.8,7.9,8.7],"o26":[24.508,11.54,13.957,17.804,8.133,16.155,22.529,21.54,16.595,12.968,8.682,5.561],"g26":[22.3,8.4,8.3,3.4,12.7,8.8,8.2,null,null,null,null,null],"base26":[22.3,8.4,8.3,3.4,12.7,8.8,8.2,21.54,16.595,12.968,8.682,5.561],"hist":[284,302.8,189.5,167.4]},"106":{"id":106,"nome":"DESPESAS FINANCEIRAS","r25":[41.1,34.6,24,25.9,22.3,51,29.7,17.5,24.5,28.46,27.3,30],"o26":[45.169,38.025,26.376,20.464,24.508,42.049,32.64,19.233,26.925,31.278,30.003,32.97],"g26":[23.8,25.8,21,26,16.351,31.201,21.5,null,null,null,null,null],"base26":[23.8,25.8,21,26,16.351,31.201,21.5,19.233,26.925,31.278,30.003,32.97],"hist":[400.7,341.0,341.5,357.4]},"107":{"id":107,"nome":"OUTRAS DESPESAS (Despesas Div., Endomkt e Atualização Fundação)","r25":[75.403,72.1,80.3,1.372,192.01,85.7,86.1,97.8,96.915,97.58,93.304,126.69],"o26":[62.868,100,100,100,100,100,100,87.482,86.51,87.24,102.541,133.232],"g26":[112.9,87.71,102.41,99.2,109.3,104.3,113.8,null,null,null,null,null],"base26":[112.9,87.71,102.41,99.2,109.3,104.3,113.8,87.482,86.51,87.24,102.541,133.232],"hist":[0,646.6,775.2,1116.4]},"108":{"id":108,"nome":"CONTINGÊNCIAS","r25":[3.9,91.2,77.633,4.8,52.8,39.3,1.7,6.9,26.8,11.7,1.88,1702.686],"o26":[4.286,31,85.319,5.275,58.027,43.191,1.868,7.583,29.453,12.858,2.066,489.252],"g26":[0,30.1,16.347,0,0,34.1,19.9,null,null,null,null,null],"base26":[0,30.1,16.347,0,0,34.1,19.9,7.583,29.453,12.858,2.066,489.252],"hist":[219.1,374.4,790.3,2020.6]},"110":{"id":110,"nome":"RESULTADO OPERACIONAL","r25":[910.857,597.096,892.05,348.556,516.543,381.2,215.679,-71.197,158.211,494.482,564.602,-1194.183],"o26":[612.134,16.054,284.913,-47.701,150.703,52.444,-83.145,-413.451,-25.556,374.516,547.614,-74.554],"g26":[377.887,327.203,79.377,93.176,-205.855,2.628,-342.865,0,0,0,0,0],"base26":[377.887,327.203,79.377,93.176,-205.855,2.628,-342.865,-413.451,-25.556,374.516,547.614,-74.554],"hist":[3857.4,4122.4,3958.7,4049.5]},"112":{"id":112,"nome":"JUROS DA DÍVIDA","r25":[145,155.5,148.8,146.7,155.4,149.1,87,145.1,71.681,88,56.83,37.7],"o26":[20,5,0,0,0,0,0,0,0,0,0,0],"g26":[23.6,9.6,0.055,0,0,0,0,0,0,0,0,0],"base26":[23.6,9.6,0.055,0,0,0,0,0,0,0,0,0],"hist":[2604.8,2544.6,1901.9,1387.8]},"113":{"id":113,"nome":"JUROS S/ EMPRÉSTIMO BANCÁRIOS","r25":[77.8,84.1,79.3,78.6,84.7,77.7,67.9,80.9,9.081,27,5.43,1.2],"o26":[0,0,0,0,0,0,0,0,0,0,0,0],"g26":[1.3,1.3,0.055,null,null,null,null,null,null,null,null,null],"base26":[1.3,1.3,0.055,0,0,0,0,0,0,0,0,0],"hist":[1402.5,1382.8,923.4,674.7]},"114":{"id":114,"nome":"JUROS S/ CONTRATOS DE MÚTUOS","r25":[67.2,71.4,69.5,68.1,70.7,71.4,19.1,64.2,62.6,61,51.4,37.5],"o26":[20,5,0,0,0,0,0,0,0,0,0,0],"g26":[22.3,8.3,null,null,null,null,null,null,null,null,null,null],"base26":[22.3,8.3,0,0,0,0,0,0,0,0,0,0],"hist":[1202.3,1161.8,978.5,713.1]},"116":{"id":116,"nome":"RESULTADO LÍQUIDO","r25":[765.857,441.596,743.25,201.856,361.143,232.1,128.679,-216.297,86.53,406.482,507.772,-1231.883],"o26":[592.134,11.054,284.913,-47.701,150.703,52.444,-83.145,-413.451,-25.556,374.516,547.614,-74.554],"g26":[354.287,317.603,79.322,93.176,-205.855,2.628,-342.865,0,0,0,0,0],"base26":[354.287,317.603,79.322,93.176,-205.855,2.628,-342.865,-413.451,-25.556,374.516,547.614,-74.554],"hist":[1252.6,1577.8,2056.8,2661.7]},"119":{"id":119,"nome":"RECEBIDO - INDICES CONSTRUTIVOS","r25":[0,0,0,0,0,1074.21,1074.2,1074.2,1074.2,1074.2,1074.2,1074.2],"o26":[1074,1074,131,0,0,0,0,0,0,0,0,0],"g26":[1074.2,1074.2,131,null,806.3,819.6,832.7,null,null,null,null,null],"base26":[1074.2,1074.2,131,0,806.3,819.6,832.7,0,0,0,0,0],"hist":[0,0,0,7519.4]},"121":{"id":121,"nome":"RECEITA A RECEBER - INDICES CONSTRUTIVOS","r25":[0,0,0,0,0,0,0,0,0,0,0,0],"o26":[0,0,0,0,0,0,0,0,0,0,0,0],"g26":[null,null,null,null,null,null,null,null,null,null,null,null],"base26":[0,0,0,0,0,0,0,0,0,0,0,0],"hist":[0,0,0,0]},"123":{"id":123,"nome":"RESULTADO LÍQUIDO + RECEBIDO DE INDICES CONSTRUTIVOS","r25":[765.857,441.596,743.25,201.856,361.143,1306.31,1202.879,0,0,0,0,0],"o26":[1666.134,1085.054,415.913,-47.701,150.703,52.444,-83.145,0,0,0,0,0],"g26":[1428.487,1391.803,210.322,93.176,600.445,822.228,489.835,null,null,null,null,null],"base26":[1428.487,1391.803,210.322,93.176,600.445,822.228,489.835,0,0,0,0,0]},"126":{"id":126,"nome":"IMOBILIZADO + INDICES CONSTRUTIVOS UTILIZADOS","r25":[111.1,73.267,14,15.5,38.7,46.5,78.8,51.5,85,0,85.9,238.4],"o26":[111,73.367,350,100,130,290,320,0,0,0,0,0],"g26":[77.7,70.2,353.6,95.3,128.1,333.7,366.7,null,null,null,null,null],"base26":[77.7,70.2,353.6,95.3,128.1,333.7,366.7,0,0,0,0,0]}},"m27":{"6":[null,null,null,null,null,null,null,null,null,null,null,null],"15":[null,null,null,null,null,null,null,null,null,null,null,null],"21":[null,null,null,null,null,null,null,null,null,null,null,null],"22":[null,null,null,null,null,null,null,null,null,null,null,null],"32":[null,null,null,null,null,null,null,null,null,null,null,null],"37":[null,null,null,null,null,null,null,null,null,null,null,null],"38":[null,null,null,null,null,null,null,null,null,null,null,null],"44":[null,null,null,null,null,null,null,null,null,null,null,null],"49":[null,null,null,null,null,null,null,null,null,null,null,null],"66":[null,null,null,null,null,null,null,null,null,null,null,null],"69":[null,null,null,null,null,null,null,null,null,null,null,null],"77":[null,null,null,null,null,null,null,null,null,null,null,null],"95":[null,null,null,null,null,null,null,null,null,null,null,null],"105":[null,null,null,null,null,null,null,null,null,null,null,null],"106":[null,null,null,null,null,null,null,null,null,null,null,null],"107":[null,null,null,null,null,null,null,null,null,null,null,null],"108":[null,null,null,null,null,null,null,null,null,null,null,null],"112":[null,null,null,null,null,null,null,null,null,null,null,null],"119":[null,null,null,null,null,null,null,null,null,null,null,null],"126":[null,null,null,null,null,null,null,null,null,null,null,null]},"indexador":[["Pessoal",null,null,null,null,null,"Dissídio / INPC"],["Funcionamento",null,null,null,null,null,"70% IPCA + 30% IGP-M"],["Conservação / Manutenção",null,null,null,null,null,"IGP-M + incremento"],["Projeto Criança",null,null,null,null,null,"IPCA"],["Esportes",null,null,null,null,null,"IPCA + incremento"],["Eventos",null,null,null,null,null,"IPCA + incremento"],["Tributárias",null,null,null,null,null,"IPCA"],["Financeiras",null,null,null,null,null,"Sem indexação automática"],["Outras despesas",null,null,null,null,null,"IPCA"],["Contingências",null,null,null,null,null,"Tratamento por risco"]]};</script>
 <script>var DADOS_OPERACOES={"gerencia":"Operações","rotuloFonte":"GERAL/OPERAÇÕES","fonte":"Matriz_Orcamento_2027_Gerencia_GERAL_OPERACOES","premissas":[{"nome":"Encargos sobre a base remuneratória","valor":null},{"nome":"Meses do orçamento","valor":null},{"nome":"Base para encargos","valor":"Salário-base + quinquênio + quebra de caixa + insalubridade/periculosidade + comissão + gratificação"},{"nome":"Benefícios e adicionais","valor":"VT + assistência médica + seguro + uniformes + EPI + extraorçamentário"},{"nome":"Total mensal","valor":"Base para encargos + encargos + benefícios e adicionais"}],"checksFonte":[{"nome":"Quadro por CC x gerência","delta":null,"status":"PASS","ref":"Resumo Gerência"},{"nome":"Custo mensal por CC x gerência","delta":null,"status":"PASS","ref":"Resumo Gerência"},{"nome":"Encargos calculados a 65%","delta":null,"status":"PASS","ref":"Abas por centro de custo"},{"nome":"Benefícios = soma das rubricas","delta":null,"status":"PASS","ref":"Abas por centro de custo"}],"rubricas":[{"nome":"Quinquênio","grupo":"adicional","base":true},{"nome":"Quebra de Caixa","grupo":"adicional","base":true},{"nome":"Insalubridade / Periculosidade","grupo":"adicional","base":true},{"nome":"Comissão","grupo":"adicional","base":true},{"nome":"Gratificação","grupo":"adicional","base":true},{"nome":"Vale-Transporte","grupo":"beneficio","base":false},{"nome":"Assistência Médica","grupo":"beneficio","base":false},{"nome":"Seguro","grupo":"beneficio","base":false},{"nome":"Uniformes","grupo":"beneficio","base":false},{"nome":"EPI","grupo":"beneficio","base":false},{"nome":"Extraorçamentário","grupo":"beneficio","base":false}],"provisoes":["13º","1/3 de Férias"],"ccs":[{"numero":"5053","nome":"LIMPEZA E CONSERVACAO","colaboradores":[]},{"numero":"5072","nome":"RECEPCAO","colaboradores":[]},{"numero":"5073","nome":"SEGURANCA PATRIMONIAL","colaboradores":[]},{"numero":"5529","nome":"COLETA SELETIVA","colaboradores":[]}],"turnover":[],"tiposMovimentacao":["Aumento de Quadro / Reposição","Reenquadramento","Aumento de Carga Horária","Aumento Quadro Estagiário"],"resumo":[{"numero":"5053","nome":"LIMPEZA E CONSERVACAO","func":null,"apr":null,"est":null,"total":null,"custoMensal":null,"orcAnual":null},{"numero":"5072","nome":"RECEPCAO","func":null,"apr":null,"est":null,"total":null,"custoMensal":null,"orcAnual":null},{"numero":"5073","nome":"SEGURANCA PATRIMONIAL","func":null,"apr":null,"est":null,"total":null,"custoMensal":null,"orcAnual":null},{"numero":"5529","nome":"COLETA SELETIVA","func":null,"apr":null,"est":null,"total":null,"custoMensal":null,"orcAnual":null}]};
 </script>
 <script>var DADOS_ESPORTES={"gerencia":"Esportes","rotuloFonte":"ESPORTES","fonte":"Matriz_Orcamento_2027_Gerencia_ESPORTES","premissas":[{"nome":"Encargos sobre a base remuneratória","valor":null},{"nome":"Meses do orçamento","valor":null},{"nome":"Base para encargos","valor":"Salário-base + quinquênio + quebra de caixa + insalubridade/periculosidade + comissão + gratificação"},{"nome":"Benefícios e adicionais","valor":"VT + assistência médica + seguro + uniformes + EPI + extraorçamentário"},{"nome":"Total mensal","valor":"Base para encargos + encargos + benefícios e adicionais"}],"checksFonte":[{"nome":"Quadro por CC x gerência","delta":null,"status":"PASS","ref":"Resumo Gerência"},{"nome":"Custo mensal por CC x gerência","delta":null,"status":"PASS","ref":"Resumo Gerência"},{"nome":"Encargos calculados a 65%","delta":null,"status":"PASS","ref":"Abas por centro de custo"},{"nome":"Benefícios = soma das rubricas","delta":null,"status":"PASS","ref":"Abas por centro de custo"}],"rubricas":[{"nome":"Quinquênio","grupo":"adicional","base":true},{"nome":"Quebra de Caixa","grupo":"adicional","base":true},{"nome":"Insalubridade / Periculosidade","grupo":"adicional","base":true},{"nome":"Comissão","grupo":"adicional","base":true},{"nome":"Gratificação","grupo":"adicional","base":true},{"nome":"Vale-Transporte","grupo":"beneficio","base":false},{"nome":"Assistência Médica","grupo":"beneficio","base":false},{"nome":"Seguro","grupo":"beneficio","base":false},{"nome":"Uniformes","grupo":"beneficio","base":false},{"nome":"EPI","grupo":"beneficio","base":false},{"nome":"Extraorçamentário","grupo":"beneficio","base":false}],"provisoes":["13º","1/3 de Férias"],"tiposMovimentacao":["Aumento de Quadro / Reposição","Reenquadramento","Aumento de Carga Horária","Aumento Quadro Estagiário"],"turnover":[],"ccs":[{"numero":"6025","nome":"ATLETISMO RENDIMENTO","colaboradores":[]},{"numero":"6041","nome":"BASQUETE RENDIMENTO","colaboradores":[]},{"numero":"6068","nome":"GIN ARTÍSTICA RENDIMENTO","colaboradores":[]},{"numero":"6069","nome":"GIN ARTÍSTICA  ALTO RENDIMENTO","colaboradores":[]},{"numero":"6084","nome":"G.R.D. - RENDIMENTO","colaboradores":[]},{"numero":"6086","nome":"G.R.D - ALTO RENDIMENTO","colaboradores":[]},{"numero":"6092","nome":"JUDO RENDIMENTO","colaboradores":[]},{"numero":"6106","nome":"VOLEI RENDIMENTO","colaboradores":[]},{"numero":"6149","nome":"PUNHOBOL - RENDIMENTO","colaboradores":[]},{"numero":"6157","nome":"TÊNIS RENDIMENTO","colaboradores":[]},{"numero":"6165","nome":"TÊNIS DE MESA  FORMAÇÃO","colaboradores":[]},{"numero":"6190","nome":"RECREACAO SERVIÇOS","colaboradores":[]},{"numero":"6246","nome":"BASQUETE FORMAÇÃO","colaboradores":[]},{"numero":"6289","nome":"GIN ARTÍSTICA FORMAÇÃO","colaboradores":[]},{"numero":"6300","nome":"G.R.D. - FORMAÇÃO.","colaboradores":[]},{"numero":"6327","nome":"JUDO FORMAÇÃO","colaboradores":[]},{"numero":"6335","nome":"MUSCULAÇÃO SERVIÇOS","colaboradores":[]},{"numero":"6343","nome":"NATACAO SERVICOS","colaboradores":[]},{"numero":"6360","nome":"TÊNIS FORMAÇÃO","colaboradores":[]},{"numero":"6378","nome":"VOLEI FORMAÇÃO","colaboradores":[]},{"numero":"6396","nome":"JUDO ALTO RENDIMENTO","colaboradores":[]},{"numero":"6424","nome":"SEC. ESPORTIVA","colaboradores":[]},{"numero":"6433","nome":"ATLETISMO ALTO RENDIMENTO","colaboradores":[]},{"numero":"6441","nome":"TÊNIS SERVIÇOS","colaboradores":[]},{"numero":"6508","nome":"FITNESS SERVIÇOS","colaboradores":[]},{"numero":"6518","nome":"YOGA SERVIÇOS","colaboradores":[]},{"numero":"6524","nome":"BEACH TENNIS SERVIÇOS","colaboradores":[]},{"numero":"6530","nome":"LEVANTAMENTO DE PESOS FORMAÇÃO","colaboradores":[]},{"numero":"6734","nome":"PISCINAS MANUTENÇÃO","colaboradores":[]},{"numero":"6742","nome":"TÊNIS MANUTENÇÃO","colaboradores":[]},{"numero":"6769","nome":"ATLETISMO FORMAÇÃO","colaboradores":[]},{"numero":"6906","nome":"PROJETOS ESPORTIVOS","colaboradores":[]},{"numero":"6930","nome":"ATHLETIC TRAINNING SERVIÇOS","colaboradores":[]},{"numero":"6933","nome":"PREPARAÇÃO FISICA ATLETAS","colaboradores":[]},{"numero":"6935","nome":"MASSOTERAPIA","colaboradores":[]}],"resumo":[{"numero":"6025","nome":"ATLETISMO RENDIMENTO","func":null,"apr":null,"est":null,"total":null,"custoMensal":null,"orcAnual":null},{"numero":"6041","nome":"BASQUETE RENDIMENTO","func":null,"apr":null,"est":null,"total":null,"custoMensal":null,"orcAnual":null},{"numero":"6068","nome":"GIN ARTÍSTICA RENDIMENTO","func":null,"apr":null,"est":null,"total":null,"custoMensal":null,"orcAnual":null},{"numero":"6069","nome":"GIN ARTÍSTICA  ALTO RENDIMENTO","func":null,"apr":null,"est":null,"total":null,"custoMensal":null,"orcAnual":null},{"numero":"6084","nome":"G.R.D. - RENDIMENTO","func":null,"apr":null,"est":null,"total":null,"custoMensal":null,"orcAnual":null},{"numero":"6086","nome":"G.R.D - ALTO RENDIMENTO","func":null,"apr":null,"est":null,"total":null,"custoMensal":null,"orcAnual":null},{"numero":"6092","nome":"JUDO RENDIMENTO","func":null,"apr":null,"est":null,"total":null,"custoMensal":null,"orcAnual":null},{"numero":"6106","nome":"VOLEI RENDIMENTO","func":null,"apr":null,"est":null,"total":null,"custoMensal":null,"orcAnual":null},{"numero":"6149","nome":"PUNHOBOL - RENDIMENTO","func":null,"apr":null,"est":null,"total":null,"custoMensal":null,"orcAnual":null},{"numero":"6157","nome":"TÊNIS RENDIMENTO","func":null,"apr":null,"est":null,"total":null,"custoMensal":null,"orcAnual":null},{"numero":"6165","nome":"TÊNIS DE MESA  FORMAÇÃO","func":null,"apr":null,"est":null,"total":null,"custoMensal":null,"orcAnual":null},{"numero":"6190","nome":"RECREACAO SERVIÇOS","func":null,"apr":null,"est":null,"total":null,"custoMensal":null,"orcAnual":null},{"numero":"6246","nome":"BASQUETE FORMAÇÃO","func":null,"apr":null,"est":null,"total":null,"custoMensal":null,"orcAnual":null},{"numero":"6289","nome":"GIN ARTÍSTICA FORMAÇÃO","func":null,"apr":null,"est":null,"total":null,"custoMensal":null,"orcAnual":null},{"numero":"6300","nome":"G.R.D. - FORMAÇÃO.","func":null,"apr":null,"est":null,"total":null,"custoMensal":null,"orcAnual":null},{"numero":"6327","nome":"JUDO FORMAÇÃO","func":null,"apr":null,"est":null,"total":null,"custoMensal":null,"orcAnual":null},{"numero":"6335","nome":"MUSCULAÇÃO SERVIÇOS","func":null,"apr":null,"est":null,"total":null,"custoMensal":null,"orcAnual":null},{"numero":"6343","nome":"NATACAO SERVICOS","func":null,"apr":null,"est":null,"total":null,"custoMensal":null,"orcAnual":null},{"numero":"6360","nome":"TÊNIS FORMAÇÃO","func":null,"apr":null,"est":null,"total":null,"custoMensal":null,"orcAnual":null},{"numero":"6378","nome":"VOLEI FORMAÇÃO","func":null,"apr":null,"est":null,"total":null,"custoMensal":null,"orcAnual":null},{"numero":"6396","nome":"JUDO ALTO RENDIMENTO","func":null,"apr":null,"est":null,"total":null,"custoMensal":null,"orcAnual":null},{"numero":"6424","nome":"SEC. ESPORTIVA","func":null,"apr":null,"est":null,"total":null,"custoMensal":null,"orcAnual":null},{"numero":"6433","nome":"ATLETISMO ALTO RENDIMENTO","func":null,"apr":null,"est":null,"total":null,"custoMensal":null,"orcAnual":null},{"numero":"6441","nome":"TÊNIS SERVIÇOS","func":null,"apr":null,"est":null,"total":null,"custoMensal":null,"orcAnual":null},{"numero":"6508","nome":"FITNESS SERVIÇOS","func":null,"apr":null,"est":null,"total":null,"custoMensal":null,"orcAnual":null},{"numero":"6518","nome":"YOGA SERVIÇOS","func":null,"apr":null,"est":null,"total":null,"custoMensal":null,"orcAnual":null},{"numero":"6524","nome":"BEACH TENNIS SERVIÇOS","func":null,"apr":null,"est":null,"total":null,"custoMensal":null,"orcAnual":null},{"numero":"6530","nome":"LEVANTAMENTO DE PESOS FORMAÇÃO","func":null,"apr":null,"est":null,"total":null,"custoMensal":null,"orcAnual":null},{"numero":"6734","nome":"PISCINAS MANUTENÇÃO","func":null,"apr":null,"est":null,"total":null,"custoMensal":null,"orcAnual":null},{"numero":"6742","nome":"TÊNIS MANUTENÇÃO","func":null,"apr":null,"est":null,"total":null,"custoMensal":null,"orcAnual":null},{"numero":"6769","nome":"ATLETISMO FORMAÇÃO","func":null,"apr":null,"est":null,"total":null,"custoMensal":null,"orcAnual":null},{"numero":"6906","nome":"PROJETOS ESPORTIVOS","func":null,"apr":null,"est":null,"total":null,"custoMensal":null,"orcAnual":null},{"numero":"6930","nome":"ATHLETIC TRAINNING SERVIÇOS","func":null,"apr":null,"est":null,"total":null,"custoMensal":null,"orcAnual":null},{"numero":"6933","nome":"PREPARAÇÃO FISICA ATLETAS","func":null,"apr":null,"est":null,"total":null,"custoMensal":null,"orcAnual":null},{"numero":"6935","nome":"MASSOTERAPIA","func":null,"apr":null,"est":null,"total":null,"custoMensal":null,"orcAnual":null}]};
@@ -2856,7 +2859,7 @@ var DB={"IDX":null,"linhas":{"5":{"id":5,"nome":"RECEITA BRUTA","r25":[null,null
 </script>
 <script>/* Referência externa de AUDITORIA. Não alimenta nenhum KPI do painel:
    serve só para reconciliar o consolidado calculado contra a planilha. */
-var REF_TOTAL_SOGIPA={"fonte":"TOTAL SOGIPA — Orçamento de Pessoal por Centro de Custo 2027","baseOrigem":"Relação de empregados e salário-base emitida em 03/09/2026","ccs":66,"pessoas":null,"folhaBase":null,"provisoes":null,"encargos":null,"anual":null,"premissas":[{"nome":"Ano do orçamento","valor":2027},{"nome":"Reajuste salarial","valor":null},{"nome":"Meses de salário","valor":null},{"nome":"Fator de 13º salário","valor":null},{"nome":"Fator adicional de férias","valor":null},{"nome":"Encargos sobre salários + 13º + férias","valor":null}],"checks":[{"nome":"Quantidade de colaboradores","delta":null,"status":"PASS"},{"nome":"Folha-base total","delta":null,"status":"PASS"},{"nome":"Orçamento anual por CC x detalhe","delta":null,"status":"PASS"}],"escopo":["Altere apenas as células amarelas da coluna Valor.","A base considera o salário informado no arquivo de origem e permanência durante todo o ano.","Benefícios, horas extras, adicionais e provisões não presentes na origem não foram incluídos."],"porCC":{"5010":{"pes":null,"sal":null,"anual":null},"5029":{"pes":null,"sal":null,"anual":null},"5037":{"pes":null,"sal":null,"anual":null},"5039":{"pes":null,"sal":null,"anual":null},"5040":{"pes":null,"sal":null,"anual":null},"5053":{"pes":null,"sal":null,"anual":null},"5060":{"pes":null,"sal":null,"anual":null},"5061":{"pes":null,"sal":null,"anual":null},"5071":{"pes":null,"sal":null,"anual":null},"5072":{"pes":null,"sal":null,"anual":null},"5073":{"pes":null,"sal":null,"anual":null},"5074":{"pes":null,"sal":null,"anual":null},"5096":{"pes":null,"sal":null,"anual":null},"5320":{"pes":null,"sal":null,"anual":null},"5398":{"pes":null,"sal":null,"anual":null},"5436":{"pes":null,"sal":null,"anual":null},"5441":{"pes":null,"sal":null,"anual":null},"5444":{"pes":null,"sal":null,"anual":null},"5479":{"pes":null,"sal":null,"anual":null},"5517":{"pes":null,"sal":null,"anual":null},"5518":{"pes":null,"sal":null,"anual":null},"5529":{"pes":null,"sal":null,"anual":null},"5531":{"pes":null,"sal":null,"anual":null},"5533":{"pes":null,"sal":null,"anual":null},"5544":{"pes":null,"sal":null,"anual":null},"5547":{"pes":null,"sal":null,"anual":null},"5754":{"pes":null,"sal":null,"anual":null},"5904":{"pes":null,"sal":null,"anual":null},"6025":{"pes":null,"sal":null,"anual":null},"6041":{"pes":null,"sal":null,"anual":null},"6068":{"pes":null,"sal":null,"anual":null},"6069":{"pes":null,"sal":null,"anual":null},"6084":{"pes":null,"sal":null,"anual":null},"6086":{"pes":null,"sal":null,"anual":null},"6092":{"pes":null,"sal":null,"anual":null},"6106":{"pes":null,"sal":null,"anual":null},"6149":{"pes":null,"sal":null,"anual":null},"6157":{"pes":null,"sal":null,"anual":null},"6165":{"pes":null,"sal":null,"anual":null},"6190":{"pes":null,"sal":1997,"anual":null},"6246":{"pes":null,"sal":null,"anual":null},"6289":{"pes":null,"sal":null,"anual":null},"6300":{"pes":null,"sal":null,"anual":null},"6327":{"pes":null,"sal":null,"anual":null},"6335":{"pes":null,"sal":null,"anual":null},"6343":{"pes":null,"sal":null,"anual":null},"6360":{"pes":null,"sal":null,"anual":null},"6378":{"pes":null,"sal":null,"anual":null},"6396":{"pes":null,"sal":null,"anual":null},"6424":{"pes":null,"sal":null,"anual":null},"6433":{"pes":null,"sal":null,"anual":null},"6441":{"pes":null,"sal":null,"anual":null},"6508":{"pes":null,"sal":null,"anual":null},"6518":{"pes":null,"sal":null,"anual":null},"6524":{"pes":null,"sal":null,"anual":null},"6530":{"pes":null,"sal":null,"anual":null},"6734":{"pes":null,"sal":null,"anual":null},"6742":{"pes":null,"sal":null,"anual":null},"6769":{"pes":null,"sal":null,"anual":null},"6906":{"pes":null,"sal":null,"anual":null},"6930":{"pes":null,"sal":null,"anual":null},"6933":{"pes":null,"sal":null,"anual":null},"6935":{"pes":null,"sal":null,"anual":null},"6961":{"pes":null,"sal":null,"anual":null},"8249":{"pes":null,"sal":null,"anual":null},"8265":{"pes":null,"sal":null,"anual":null}}};
+var REF_TOTAL_SOGIPA={"fonte":"TOTAL SOGIPA — Orçamento de Pessoal por Centro de Custo 2027","baseOrigem":"Relação de empregados e salário-base emitida em 03/09/2026","ccs":66,"pessoas":null,"folhaBase":null,"provisoes":null,"encargos":null,"anual":null,"premissas":[{"nome":"Ano do orçamento","valor":null},{"nome":"Reajuste salarial","valor":null},{"nome":"Meses de salário","valor":null},{"nome":"Fator de 13º salário","valor":null},{"nome":"Fator adicional de férias","valor":null},{"nome":"Encargos sobre salários + 13º + férias","valor":null}],"checks":[{"nome":"Quantidade de colaboradores","delta":null,"status":"PASS"},{"nome":"Folha-base total","delta":null,"status":"PASS"},{"nome":"Orçamento anual por CC x detalhe","delta":null,"status":"PASS"}],"escopo":["Altere apenas as células amarelas da coluna Valor.","A base considera o salário informado no arquivo de origem e permanência durante todo o ano.","Benefícios, horas extras, adicionais e provisões não presentes na origem não foram incluídos."],"porCC":{"5010":{"pes":null,"sal":null,"anual":null},"5029":{"pes":null,"sal":null,"anual":null},"5037":{"pes":null,"sal":null,"anual":null},"5039":{"pes":null,"sal":null,"anual":null},"5040":{"pes":null,"sal":null,"anual":null},"5053":{"pes":null,"sal":null,"anual":null},"5060":{"pes":null,"sal":null,"anual":null},"5061":{"pes":null,"sal":null,"anual":null},"5071":{"pes":null,"sal":null,"anual":null},"5072":{"pes":null,"sal":null,"anual":null},"5073":{"pes":null,"sal":null,"anual":null},"5074":{"pes":null,"sal":null,"anual":null},"5096":{"pes":null,"sal":null,"anual":null},"5320":{"pes":null,"sal":null,"anual":null},"5398":{"pes":null,"sal":null,"anual":null},"5436":{"pes":null,"sal":null,"anual":null},"5441":{"pes":null,"sal":null,"anual":null},"5444":{"pes":null,"sal":null,"anual":null},"5479":{"pes":null,"sal":null,"anual":null},"5517":{"pes":null,"sal":null,"anual":null},"5518":{"pes":null,"sal":null,"anual":null},"5529":{"pes":null,"sal":null,"anual":null},"5531":{"pes":null,"sal":null,"anual":null},"5533":{"pes":null,"sal":null,"anual":null},"5544":{"pes":null,"sal":null,"anual":null},"5547":{"pes":null,"sal":null,"anual":null},"5754":{"pes":null,"sal":null,"anual":null},"5904":{"pes":null,"sal":null,"anual":null},"6025":{"pes":null,"sal":null,"anual":null},"6041":{"pes":null,"sal":null,"anual":null},"6068":{"pes":null,"sal":null,"anual":null},"6069":{"pes":null,"sal":null,"anual":null},"6084":{"pes":null,"sal":null,"anual":null},"6086":{"pes":null,"sal":null,"anual":null},"6092":{"pes":null,"sal":null,"anual":null},"6106":{"pes":null,"sal":null,"anual":null},"6149":{"pes":null,"sal":null,"anual":null},"6157":{"pes":null,"sal":null,"anual":null},"6165":{"pes":null,"sal":null,"anual":null},"6190":{"pes":null,"sal":null,"anual":null},"6246":{"pes":null,"sal":null,"anual":null},"6289":{"pes":null,"sal":null,"anual":null},"6300":{"pes":null,"sal":null,"anual":null},"6327":{"pes":null,"sal":null,"anual":null},"6335":{"pes":null,"sal":null,"anual":null},"6343":{"pes":null,"sal":null,"anual":null},"6360":{"pes":null,"sal":null,"anual":null},"6378":{"pes":null,"sal":null,"anual":null},"6396":{"pes":null,"sal":null,"anual":null},"6424":{"pes":null,"sal":null,"anual":null},"6433":{"pes":null,"sal":null,"anual":null},"6441":{"pes":null,"sal":null,"anual":null},"6508":{"pes":null,"sal":null,"anual":null},"6518":{"pes":null,"sal":null,"anual":null},"6524":{"pes":null,"sal":null,"anual":null},"6530":{"pes":null,"sal":null,"anual":null},"6734":{"pes":null,"sal":null,"anual":null},"6742":{"pes":null,"sal":null,"anual":null},"6769":{"pes":null,"sal":null,"anual":null},"6906":{"pes":null,"sal":null,"anual":null},"6930":{"pes":null,"sal":null,"anual":null},"6933":{"pes":null,"sal":null,"anual":null},"6935":{"pes":null,"sal":null,"anual":null},"6961":{"pes":null,"sal":null,"anual":null},"8249":{"pes":null,"sal":null,"anual":null},"8265":{"pes":null,"sal":null,"anual":null}}};
 </script>
 <script>/* Grade mensal das matrizes — DADO-FONTE, imutável.
    Extraído da seção DISTRIBUIÇÃO ORÇAMENTÁRIA MENSAL de cada centro de custo.
@@ -2881,7 +2884,7 @@ var GRADE_MATRIZ={"Administrativa":{},"Esportes":{},"Gerência Geral":{},"Opera�
 /* Matriz Marketing SOGIPA — Orçamento 2027. DADO-FONTE, imutável.
    Matriz mensal, mix estratégico por eixo, plano 2027 e seis cronogramas.
    Os cronogramas vieram vazios: são o campo de preenchimento do gestor. */
-var MKT_MATRIZ={"series":{"r22":[null,null,null,null,null,null,null,null,null,null,null,null],"r23":[null,null,null,null,null,null,null,null,null,null,null,null],"r24":[null,null,null,null,null,null,null,null,null,null,null,null],"r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,2000,null,null,null],"r26":[null,null,null,null,null,null,null,null,null,null,null,null],"p26":[null,null,null,null,null,null,null,null,2000,null,null,null]},"controle":{"r22":null,"r23":null,"r24":null,"r25":null,"o26":null,"r26":null,"p26":null},"notas":["Atualização de preços de fornecedores e mídia.","Crescimento de campanhas, alcance ou projetos.","Previsão 2026 ajustada pelas premissas.","Campo de acompanhamento mensal."],"eixos":[{"nome":"Institucional","r22":null,"r23":null,"r24":null,"r25":null,"r26":null,"part26":null},{"nome":"Captação e Crescimento","r22":null,"r23":null,"r24":null,"r25":null,"r26":null,"part26":null},{"nome":"Retenção e Relacionamento","r22":null,"r23":null,"r24":null,"r25":null,"r26":null,"part26":null},{"nome":"Marketing Esportivo","r22":2000,"r23":null,"r24":null,"r25":2080,"r26":null,"part26":null},{"nome":"Endomarketing","r22":null,"r23":null,"r24":null,"r25":null,"r26":null,"part26":null},{"nome":"Apoio a Projetos","r22":null,"r23":null,"r24":null,"r25":null,"r26":null,"part26":null}],"mixTotal":{"r22":null,"r23":null,"r24":null,"r25":null,"r26":null},"mixNota":"A classificação gerencial consolida contas contábeis semelhantes: captação, retenção/relacionamento, marketing esportivo, endomarketing, institucional e apoio a projetos.","frentes":["Marketing Institucional","Marketing de Captação","Endomarketing","Marketing Esportivo","Marketing de Eventos","Relacionamento e Retenção"],"cronos":[{"aba":"Crono Institucional","frente":"Marketing Institucional","linhas":[],"capacidade":null},{"aba":"Crono Captação","frente":"Marketing de Captação","linhas":[],"capacidade":null},{"aba":"Crono Endomarketing","frente":"Endomarketing","linhas":[],"capacidade":null},{"aba":"Crono Esportivo","frente":"Marketing Esportivo","linhas":[],"capacidade":null},{"aba":"Crono Eventos","frente":"Marketing de Eventos","linhas":[],"capacidade":null},{"aba":"Crono Relacionamento","frente":"Relacionamento e Retenção","linhas":[],"capacidade":null}],"leitura":[["Execução do orçamento anual","1.2142676136363637","ACIMA","Realizado até agosto já supera o orçamento anual."],["Desvio da previsão 2026","0.3960857954545456","ATENÇÃO","Forecast considera realizado até agosto e orçamento para set-dez."],["Concentração em agosto","0.4725344635819103","ALTA","Parcela relevante do gasto anual concentrada em um único mês."],["Crescimento previsto vs 2025","2.2307316665246626","EXPANSÃO","Aumento expressivo exige vínculo com objetivos e indicadores."]],"diretrizes":["1. Separar verba recorrente de campanhas e projetos pontuais.","2. Vincular cada ação a objetivo, público, canal e KPI.","3. Distribuir o orçamento por mês para evitar concentração sem planejamento.","4. Acompanhar Orçamento e desvios mensalmente.","5. Avaliar alcance, engajamento, leads, conversão e retenção conforme a ação."]};
+var MKT_MATRIZ={"series":{"r22":[null,null,null,null,null,null,null,null,null,null,null,null],"r23":[null,null,null,null,null,null,null,null,null,null,null,null],"r24":[null,null,null,null,null,null,null,null,null,null,null,null],"r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"r26":[null,null,null,null,null,null,null,null,null,null,null,null],"p26":[null,null,null,null,null,null,null,null,null,null,null,null]},"controle":{"r22":null,"r23":null,"r24":null,"r25":null,"o26":null,"r26":null,"p26":null},"notas":["Atualização de preços de fornecedores e mídia.","Crescimento de campanhas, alcance ou projetos.","Previsão 2026 ajustada pelas premissas.","Campo de acompanhamento mensal."],"eixos":[{"nome":"Institucional","r22":null,"r23":null,"r24":null,"r25":null,"r26":null,"part26":null},{"nome":"Captação e Crescimento","r22":null,"r23":null,"r24":null,"r25":null,"r26":null,"part26":null},{"nome":"Retenção e Relacionamento","r22":null,"r23":null,"r24":null,"r25":null,"r26":null,"part26":null},{"nome":"Marketing Esportivo","r22":null,"r23":null,"r24":null,"r25":null,"r26":null,"part26":null},{"nome":"Endomarketing","r22":null,"r23":null,"r24":null,"r25":null,"r26":null,"part26":null},{"nome":"Apoio a Projetos","r22":null,"r23":null,"r24":null,"r25":null,"r26":null,"part26":null}],"mixTotal":{"r22":null,"r23":null,"r24":null,"r25":null,"r26":null},"mixNota":"A classificação gerencial consolida contas contábeis semelhantes: captação, retenção/relacionamento, marketing esportivo, endomarketing, institucional e apoio a projetos.","frentes":["Marketing Institucional","Marketing de Captação","Endomarketing","Marketing Esportivo","Marketing de Eventos","Relacionamento e Retenção"],"cronos":[{"aba":"Crono Institucional","frente":"Marketing Institucional","linhas":[],"capacidade":null},{"aba":"Crono Captação","frente":"Marketing de Captação","linhas":[],"capacidade":null},{"aba":"Crono Endomarketing","frente":"Endomarketing","linhas":[],"capacidade":null},{"aba":"Crono Esportivo","frente":"Marketing Esportivo","linhas":[],"capacidade":null},{"aba":"Crono Eventos","frente":"Marketing de Eventos","linhas":[],"capacidade":null},{"aba":"Crono Relacionamento","frente":"Relacionamento e Retenção","linhas":[],"capacidade":null}],"leitura":[["Execução do orçamento anual","1.2142676136363637","ACIMA","Realizado até agosto já supera o orçamento anual."],["Desvio da previsão 2026","0.3960857954545456","ATENÇÃO","Forecast considera realizado até agosto e orçamento para set-dez."],["Concentração em agosto","0.4725344635819103","ALTA","Parcela relevante do gasto anual concentrada em um único mês."],["Crescimento previsto vs 2025","2.2307316665246626","EXPANSÃO","Aumento expressivo exige vínculo com objetivos e indicadores."]],"diretrizes":["1. Separar verba recorrente de campanhas e projetos pontuais.","2. Vincular cada ação a objetivo, público, canal e KPI.","3. Distribuir o orçamento por mês para evitar concentração sem planejamento.","4. Acompanhar Orçamento e desvios mensalmente.","5. Avaliar alcance, engajamento, leads, conversão e retenção conforme a ação."]};
 
 var CHU_MATRIZ={"series":{"r22":[null,null,null,null,null,null,null,null,null,null,null,null],"r23":[null,null,null,null,null,null,null,null,null,null,null,null],"r24":[null,null,null,null,null,null,null,null,null,null,null,null],"r25":[null,null,null,null,null,null,null,null,null,null,null,null],"o26":[null,null,null,null,null,null,null,null,null,null,null,null],"r26":[null,null,null,null,null,null,null,null,null,null,null,null],"p26":[null,null,null,null,null,null,null,null,null,null,null,null]},"controle":{"r22":null,"r23":null,"r24":null,"r25":null,"o26":null,"r26":null,"p26":null,"varRS":null,"varPct":null},"notas":["Realizado 2022-2025: retrospectivas anuais da conta Receitas Churrasqueiras.","Realizado 2026: retrospectiva janeiro a setembro/2026.","Orçado 2026: DRE Controle Orçamentário Churrasqueira - Junior.","Previsão 2026: realizado até setembro + orçamento de outubro a dezembro.","Nota: parcelas mensais arredondadas do orçamento somam R$ 310.001; o DRE informa total anual de R$ 310.000."],"dreAnual":null};
 
@@ -3559,7 +3562,7 @@ var ARVORE_ORC = [
  }
 ];
 
-var LOC_MATRIZ={"saloes":[{"nome":"Salão Bremen","reajuste":null,"incremento":null,"r25":[null,null,null,null,null,null,null,null,null,null,null,null],"r26":[null,null,null,null,null,null,null,null,null,null,null,null],"p26":[null,null,null,null,null,null,null,null,null,null,null,null],"o27":[null,null,null,null,null,null,null,null,null,null,null,null]},{"nome":"Anfiteatro - Cinema","reajuste":null,"incremento":null,"r25":[null,null,null,null,null,null,null,null,null,null,null,null],"r26":[null,null,null,null,null,null,null,null,null,null,null,null],"p26":[null,null,null,null,null,null,null,null,null,null,null,null],"o27":[null,null,null,null,null,null,null,null,null,null,null,null]},{"nome":"Salão DCG","reajuste":null,"incremento":null,"r25":[null,null,null,null,null,null,null,null,null,null,null,null],"r26":[null,null,null,null,null,null,null,null,null,null,null,null],"p26":[null,null,null,null,null,null,null,null,null,null,null,null],"o27":[null,null,null,null,null,null,null,null,null,null,null,null]},{"nome":"Salão Dona Leopoldina","reajuste":null,"incremento":null,"r25":[null,null,null,null,null,null,2005,null,null,null,null,null],"r26":[null,null,null,1900,null,null,null,null,null,null,null,null],"p26":[null,null,null,1900,null,null,null,null,null,null,null,null],"o27":[null,null,1926,1976,1948,null,null,null,null,null,null,null]},{"nome":"Salão Hannover","reajuste":null,"incremento":null,"r25":[null,null,null,null,null,null,null,null,null,null,null,null],"r26":[null,null,null,null,null,null,null,null,null,null,null,null],"p26":[null,null,null,null,null,null,null,null,null,null,null,null],"o27":[null,null,null,null,null,null,null,null,null,null,null,null]},{"nome":"Salão Baviera","reajuste":null,"incremento":null,"r25":[null,null,null,null,null,null,null,null,2083,null,null,null],"r26":[null,null,null,null,null,null,null,null,null,null,null,null],"p26":[null,null,null,null,null,null,null,null,null,null,null,null],"o27":[null,null,null,null,null,null,null,null,null,null,null,null]},{"nome":"Salão Hannover/Baviera","reajuste":null,"incremento":null,"r25":[null,null,null,null,null,null,null,null,null,null,null,null],"r26":[null,null,null,null,null,null,null,null,null,null,null,null],"p26":[null,null,null,null,null,null,null,null,null,null,null,null],"o27":[null,null,null,null,null,null,null,null,null,null,null,null]},{"nome":"Salão Turner","reajuste":null,"incremento":null,"r25":[null,null,null,null,null,null,null,null,null,null,null,null],"r26":[null,null,null,null,null,null,null,null,null,null,null,null],"p26":[null,null,null,null,null,null,null,null,null,null,null,null],"o27":[null,null,null,null,null,null,null,null,null,null,null,null]},{"nome":"Bolão","reajuste":null,"incremento":null,"r25":[null,null,null,null,null,null,null,null,null,null,null,null],"r26":[null,null,null,null,null,null,null,null,null,null,null,null],"p26":[null,null,null,null,null,null,null,null,null,null,null,null],"o27":[null,null,null,null,null,null,null,null,null,null,null,null]},{"nome":"Salão de Festas","reajuste":null,"incremento":null,"r25":[null,null,null,null,null,null,null,null,null,null,null,null],"r26":[null,null,null,null,null,null,null,null,null,null,null,null],"p26":[null,null,null,null,null,null,null,null,null,null,null,null],"o27":[null,null,null,null,null,null,null,null,null,null,null,null]},{"nome":"Sala Multiuso","reajuste":null,"incremento":null,"r25":[null,null,null,null,null,null,null,null,null,null,null,null],"r26":[null,null,null,null,null,null,null,null,null,null,null,null],"p26":[null,null,null,null,null,null,null,null,null,null,null,null],"o27":[null,null,null,null,null,null,null,null,null,null,null,null]}],"controle":{"r25":{"porSalao":[null,null,null,null,null,null,null,null,null,null,null],"total":null},"r26":{"porSalao":[null,null,null,null,null,null,null,null,null,null,null],"total":null},"p26":{"porSalao":[null,null,null,null,null,null,null,null,null,null,null],"total":null},"o27":{"porSalao":[null,null,null,null,null,null,null,null,null,null,null],"total":null},"mensal":{"r25":[null,null,null,null,null,null,null,null,null,null,null,null],"r26":[null,null,null,null,null,null,null,null,null,null,null,null],"p26":[null,null,null,null,null,null,null,null,null,null,null,null],"o27":[null,null,null,null,null,null,null,null,null,null,null,null]}}};
+var LOC_MATRIZ={"saloes":[{"nome":"Salão Bremen","reajuste":null,"incremento":null,"r25":[null,null,null,null,null,null,null,null,null,null,null,null],"r26":[null,null,null,null,null,null,null,null,null,null,null,null],"p26":[null,null,null,null,null,null,null,null,null,null,null,null],"o27":[null,null,null,null,null,null,null,null,null,null,null,null]},{"nome":"Anfiteatro - Cinema","reajuste":null,"incremento":null,"r25":[null,null,null,null,null,null,null,null,null,null,null,null],"r26":[null,null,null,null,null,null,null,null,null,null,null,null],"p26":[null,null,null,null,null,null,null,null,null,null,null,null],"o27":[null,null,null,null,null,null,null,null,null,null,null,null]},{"nome":"Salão DCG","reajuste":null,"incremento":null,"r25":[null,null,null,null,null,null,null,null,null,null,null,null],"r26":[null,null,null,null,null,null,null,null,null,null,null,null],"p26":[null,null,null,null,null,null,null,null,null,null,null,null],"o27":[null,null,null,null,null,null,null,null,null,null,null,null]},{"nome":"Salão Dona Leopoldina","reajuste":null,"incremento":null,"r25":[null,null,null,null,null,null,null,null,null,null,null,null],"r26":[null,null,null,null,null,null,null,null,null,null,null,null],"p26":[null,null,null,null,null,null,null,null,null,null,null,null],"o27":[null,null,null,null,null,null,null,null,null,null,null,null]},{"nome":"Salão Hannover","reajuste":null,"incremento":null,"r25":[null,null,null,null,null,null,null,null,null,null,null,null],"r26":[null,null,null,null,null,null,null,null,null,null,null,null],"p26":[null,null,null,null,null,null,null,null,null,null,null,null],"o27":[null,null,null,null,null,null,null,null,null,null,null,null]},{"nome":"Salão Baviera","reajuste":null,"incremento":null,"r25":[null,null,null,null,null,null,null,null,null,null,null,null],"r26":[null,null,null,null,null,null,null,null,null,null,null,null],"p26":[null,null,null,null,null,null,null,null,null,null,null,null],"o27":[null,null,null,null,null,null,null,null,null,null,null,null]},{"nome":"Salão Hannover/Baviera","reajuste":null,"incremento":null,"r25":[null,null,null,null,null,null,null,null,null,null,null,null],"r26":[null,null,null,null,null,null,null,null,null,null,null,null],"p26":[null,null,null,null,null,null,null,null,null,null,null,null],"o27":[null,null,null,null,null,null,null,null,null,null,null,null]},{"nome":"Salão Turner","reajuste":null,"incremento":null,"r25":[null,null,null,null,null,null,null,null,null,null,null,null],"r26":[null,null,null,null,null,null,null,null,null,null,null,null],"p26":[null,null,null,null,null,null,null,null,null,null,null,null],"o27":[null,null,null,null,null,null,null,null,null,null,null,null]},{"nome":"Bolão","reajuste":null,"incremento":null,"r25":[null,null,null,null,null,null,null,null,null,null,null,null],"r26":[null,null,null,null,null,null,null,null,null,null,null,null],"p26":[null,null,null,null,null,null,null,null,null,null,null,null],"o27":[null,null,null,null,null,null,null,null,null,null,null,null]},{"nome":"Salão de Festas","reajuste":null,"incremento":null,"r25":[null,null,null,null,null,null,null,null,null,null,null,null],"r26":[null,null,null,null,null,null,null,null,null,null,null,null],"p26":[null,null,null,null,null,null,null,null,null,null,null,null],"o27":[null,null,null,null,null,null,null,null,null,null,null,null]},{"nome":"Sala Multiuso","reajuste":null,"incremento":null,"r25":[null,null,null,null,null,null,null,null,null,null,null,null],"r26":[null,null,null,null,null,null,null,null,null,null,null,null],"p26":[null,null,null,null,null,null,null,null,null,null,null,null],"o27":[null,null,null,null,null,null,null,null,null,null,null,null]}],"controle":{"r25":{"porSalao":[null,null,null,null,null,null,null,null,null,null,null],"total":null},"r26":{"porSalao":[null,null,null,null,null,null,null,null,null,null,null],"total":null},"p26":{"porSalao":[null,null,null,null,null,null,null,null,null,null,null],"total":null},"o27":{"porSalao":[null,null,null,null,null,null,null,null,null,null,null],"total":null},"mensal":{"r25":[null,null,null,null,null,null,null,null,null,null,null,null],"r26":[null,null,null,null,null,null,null,null,null,null,null,null],"p26":[null,null,null,null,null,null,null,null,null,null,null,null],"o27":[null,null,null,null,null,null,null,null,null,null,null,null]}}};
 </script>
 
 
@@ -3575,12 +3578,23 @@ var LOC_MATRIZ={"saloes":[{"nome":"Salão Bremen","reajuste":null,"incremento":n
    ══════════════════════════════════════════════════════════════ */
 var APP = (function () {
   "use strict";
+  /* APP.IDX é definido como leitura viva logo após o fechamento desta IIFE,
+     para as telas que exibem o percentual acompanharem o que o banco mandou. */
 
   /* Rótulos de apresentação dos meses. Maio nunca é abreviado — os demais
      ficam em três letras. Índices e posições não mudam: isto é só rótulo. */
   var MESES = ["Jan", "Fev", "Mar", "Abr", "Maio", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
   var MES_REAL = 7;                 // realizado disponível até julho/2026
   var IDX = DB.IDX;                 // Indexador SOGIPA 2027
+  /* ─── O INDEXADOR É LIDO A CADA CHAMADA ───
+     Capturado uma vez no carregamento, ele ficaria null para sempre na build
+     pública: o parâmetro só chega depois, do banco. E null não é neutro aqui
+     — (1 + null) é 1 em JavaScript, então a DRE exibiria a base de 2026 com
+     rótulo de 2027. Um número plausível e errado é pior que um vazio. */
+  function idxVivo() {
+    if (DB && DB.IDX !== null && DB.IDX !== undefined) return DB.IDX;
+    return null;
+  }
   var L = DB.linhas;
 
   function seq(a, b, lvl) { var o = []; for (var i = a; i <= b; i++) o.push([i, lvl]); return o; }
@@ -3769,19 +3783,50 @@ var APP = (function () {
   function somaAte(a, n) { var t = 0; for (var i = 0; i < n; i++) t += (a[i] || 0); return t; }
   function meses() { return state.periodo === "Jan–Jul" ? MES_REAL : 12; }
 
+  /* ─── SÉRIE SEM NENHUM VALOR RESPONDE null, NÃO ZERO ───
+     Duas coerções silenciosas do JavaScript transformavam ausência em zero
+     aqui dentro: somaAte acumula com (v || 0), e null × (1 + IDX) é 0.
+
+     Com a Base presente isso nunca aparecia, porque não havia série vazia.
+     Na build pública, onde os valores passam a vir do banco, toda a Base
+     nasce vazia — e as duas coerções faziam a DRE exibir "R$ 0" com cara
+     de orçamento, em vez de N/D. Um zero inventado é pior que um vazio
+     declarado: o vazio o gestor questiona, o zero ele acredita.
+
+     Onde há dado, estas funções respondem exatamente o que respondiam. */
+  function temValor(a) {
+    if (!a || !a.length) return false;
+    for (var i = 0; i < a.length; i++) {
+      if (a[i] !== null && a[i] !== undefined) return true;
+    }
+    return false;
+  }
+
   var MODEL = {
-    base26: function (id) { return somaAte(L[id].base26, meses()); },
-    real25: function (id) { return somaAte(L[id].r25, meses()); },
-    orc26: function (id) { return somaAte(L[id].o26, meses()); },
-    realJJ: function (id) { return somaAte(L[id].g26, MES_REAL); },
-    orcJJ: function (id) { return somaAte(L[id].o26, MES_REAL); },
-    prop27: function (id) { return somaAte(L[id].base26, meses()) * (1 + IDX); },
+    temValor: temValor,
+    base26: function (id) { return temValor(L[id].base26) ? somaAte(L[id].base26, meses()) : null; },
+    real25: function (id) { return temValor(L[id].r25) ? somaAte(L[id].r25, meses()) : null; },
+    orc26: function (id) { return temValor(L[id].o26) ? somaAte(L[id].o26, meses()) : null; },
+    realJJ: function (id) { return temValor(L[id].g26) ? somaAte(L[id].g26, MES_REAL) : null; },
+    orcJJ: function (id) { return temValor(L[id].o26) ? somaAte(L[id].o26, MES_REAL) : null; },
+    prop27: function (id) {
+      if (!temValor(L[id].base26)) return null;
+      var k = idxVivo();
+      if (k === null) return null;   /* sem indexador não há projeção 2027 */
+      return somaAte(L[id].base26, meses()) * (1 + k);
+    },
     m27: function (id) { return DB.m27[id] || null; },
-    hist: function (id) { return L[id].hist || null; },
+    hist: function (id) { return temValor(L[id].hist) ? L[id].hist : null; },
     serie27: function (id) {
       var m = DB.m27[id];
-      if (m) return m;
-      return L[id].base26.map(function (v) { return v * (1 + IDX); });
+      if (m && temValor(m)) return m;
+      if (!temValor(L[id].base26)) return null;
+      var k = idxVivo();
+      if (k === null) return null;
+      /* Mês ausente continua ausente dentro de uma série que existe. */
+      return L[id].base26.map(function (v) {
+        return (v === null || v === undefined) ? null : v * (1 + k);
+      });
     },
 
     /* Cor sai da NATUREZA da conta, nunca do sinal matemático.
@@ -4356,7 +4401,7 @@ var APP = (function () {
   };
 
   return {
-    MESES: MESES, MES_REAL: MES_REAL, IDX: IDX, L: L, TREE: TREE, UNITS: UNITS,
+    MESES: MESES, MES_REAL: MES_REAL, idxVivo: idxVivo, L: L, TREE: TREE, UNITS: UNITS,
     REC_OPER: REC_OPER, DESP_OPER: DESP_OPER, AREAS_EVENTOS: AREAS_EVENTOS, WF: WF, wfById: wfById, tagProto: tagProto,
     money: money, moneySign: moneySign, moneyC: moneyC, parseMoney: parseMoney, pessoas: pessoas, plural: plural,
     state: state, PROTO: PROTO, MODEL: MODEL, EX: EX, somaAte: somaAte, meses: meses,
@@ -5126,7 +5171,8 @@ var APP = (function () {
     a.desvioPct = a.orcJJ ? a.desvio / Math.abs(a.orcJJ) : null;
     a.favoravel = M.favoravel(nat, a.desvio);
     a.material = M.material(a.desvio, a.orcJJ);
-    a.prop27 = a.base26 * (1 + A.IDX);
+    a.prop27 = (a.base26 === null || A.IDX === null || A.IDX === undefined)
+      ? null : a.base26 * (1 + A.IDX);
 
     /* ritmo: quanto do ano já foi consumido contra quanto do ano passou */
     a.exec = a.orcAno ? a.realJJ / a.orcAno : 0;
@@ -9616,13 +9662,77 @@ var APP = (function () {
     /* A reconciliação da matriz consolidada entra aqui, e não em
        Controles, porque as gerências de apoio não têm a aba Detalhes:
        em Controles ela ficaria inalcançável para oito das nove. */
-    return quadroLista(PP.pessoasDoQuadro(g), null, null, true) + paMatrizGerencia(g);
+    /* ─── OS QUATRO BLOCOS DE RECONCILIAÇÃO FICAM OCULTOS ───
+       Ocultos na interface, a pedido: matriz consolidada de eventos e
+       benefícios, alerta de divergência, reconciliação por centro de custo e
+       registros para revisão. São exatamente, e só, o que paMatrizGerencia()
+       produz — conferido bloco a bloco.
+
+       A função continua inteira logo abaixo, com os dados, os filtros e os
+       cálculos intactos: basta remover o comentário desta linha para que os
+       quatro blocos voltem. Nada foi excluído.
+
+       Não foram envolvidos num display:none porque a marcação continuaria no
+       código-fonte da página publicada, com nome, matrícula e salário dentro
+       dela. Não renderizar é menor e não expõe. */
+    return quadroLista(PP.pessoasDoQuadro(g), null, null, true, g.nome)
+      /* + paMatrizGerencia(g) */;
   }
   /* Um único componente de Quadro Atual, usado por gerências, Eventos e
      Locações. `nome` só muda o título; a estrutura é sempre a mesma. */
-  function quadroLista(todos, nome, aviso, comImport) {
+  function quadroLista(todos, nome, aviso, comImport, areaRef) {
     var g = { nome: nome || "" };
     if (!todos.length) {
+      /* ─── TRÊS SITUAÇÕES DIFERENTES, TRÊS RESPOSTAS DIFERENTES ───
+         Antes havia uma frase só para as três, e ela afirmava a mais grave:
+         que a área não tem pessoa. Falha de integração não é quadro vazio.
+
+           · sem sessão ou sem autorização → o banco não liberou
+           · carga não concluída           → ainda não chegou
+           · carga concluída e zero pessoa → aí sim, quadro vazio */
+      var SD = window.SBDATA, AU = window.AUTH;
+      var autent = !!(AU && typeof AU.autenticado === "function" && AU.autenticado());
+      if (!autent) {
+        return semDados("Entre no sistema para ver o quadro",
+          "O quadro de pessoal só é carregado para usuário autenticado. " +
+          "Nenhum dado de pessoal viaja no arquivo publicado.");
+      }
+      if (SD && typeof SD.pessoasNoQuadro === "function") {
+        var est = SD.estado;
+        if (est === "semAutorizacao") {
+          return semDados("Área não liberada para o seu perfil",
+            "O banco não autorizou a consulta de pessoal desta área. " +
+            "Isto é resposta de permissão, não ausência de funcionários.");
+        }
+        if (est === "erro" || est === "formaDesconhecida") {
+          return semDados("Não foi possível carregar o quadro",
+            "A consulta ao banco não respondeu como esperado, então nada é exibido. " +
+            "Isto é falha de integração, não ausência de funcionários." +
+            (SD.mensagem ? " " + A.esc(SD.mensagem) : ""));
+        }
+        if (est !== "pronto") {
+          return semDados("Quadro ainda não carregado",
+            "Os registros de pessoal vêm do banco depois da autenticação e ainda " +
+            "não chegaram. Nada é exibido até a carga concluir.");
+        }
+        if (!SD.pessoasNoQuadro()) {
+          return semDados("Nenhum registro autorizado",
+            "A carga concluiu, mas o banco não liberou nenhuma pessoa para o seu perfil. " +
+            "Pode ser permissão ou base sem registro — o diagnóstico está em " +
+            "SBDATA.diagnostico().");
+        }
+        /* A carga trouxe gente, mas não desta área. Dizer "quadro vazio" aqui
+           seria afirmar que a área não tem funcionário, quando o que houve foi
+           o banco não liberar esta área para este perfil. */
+        if (areaRef && typeof SD.areaCarregada === "function" && !SD.areaCarregada(areaRef)) {
+          return semDados("Área fora do seu escopo de consulta",
+            "A carga concluiu e trouxe o quadro das áreas que o seu perfil pode ver. " +
+            A.esc(areaRef) + " não está entre elas, então nada é exibido aqui — " +
+            "o que não significa que a área esteja sem funcionários.");
+        }
+      }
+      /* Carga concluída, há pessoas no sistema, e nenhuma nesta área:
+         este é o único caso em que "quadro vazio" é afirmação verdadeira. */
       return (comImport ? faixaImportar() : "") +
         semDados("Quadro vazio", "Nenhuma pessoa vinculada a esta área na base de pessoal.");
     }
@@ -9991,6 +10101,9 @@ var APP = (function () {
     return '<td class="num ' + (Math.abs(v) > 0.005 ? "desf" : "muted") + '">' + fmt(v) + "</td>";
   }
   function paMatrizGerencia(g) {
+    // Blocos tecnicos de reconciliacao ocultos por decisao de interface.
+    // Preservar a implementacao abaixo para auditoria e eventual reativacao.
+    return "";
     var PA = window.PESSOAL_PA27;
     if (!PA) return "";
     var linhas = PA.reconciliacao.porCC.filter(function (x) { return x.gerencia === g.nome; });
@@ -19568,7 +19681,7 @@ window.SOL_ACOES = function (cmd, render) {
    estratégicas e nenhuma natureza contábil por conta. Nenhuma rubrica foi
    criada, nenhum valor foi classificado como receita, nada foi distribuído
    entre contas da DRE. A integração financeira permanece INATIVA. */
-var MKT_PLANO_2027 = {"titulo":"PLANEJAMENTO ORÇAMENTÁRIO DE MARKETING — 2027","exercicio":2027,"fonte":{"arquivo":"marketing - importar para o painel.xlsx","aba":"Plano 2027","cabecalho":"PLANO DE MARKETING 2027 | CONSOLIDAÇÃO DOS CRONOGRAMAS","subtitulo":"Visão mensal por frente estratégica | Valores alimentados automaticamente pelas abas específicas","importadoEm":"2026-10-20","valoresDeCache":true,"cronogramasExternos":["Crono Institucional","Crono Captação"],"observacao":"Valores calculados disponíveis no arquivo; cronogramas de origem não enviados."},"classificacao":{"rubrica":null,"natureza":null,"situacao":"pendente","nota":"Planejamento de Marketing 2027 com classificação contábil detalhada pendente."},"integraDRE":false,"frentes":[{"id":"institucional","nome":"Marketing Institucional","linhaFonte":null,"referencia":["='[1]Crono Institucional'!F22","='[1]Crono Institucional'!G22","='[1]Crono Institucional'!H22","='[1]Crono Institucional'!I22","='[1]Crono Institucional'!J22","='[1]Crono Institucional'!K22","='[1]Crono Institucional'!L22","='[1]Crono Institucional'!M22","='[1]Crono Institucional'!N22","='[1]Crono Institucional'!O22","='[1]Crono Institucional'!P22","='[1]Crono Institucional'!Q22"],"meses":[null,null,null,null,null,null,null,null,null,null,null,null],"total":null},{"id":"comercial","nome":"Marketing Comercial","linhaFonte":null,"referencia":["='[1]Crono Captação'!F22","='[1]Crono Captação'!G22","='[1]Crono Captação'!H22","='[1]Crono Captação'!I22","='[1]Crono Captação'!J22","='[1]Crono Captação'!K22","='[1]Crono Captação'!L22","='[1]Crono Captação'!M22","='[1]Crono Captação'!N22","='[1]Crono Captação'!O22","='[1]Crono Captação'!P22","='[1]Crono Captação'!Q22"],"meses":[2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000],"total":null}],"totalMensalFonte":[null,null,null,null,null,null,null,null,null,null,null,null],"totalGeralFonte":null,"linhaTotalFonte":null};
+var MKT_PLANO_2027 = {"titulo":"PLANEJAMENTO ORÇAMENTÁRIO DE MARKETING — 2027","exercicio":2027,"fonte":{"arquivo":"marketing - importar para o painel.xlsx","aba":"Plano 2027","cabecalho":"PLANO DE MARKETING 2027 | CONSOLIDAÇÃO DOS CRONOGRAMAS","subtitulo":"Visão mensal por frente estratégica | Valores alimentados automaticamente pelas abas específicas","importadoEm":"2026-10-20","valoresDeCache":true,"cronogramasExternos":["Crono Institucional","Crono Captação"],"observacao":"Valores calculados disponíveis no arquivo; cronogramas de origem não enviados."},"classificacao":{"rubrica":null,"natureza":null,"situacao":"pendente","nota":"Planejamento de Marketing 2027 com classificação contábil detalhada pendente."},"integraDRE":false,"frentes":[{"id":"institucional","nome":"Marketing Institucional","linhaFonte":null,"referencia":["='[1]Crono Institucional'!F22","='[1]Crono Institucional'!G22","='[1]Crono Institucional'!H22","='[1]Crono Institucional'!I22","='[1]Crono Institucional'!J22","='[1]Crono Institucional'!K22","='[1]Crono Institucional'!L22","='[1]Crono Institucional'!M22","='[1]Crono Institucional'!N22","='[1]Crono Institucional'!O22","='[1]Crono Institucional'!P22","='[1]Crono Institucional'!Q22"],"meses":[null,null,null,null,null,null,null,null,null,null,null,null],"total":null},{"id":"comercial","nome":"Marketing Comercial","linhaFonte":null,"referencia":["='[1]Crono Captação'!F22","='[1]Crono Captação'!G22","='[1]Crono Captação'!H22","='[1]Crono Captação'!I22","='[1]Crono Captação'!J22","='[1]Crono Captação'!K22","='[1]Crono Captação'!L22","='[1]Crono Captação'!M22","='[1]Crono Captação'!N22","='[1]Crono Captação'!O22","='[1]Crono Captação'!P22","='[1]Crono Captação'!Q22"],"meses":[null,null,null,null,null,null,null,null,null,null,null,null],"total":null}],"totalMensalFonte":[null,null,null,null,null,null,null,null,null,null,null,null],"totalGeralFonte":null,"linhaTotalFonte":null};
 
 /* ═══════════════════════════════════════════════════════════════════════════
    MOTOR DO PLANEJAMENTO DE MARKETING 2027
@@ -20831,6 +20944,25 @@ var DADOS_PA_2027 = {"fonte":"ATUALIZACOES_PESSOAL_DE_APOIO.xlsx","aba":"Consoli
     "PROJETOS E OBRAS": "Projetos e Obras",
     "PROJETOS E PLANEJAMENTO": "Projetos e Planejamento"
   };
+  /* Compatibilidade de lotação: o banco pode devolver o ID institucional,
+     a grafia do painel ou a grafia da planilha. Não inferir por CC. */
+  var GER_POR_ID = {1:"Administrativa",2:"Gerência Geral",3:"Operações",
+    4:"Esportes",5:"Manutenção",6:"RH",7:"TI",8:"Projetos e Obras",
+    9:"Projetos e Planejamento"};
+  function resolverGerencia(r) {
+    var id = r.gerenciaId || r.gerencia_id;
+    if (id !== undefined && id !== null && GER_POR_ID[Number(id)]) return GER_POR_ID[Number(id)];
+    var nome = String(r.gerencia || "").normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "").toUpperCase().trim();
+    var aliases = {"ADMINISTRATIVA":"Administrativa", "ADMINSTRATIVA":"Administrativa",
+      "GERENCIA GERAL":"Gerência Geral", "GERAL":"Gerência Geral",
+      "OPERACOES":"Operações", "GERAL OPERACOES":"Operações",
+      "ESPORTES":"Esportes", "MANUTENCAO":"Manutenção", "RH":"RH", "TI":"TI",
+      "OBRAS":"Projetos e Obras", "PROJETOS E OBRAS":"Projetos e Obras",
+      "PLANEJAMENTO E DESENVOLVIMENTO":"Projetos e Planejamento",
+      "PROJETOS E PLANEJAMENTO":"Projetos e Planejamento"};
+    return aliases[nome] || null;
+  }
   var GER_SEM_VINCULO = "NÃO IDENTIFICADA";
 
   /* ─────────── CAMPOS, NA ORDEM GERENCIAL ───────────
@@ -20911,7 +21043,7 @@ var DADOS_PA_2027 = {"fonte":"ATUALIZACOES_PESSOAL_DE_APOIO.xlsx","aba":"Consoli
      fica em quarentena, com os valores intactos. */
   var identificados = [], quarentena = [];
   D.registros.forEach(function (r) {
-    var gerPainel = MAPA_GER[String(r.gerencia || "").toUpperCase()];
+    var gerPainel = resolverGerencia(r);
     if (!gerPainel || r.gerencia === GER_SEM_VINCULO || !r.ccNumero) {
       quarentena.push(r);
       return;
@@ -22238,6 +22370,28 @@ var ASSOC_QUADRO = {"fonte":"ASSOCIAÇÕES 2027.xlsx","abas":{"operacional":"PA"
     var P = premissas(), oc = camadaOrcado(2027);
     if (!P || !oc) return null;
     var tit = oc.realizado, out = vazio12(), i;
+
+    /* ─── PREMISSA AUSENTE NÃO PRODUZ SÉRIE ───
+       Todo cálculo abaixo é multiplicação de premissas, e em JavaScript
+       null × null é 0. Com a fonte presente isso nunca apareceu. Com a
+       fonte vazia — que é o estado da build pública antes de o banco
+       responder — as três peças devolviam doze zeros, a ponte os entregava
+       à DRE como orçamento válido, e a DRE somava R$ 0 nas linhas 7, 8 e 9
+       em vez de dizer N/D. Zero é valor; ausência não é. */
+    function vivo(x) {
+      if (x === null || x === undefined) return false;
+      if (Array.isArray(x)) {
+        return x.some(function (v) { return v !== null && v !== undefined; });
+      }
+      return true;
+    }
+    if (!vivo(tit)) return null;
+    if (pecaId === "mensalidades"
+      && !(vivo(P.ticketBrutoAnual) && vivo(P.sazonalidadeTicket) && vivo(P.descontoSazonal))) return null;
+    if (pecaId === "dependente"
+      && !(vivo(P.dependentesPorTitular) && vivo(P.ticketDependente))) return null;
+    if (pecaId === "cota"
+      && !(vivo(P.ticketCota) && vivo(P.contribuintesCota))) return null;
     /* Sem arredondar mês a mês: a fonte soma os doze valores cheios, e
        arredondar antes de somar deslocaria o total anual em centavos.
        r2() existe para o que o gestor digita, não para o que o motor
@@ -22313,6 +22467,14 @@ var ASSOC_QUADRO = {"fonte":"ASSOCIAÇÕES 2027.xlsx","abas":{"operacional":"PA"
 
 
 <script id="semantica">
+/* APP.IDX responde o indexador vigente, não uma cópia do carregamento. */
+if (typeof APP !== "undefined" && APP) {
+  Object.defineProperty(APP, "IDX", {
+    get: function () { return (DB && DB.IDX !== null && DB.IDX !== undefined) ? DB.IDX : null; },
+    configurable: true, enumerable: true
+  });
+}
+
 /* ══════════════════════════════════════════════════════════════
    SEMÂNTICA VISUAL
 
@@ -22536,13 +22698,14 @@ var ASSOC_QUADRO = {"fonte":"ASSOCIAÇÕES 2027.xlsx","abas":{"operacional":"PA"
      não há correspondência segura, e inventar vínculo é proibido. */
   var DESTINO = {
     lin: ["lin", "linha", "ordem"],
-    gerencia: ["gerencia", "gerenciafonte", "area", "rotulofonte"],
+    gerencia: ["gerencia", "gerenciafonte", "area", "rotulofonte", "nomegerencia"],
+    gerenciaId: ["gerenciaid", "idgerencia", "gerencia_id"],
     ccNumero: ["ccnumero", "numerocc", "ncc", "centrocusto", "cc", "numero", "codigocc"],
     ccNome: ["ccnome", "nomecc", "centrodecusto", "setor", "descricaocc"],
     matricula: ["matricula", "chapa", "registro"],
-    funcionario: ["funcionario", "colaborador", "nome", "nomefuncionario"],
+    funcionario: ["funcionario", "colaborador", "nome", "nomefuncionario", "nomecolaborador", "nomecompleto"],
     cargo: ["cargo", "funcao"],
-    salarioBase: ["salariobase", "salario", "vencimentobase"],
+    salarioBase: ["salariobase", "salario", "vencimentobase", "salariomensal"],
     quinquenio: ["quinquenio"],
     quebraCaixa: ["quebracaixa", "quebradecaixa"],
     insalubridade: ["insalubridade", "insalubperic", "insalubridadepericulosidade"],
@@ -22579,7 +22742,7 @@ var ASSOC_QUADRO = {"fonte":"ASSOCIAÇÕES 2027.xlsx","abas":{"operacional":"PA"
       ? t.replace(/\./g, "").replace(",", ".") : t);
     return isFinite(n) ? n : null;
   }
-  var SAO_TEXTO = { gerencia: 1, ccNumero: 1, ccNome: 1, matricula: 1,
+  var SAO_TEXTO = { gerencia: 1, gerenciaId: 1, ccNumero: 1, ccNome: 1, matricula: 1,
     funcionario: 1, cargo: 1, matriculaTab2: 1, statusCruzamento: 1 };
 
   function adaptarRegistro(linha) {
@@ -22612,6 +22775,17 @@ var ASSOC_QUADRO = {"fonte":"ASSOCIAÇÕES 2027.xlsx","abas":{"operacional":"PA"
       if (dest === "lin") { out.lin = v === undefined ? null : (parseInt(v, 10) || null); return; }
       out[dest] = numeroOuNulo(v);
     });
+    /* A folha original espera o nome contábil; não usar o nome do banco
+       diretamente, pois ele pode ser institucional ou vir só como ID. */
+    var idGer = out.gerenciaId;
+    var mapaIds = {1:"ADMINSTRATIVA",2:"GERAL",3:"GERAL OPERACOES",4:"ESPORTES",
+      5:"MANUTENCAO",6:"RH",7:"TI",8:"PROJETOS E OBRAS",9:"PROJETOS E PLANEJAMENTO"};
+    var nomeGer = String(out.gerencia || "").normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "").toUpperCase().trim();
+    var nomes = {"ADMINISTRATIVA":"ADMINSTRATIVA", "GERENCIA GERAL":"GERAL",
+      "OPERACOES":"GERAL OPERACOES", "PLANEJAMENTO E DESENVOLVIMENTO":"PROJETOS E PLANEJAMENTO",
+      "OBRAS":"PROJETOS E OBRAS"};
+    out.gerencia = mapaIds[Number(idGer)] || nomes[nomeGer] || nomeGer || null;
     out.origem = "supabase";
     return out;
   }
@@ -22631,6 +22805,7 @@ var ASSOC_QUADRO = {"fonte":"ASSOCIAÇÕES 2027.xlsx","abas":{"operacional":"PA"
     SBDATA.estado = "carregando";
     SBDATA.erro = null;
     SBDATA.mensagem = null;
+    SBDATA.areasCarregadas = {};
     pintar();
 
     return rpc("pa_2027_perfil").then(function (rp) {
@@ -22738,9 +22913,164 @@ var ASSOC_QUADRO = {"fonte":"ASSOCIAÇÕES 2027.xlsx","abas":{"operacional":"PA"
         return;
       }
     }
-    SBDATA.estado = r27 ? "pronto" : "vazio";
-    SBDATA.mensagem = r27 ? null : "Os registros chegaram, mas não houve correspondência na estrutura.";
+    /* ─── REPOSIÇÃO DO QUADRO ───
+       A camada PESSOAL_PA27 foi feita para ENRIQUECER colaboradores que já
+       existiam: ela casa por matrícula e, sem par, classifica o registro como
+       "sem par no painel". Isso estava certo enquanto a folha vinha embutida
+       no HTML.
+
+       Na build pública não há colaborador nenhum para casar — os 261 saíram
+       no saneamento. Resultado medido: o registro chegava, era identificado,
+       e terminava com aplicados = 0 e o Quadro Atual vazio. A tela então
+       dizia "nenhuma pessoa vinculada a esta área", que é uma afirmação sobre
+       a realidade, quando o fato era ausência de carga.
+
+       Esta função cria o colaborador quando não há par. Ela não inventa
+       vínculo: a gerência vem de _ger, já mapeada pelo MAPA_GER declarado, e
+       o centro vem de ccNumero. Registro sem um dos dois não é criado — vai
+       para a contagem de não alocados e aparece declarado na tela. */
+    /* A área de cada registro aceito, antes de repor: inclui as que já
+       tinham par e por isso não passam por reporQuadro. */
+    (D.registros || []).forEach(function (r) {
+      var g = r && r.gerencia ? String(r.gerencia).toUpperCase().trim() : null;
+      var mapa = (r27 && r27.MAPA_GER) || {};
+      var nome = g ? (mapa[g] || null) : null;
+      if (nome) SBDATA.areasCarregadas[nome] = true;
+    });
+
+    if (r27) reporQuadro(r27);
+
+    SBDATA.estado = r27 && SBDATA.integrados > 0 ? "pronto" : "erro";
+    if (!r27 || !SBDATA.integrados) SBDATA.mensagem = "Os registros chegaram, mas nenhuma matrícula foi integrada ao Quadro Atual.";
   }
+
+  /* Cria no quadro os colaboradores que a fonte trouxe e o painel ainda não
+     tinha. Campos derivados ficam null de propósito, para o motor calculá-los
+     pela regra institucional que ele já aplica — baseEncargos e encargos saem
+     de pctEncargos(), não de número inventado aqui. */
+  SBDATA.criados = 0;
+  SBDATA.naoAlocados = [];
+  function reporQuadro(PA) {
+    var PP = window.PESSOAL;
+    if (!PP || !PP.PES || !PA) return;
+    var semPar = PA.semParNoPainel || [];
+    if (!semPar.length) return;
+    var RID = PA.RID || {};
+    var criados = 0, naoAlocados = [];
+
+    semPar.forEach(function (r) {
+      var gerNome = r._ger || null;
+      var ccNum = r.ccNumero ? String(r.ccNumero).trim() : null;
+      if (!gerNome || !ccNum) {
+        naoAlocados.push({ matricula: r.matricula || null,
+          motivo: !gerNome ? "gerência não mapeada" : "centro de custo ausente" });
+        return;
+      }
+      var g = null;
+      PP.PES.gerencias.forEach(function (x) { if (x.nome === gerNome) g = x; });
+      if (!g) {
+        naoAlocados.push({ matricula: r.matricula || null,
+          motivo: "gerência " + gerNome + " não existe na estrutura" });
+        return;
+      }
+      var cc = null;
+      (g.ccs || []).forEach(function (x) { if (String(x.numero).trim() === ccNum) cc = x; });
+      if (!cc) {
+        /* Os CCs gerenciais (ex.: 5547 RH) estão contabilmente na
+           Gerência Geral, embora a lotação visual seja RH. Usar o CC
+           REAL já cadastrado, sem criar centro nem alterar orçamento. */
+        var candidatos = [];
+        PP.PES.gerencias.forEach(function (origem) {
+          (origem.ccs || []).forEach(function (centro) {
+            if (String(centro.numero).trim() === ccNum)
+              candidatos.push({ gerencia: origem, centro: centro });
+          });
+        });
+        if (candidatos.length === 1) {
+          g = candidatos[0].gerencia;
+          cc = candidatos[0].centro;
+        } else {
+          naoAlocados.push({ matricula: r.matricula || null,
+            motivo: candidatos.length ? "centro de custo ambíguo: " + ccNum
+              : "centro de custo inexistente: " + ccNum });
+          return;
+        }
+      }
+      /* Já existe pela matrícula? Então não é reposição — o enriquecimento
+         já tratou, e duplicar a pessoa falsearia o custo da área. */
+      var ja = false;
+      PP.PES.gerencias.forEach(function (origem) {
+        (origem.ccs || []).forEach(function (centro) {
+          (centro.colaboradores || []).forEach(function (c) {
+            if (String(c.matricula || "") === String(r.matricula || "")) ja = true;
+          });
+        });
+      });
+      if (ja) return;
+
+      var rub = {};
+      Object.keys(RID).forEach(function (campo) {
+        var v = r[campo];
+        if (v !== null && v !== undefined) rub[RID[campo]] = v;
+      });
+
+      cc.colaboradores.push({
+        id: "SB-" + (r.matricula || criados),
+        matricula: r.matricula || null,
+        nome: r.funcionario || null,
+        cargo: r.cargo || null,
+        /* Vínculo não vem na fonte. Null, e a tela declara — presumir
+           "Funcionário" mudaria a contagem de aprendiz e estagiário. */
+        vinculo: null,
+        salarioBase: (r.salarioBase === undefined ? null : r.salarioBase),
+        baseEncargos: null,
+        encargos: null,
+        totalBeneficios: (r.totalBeneficios === undefined ? null : r.totalBeneficios),
+        rubricas: rub,
+        /* Provisões não vêm na fonte: 13º e 1/3 de férias ficam ausentes e
+           por isso o orçado anual desta pessoa é parcial. Declarado. */
+        provisoes: null,
+        fonteMensal: null,
+        fonteAnual: null,
+        origem: "supabase",
+        pa27: true
+      });
+      criados++;
+    });
+
+    SBDATA.criados = criados;
+    SBDATA.naoAlocados = naoAlocados;
+    SBDATA.principais = PA.principais ? PA.principais.length : 0;
+    SBDATA.integrados = (PA.aplicados || 0) + criados;
+    if (naoAlocados.length || SBDATA.integrados < SBDATA.principais) {
+      SBDATA.mensagem = "A carga tem " + SBDATA.integrados + " de " +
+        SBDATA.principais + " matrículas integradas; " + naoAlocados.length +
+        " sem lotação confirmada. Confira antes de publicar.";
+    }
+  }
+
+  /* ─── QUAIS ÁREAS A CARGA COBRIU ───
+     Sem isso, um gestor que carregou só a própria área veria "quadro vazio"
+     nas demais — afirmação falsa: a área tem gente, o perfil é que não a
+     carregou. A tela precisa distinguir "vazia" de "não carregada para você",
+     e para isso precisa saber quais áreas vieram na resposta. */
+  SBDATA.areasCarregadas = {};
+  SBDATA.areaCarregada = function (nome) {
+    return !!(nome && SBDATA.areasCarregadas[nome]);
+  };
+  SBDATA.reporQuadro = reporQuadro;
+
+  /* Quantas pessoas o quadro tem agora, para a tela distinguir vazio de
+     não carregado. */
+  SBDATA.pessoasNoQuadro = function () {
+    var PP = window.PESSOAL;
+    if (!PP || !PP.PES) return 0;
+    var n = 0;
+    PP.PES.gerencias.forEach(function (g) {
+      (g.ccs || []).forEach(function (cc) { n += (cc.colaboradores || []).length; });
+    });
+    return n;
+  };
 
   /* ─────────── DISPONIBILIDADE ─────────── */
   SBDATA.disponivel = function () { return SBDATA.estado === "pronto"; };
@@ -22756,6 +23086,7 @@ var ASSOC_QUADRO = {"fonte":"ASSOCIAÇÕES 2027.xlsx","abas":{"operacional":"PA"
     semAutorizacao:   ["Área não liberada", "O seu perfil não tem autorização para consultar os dados desta área."],
     erro:             ["Dados indisponíveis", "Não foi possível carregar os dados agora. Tente novamente em instantes."],
     formaDesconhecida:["Integração pendente de ajuste", "O banco respondeu, mas o formato da resposta ainda não corresponde ao que esta tela consome. Os dados não serão exibidos até o mapeamento ser corrigido."],
+    semIndexador:     ["Indexador da proposta não respondeu", "As linhas da Base chegaram, mas o parâmetro que projeta 2027 sobre 2026 não. Sem ele o Orçado 2027 seria idêntico a 2026, com rótulo trocado — por isso nada é exibido."],
     naoIntegrado:     ["Módulo aguardando integração", "Esta matriz existe e está preservada, mas a sua fonte segura ainda não foi implementada. Nenhum valor é exibido até os dados virem do banco, com autorização."]
   };
 
@@ -22784,6 +23115,8 @@ var ASSOC_QUADRO = {"fonte":"ASSOCIAÇÕES 2027.xlsx","abas":{"operacional":"PA"
   SBDATA.diagnostico = function () {
     return { estado: SBDATA.estado, origem: SBDATA.origemDados || null,
       aceitos: SBDATA.aceitos || 0, recusados: SBDATA.recusados || 0,
+      principais: SBDATA.principais || 0, integrados: SBDATA.integrados || 0,
+      criados: SBDATA.criados || 0, naoAlocados: SBDATA.naoAlocados || [],
       carregadoEm: SBDATA.carregadoEm, equipes: SBDATA.equipes.length,
       perfil: SBDATA.perfil ? Object.keys(SBDATA.perfil) : null,
       formas: SBDATA.formas, chamadas: SBDATA.chamadas.slice(-12) };
@@ -22924,6 +23257,335 @@ var ASSOC_QUADRO = {"fonte":"ASSOCIAÇÕES 2027.xlsx","abas":{"operacional":"PA"
   SBDATA.nivelArea = function (id) {
     return rpc("usuario_nivel_area", { p_gerencia_id: id })
       .then(function (r) { return r.ok ? r.dados : null; });
+  };
+
+  /* ═══════════ BASE DA DRE ═══════════
+     A DRE Gerencial não nasce de peça nenhuma: 98 das 112 linhas respondem
+     pela Base DRE da Controladoria, que no arquivo interno morava em
+     `var DB`. Na build pública essa carga saiu, e por isso a DRE aparece
+     inteira em N/D até o banco responder.
+
+     Esta camada não inventa número: ela preenche DB.linhas com o que a
+     fonte autorizada devolver, e o motor da DRE — que não foi tocado —
+     volta a calcular exatamente como calculava.
+
+     Unidade: R$ mil, a mesma da Base. A conversão para reais acontece num
+     ponto só, na leitura da ponte, e continua lá. */
+  /* ─── FONTES DA BASE, NA ORDEM EM QUE SÃO TENTADAS ───
+     A primeira é a tabela que já existe no banco, confirmada na instância:
+     public.orcamento_dre_importada_2027, com referencia = id da linha e a
+     carga em dados (jsonb), origem "DB" e somente_leitura. Ela é lida
+     diretamente, como o painel já lê perfis — não precisa de RPC.
+
+     As demais são RPCs candidatas, para o caso de a Controladoria publicar a
+     Base por função. Nenhuma é presumida como existente: o carregador para na
+     primeira que responder e registra qual foi. */
+  var DRE_TABELA = "orcamento_dre_importada_2027";
+  var DRE_CANDIDATAS = ["dre_base_2027", "dre_base", "orcamento_dre_base_2027"];
+  SBDATA.DRE_FONTE = null;
+  SBDATA.DRE_TABELA = DRE_TABELA;
+
+  /* Leitura de tabela, com o mesmo tratamento de erro das RPCs. */
+  function lerTabela(nome, colunas) {
+    var S = sb();
+    if (!S || typeof S.from !== "function") {
+      registrar("from:" + nome, false, "cliente do Supabase indisponível");
+      return Promise.resolve({ ok: false, motivo: "sem-cliente", dados: null });
+    }
+    var t0 = Date.now(), p;
+    try { p = S.from(nome).select(colunas); }
+    catch (e) {
+      registrar("from:" + nome, false, String(e && e.message || e).slice(0, 120), Date.now() - t0);
+      return Promise.resolve({ ok: false, motivo: "excecao", dados: null });
+    }
+    return p.then(function (r) {
+      var ms = Date.now() - t0;
+      if (r && r.error) {
+        registrar("from:" + nome, false, String(r.error.message || "").slice(0, 160), ms);
+        return { ok: false, motivo: "erro-banco", erro: r.error, dados: null };
+      }
+      var d = r ? r.data : null;
+      registrar("from:" + nome, true, null, ms, Array.isArray(d) ? d.length : (d ? 1 : 0));
+      return { ok: true, dados: d };
+    })["catch"](function (e) {
+      registrar("from:" + nome, false, String(e && e.message || e).slice(0, 120), Date.now() - t0);
+      return { ok: false, motivo: "rede", dados: null };
+    });
+  }
+  SBDATA.lerTabela = lerTabela;
+
+  function adaptarLinhaDRE(l) {
+    if (!l || typeof l !== "object") return null;
+    var fonte = l;
+    ["dados", "linha", "payload", "json"].forEach(function (k) {
+      if (fonte === l && l[k] && typeof l[k] === "object" && !Array.isArray(l[k])) fonte = l[k];
+    });
+    var bruto = {};
+    [l, fonte].forEach(function (o) {
+      Object.keys(o).forEach(function (k) {
+        var c = ch(k);
+        /* "referencia" é como a tabela existente chama o id da linha;
+           "identificador" e "caminho" são rótulo e trilha e não alimentam
+           cálculo — o painel keya exclusivamente pela referência. */
+        var dest = (c === "linhaid" || c === "id" || c === "linha" || c === "referencia") ? "id"
+          : (c === "nome" || c === "conta" || c === "descricao" || c === "identificador") ? "nome"
+          : (["r25","o26","g26","base26","m27","hist","r22","r23","r24"].indexOf(c) >= 0) ? c
+          : null;
+        if (!dest) return;
+        if (bruto[dest] === undefined && o[k] !== null && o[k] !== undefined) bruto[dest] = o[k];
+      });
+    });
+    var id = parseInt(bruto.id, 10);
+    if (!id) return null;
+
+    /* Série: aceita array, ou texto JSON, ou texto de array do Postgres.
+       Posição ausente permanece ausente — nunca vira zero. */
+    function serie(v, tam) {
+      if (v === null || v === undefined) return null;
+      var a = v;
+      if (typeof a === "string") {
+        var t = a.trim();
+        /* Dois formatos de texto: JSON ("[1,2,null]") e o literal de array do
+           Postgres ("{1,2,NULL}"). No segundo, NULL em maiúscula não é JSON
+           válido — precisa virar null antes de interpretar, senão a série
+           inteira é descartada. */
+        if (t.charAt(0) === "{") {
+          t = "[" + t.slice(1, -1) + "]";
+        }
+        /* Sem expressão regular: separar por vírgula e tratar token a token
+           é mais simples de ler e não depende de escape nenhum. */
+        var toks = t.replace(/^\[|\]$/g, "").split(",");
+        a = toks.map(function (x) {
+          var y = String(x).trim().replace(/^"|"$/g, "");
+          if (y === "" || y.toUpperCase() === "NULL") return null;
+          var n = parseFloat(y);
+          return isFinite(n) ? n : null;
+        });
+      }
+      if (!Array.isArray(a)) return null;
+      var out = [], i;
+      for (i = 0; i < (tam || 12); i++) {
+        var x = a[i];
+        if (x === null || x === undefined || x === "" || x === "NULL") { out.push(null); continue; }
+        var num = typeof x === "number" ? x : parseFloat(String(x));
+        out.push(isFinite(num) ? num : null);
+      }
+      return out;
+    }
+    var o = { id: id, nome: bruto.nome === undefined ? null : String(bruto.nome) };
+    ["r25", "o26", "g26", "base26", "m27"].forEach(function (c) { o[c] = serie(bruto[c], 12); });
+    o.hist = serie(bruto.hist, 4);
+    return o;
+  }
+  SBDATA.adaptarLinhaDRE = adaptarLinhaDRE;
+
+  SBDATA.estadoDRE = "inicial";
+  SBDATA.mensagemDRE = null;
+  SBDATA.linhasDRE = 0;
+
+  SBDATA.carregarDRE = function () {
+    if (!autenticado()) {
+      SBDATA.estadoDRE = "semSessao";
+      return Promise.resolve(SBDATA.estadoDRE);
+    }
+    if (SBDATA.estadoDRE === "carregando") return Promise.resolve(SBDATA.estadoDRE);
+    SBDATA.estadoDRE = "carregando";
+    SBDATA.mensagemDRE = null;
+
+    /* Tenta as fontes candidatas em ordem e para na primeira que responder.
+       Qual respondeu fica em SBDATA.DRE_FONTE e no diagnóstico — nenhuma
+       delas é presumida como existente. */
+    /* Tabela primeiro: é a fonte confirmada na instância. */
+    var fila = DRE_CANDIDATAS.slice();
+    function tentarTabela() {
+      return lerTabela(DRE_TABELA, "referencia,identificador,caminho,dados,origem,somente_leitura")
+        .then(function (r) {
+          if (!r.ok) return tentar();
+          anotarForma(DRE_TABELA, r.dados);
+          var linhas = Array.isArray(r.dados) ? r.dados : (r.dados ? [r.dados] : []);
+          if (!linhas.length) return tentar();
+
+          /* ─── O INDEXADOR PODE VIR NA PRÓPRIA TABELA ───
+             Uma linha cuja referência não é número não é conta da DRE: é
+             parâmetro. Aceitar isso evita criar tabela só para guardar um
+             percentual. A RPC de parâmetros continua sendo tentada depois,
+             para quem preferir mantê-los separados. */
+          var contas = [], params = [];
+          linhas.forEach(function (x) {
+            var ref = x && (x.referencia !== undefined ? x.referencia
+              : (x.linha_id !== undefined ? x.linha_id : x.id));
+            if (ref !== null && ref !== undefined && !/^[0-9]+$/.test(String(ref).trim())) {
+              params.push(x);
+            } else contas.push(x);
+          });
+          params.forEach(function (x) {
+            var k = ch(x.referencia || x.identificador || x.chave);
+            if (k !== "indexador" && k !== "idx") return;
+            var d = x.dados && typeof x.dados === "object" ? x.dados : x;
+            var v = d.valor !== undefined ? d.valor
+              : (d.valor_num !== undefined ? d.valor_num : d.indexador);
+            var num = typeof v === "number" ? v : parseFloat(String(v));
+            if (isFinite(num)) {
+              window.DB.IDX = num;
+              SBDATA.indexador = num;
+              SBDATA.fonteParametros = DRE_TABELA;
+            }
+          });
+
+          /* Se o indexador já veio na tabela, não há por que ir buscá-lo. */
+          var pronto = (SBDATA.indexador !== null && SBDATA.indexador !== undefined)
+            ? Promise.resolve(true) : carregarParametros();
+          return pronto.then(function () {
+            return aplicarDRE(DRE_TABELA, contas);
+          });
+        });
+    }
+    function tentar() {
+      if (!fila.length) {
+        SBDATA.estadoDRE = "naoIntegrado";
+        SBDATA.mensagemDRE = "Nenhuma fonte autorizada da Base DRE respondeu. "
+          + "A migração precisa ser aplicada antes de a DRE poder ser reconstruída.";
+        return Promise.resolve(SBDATA.estadoDRE);
+      }
+      var nome = fila.shift();
+      return rpc(nome).then(function (r) {
+        if (!r.ok) return tentar();
+        /* ─── O INDEXADOR VEM JUNTO ───
+           A Base guarda o realizado e o orçado de 2026; o Orçado 2027 das
+           linhas que respondem pela Base é base26 × (1 + IDX). Com IDX
+           ausente, (1 + null) é 1 em JavaScript e a DRE exibe 2026 com
+           rótulo de 2027 — número plausível e errado, que é o pior tipo.
+           Por isso o parâmetro é condição da carga, não um extra. */
+        return carregarParametros().then(function () { return r; });
+      }).then(function (r) {
+        if (!r.ok) return tentar();
+        anotarForma(nome, r.dados);
+        var linhas = Array.isArray(r.dados) ? r.dados : (r.dados ? [r.dados] : []);
+        if (!linhas.length) return tentar();
+        return aplicarDRE(nome, linhas);
+      });
+    }
+    return tentarTabela().then(function (e) { pintar(); return e; });
+  };
+
+  function aplicarDRE(nome, linhas) {
+    var DBx = window.DB;
+    if (!DBx || !DBx.linhas) {
+      SBDATA.estadoDRE = "erro";
+      SBDATA.mensagemDRE = "Estrutura da DRE ausente nesta build.";
+      return SBDATA.estadoDRE;
+    }
+    var aplicadas = 0, semPar = [], recusadas = 0;
+    /* recusadas é incrementado tanto na adaptação quanto na aplicação. */
+    linhas.forEach(function (l) {
+      var o = adaptarLinhaDRE(l);
+      if (!o) { recusadas++; return; }
+      var alvo = DBx.linhas[String(o.id)];
+      if (!alvo) { semPar.push(o.id); return; }
+      /* Só as camadas que a fonte trouxe. O nome da linha é da estrutura e
+         não é sobrescrito por uma fonte que venha sem ele. */
+      var camadas = 0;
+      ["r25", "o26", "g26", "base26", "hist"].forEach(function (c) {
+        if (o[c]) { alvo[c] = o[c]; camadas++; }
+      });
+      if (o.m27) { DBx.m27[String(o.id)] = o.m27; camadas++; }
+      /* Registro que casou a referência mas não trouxe camada nenhuma não é
+         linha carregada: contá-lo faria a DRE se declarar pronta com zero
+         valor. É sinal de formato não reconhecido, e vai para a contagem
+         certa. */
+      if (camadas) aplicadas++; else recusadas++;
+    });
+    SBDATA.DRE_FONTE = nome;
+    SBDATA.linhasDRE = aplicadas;
+    SBDATA.semParDRE = semPar;
+    SBDATA.recusadasDRE = recusadas;
+
+    if (!aplicadas) {
+      SBDATA.estadoDRE = "formaDesconhecida";
+      SBDATA.mensagemDRE = "A fonte respondeu, mas nenhuma linha casou com a estrutura da DRE. "
+        + "O mapeamento precisa ser ajustado antes de exibir os valores.";
+      return SBDATA.estadoDRE;
+    }
+    if (SBDATA.indexador === null || SBDATA.indexador === undefined) {
+      SBDATA.estadoDRE = "semIndexador";
+      SBDATA.mensagemDRE = "As " + aplicadas + " linhas da Base chegaram, mas o indexador "
+        + "da proposta 2027 não. Sem ele o Orçado 2027 das linhas que respondem pela Base "
+        + "seria igual a 2026 — por isso nada é exibido até o parâmetro responder.";
+      return SBDATA.estadoDRE;
+    }
+    SBDATA.estadoDRE = "pronto";
+    SBDATA.mensagemDRE = aplicadas + " de " + Object.keys(DBx.linhas).length
+      + " linhas da Base carregadas do banco, com indexador de "
+      + (SBDATA.indexador * 100).toFixed(3) + "%.";
+    return SBDATA.estadoDRE;
+  }
+
+  /* Indexador e unidade. Fonte própria, porque não são linha da DRE. */
+  function carregarParametros() {
+    var alvos = ["dre_parametros_2027", "dre_parametros"];
+    function tentarP() {
+      if (!alvos.length) return Promise.resolve(false);
+      var nome = alvos.shift();
+      return rpc(nome).then(function (r) {
+        if (!r.ok) return tentarP();
+        anotarForma(nome, r.dados);
+        var linhas = Array.isArray(r.dados) ? r.dados : (r.dados ? [r.dados] : []);
+        var achou = false;
+        linhas.forEach(function (p) {
+          var k = ch(p && (p.chave || p.key || p.nome));
+          var v = p && (p.valor_num !== undefined ? p.valor_num : p.valor);
+          if (k === "indexador" && v !== null && v !== undefined) {
+            var num = typeof v === "number" ? v : parseFloat(String(v));
+            if (isFinite(num)) {
+              /* Só DB.IDX. APP.IDX é leitura viva desse mesmo campo e não
+                 aceita atribuição — é o que garante que ninguém grave um
+                 indexador por fora da fonte. */
+              window.DB.IDX = num;
+              SBDATA.indexador = num;
+              achou = true;
+            }
+          }
+        });
+        SBDATA.fonteParametros = achou ? nome : null;
+        return achou;
+      });
+    }
+    return tentarP();
+  }
+  SBDATA.carregarParametros = carregarParametros;
+
+  SBDATA.dreDisponivel = function () {
+    /* Sem indexador não há Orçado 2027 pela Base: a DRE responderia 2026
+       com rótulo de 2027. Disponível exige os dois. */
+    return SBDATA.estadoDRE === "pronto"
+      && SBDATA.indexador !== null && SBDATA.indexador !== undefined;
+  };
+  SBDATA.indexador = null;
+
+  /* Cobertura real, para a tela nunca apresentar soma parcial como total. */
+  SBDATA.coberturaDRE = function () {
+    var DBx = window.DB;
+    if (!DBx || !DBx.linhas) return { total: 0, comValor: 0, pct: null };
+    var ids = Object.keys(DBx.linhas), com = 0;
+    ids.forEach(function (k) {
+      var l = DBx.linhas[k];
+      var tem = ["r25", "o26", "g26", "base26"].some(function (c) {
+        return (l[c] || []).some(function (v) { return v !== null && v !== undefined; });
+      });
+      if (tem) com++;
+    });
+    return { total: ids.length, comValor: com,
+      pct: ids.length ? com / ids.length : null };
+  };
+
+  var diagAntes = SBDATA.diagnostico;
+  SBDATA.diagnostico = function () {
+    var d = diagAntes();
+    d.dre = { estado: SBDATA.estadoDRE, fonte: SBDATA.DRE_FONTE,
+      linhasAplicadas: SBDATA.linhasDRE, semPar: SBDATA.semParDRE || [],
+      recusadas: SBDATA.recusadasDRE || 0, cobertura: SBDATA.coberturaDRE(),
+      candidatas: DRE_CANDIDATAS.slice() };
+    return d;
   };
 
   window.SBDATA = SBDATA;
@@ -27004,7 +27666,47 @@ var ESP_AGREGADO_DESPESA = {
   function render() {
     var t = D.totais("orcado2027");
     var aba = S.dreAba || "anual";
-    var out = A.faixaSemFonte();
+    /* A DRE tem fonte própria — a Base da Controladoria — e não depende de
+       Pessoal de Apoio. A faixa some quando a Base carrega, e enquanto a
+       cobertura for parcial ela diz quantas linhas vieram, para ninguém ler
+       uma soma incompleta como total fechado. */
+    var SDd = window.SBDATA, faixaDRE = "";
+    if (SDd && typeof SDd.dreDisponivel === "function") {
+      var cob = SDd.coberturaDRE();
+      if (!SDd.dreDisponivel()) {
+        faixaDRE = SDd.faixa("A DRE Gerencial");
+      } else if (cob.pct !== null && cob.pct < 1) {
+        faixaDRE = '<div class="alert" style="margin-bottom:18px"><span>\u26a0\ufe0f</span><div>'
+          + "<b>Cobertura parcial: " + cob.comValor + " de " + cob.total + " linhas da Base "
+          + "responderam.</b> As demais aparecem como N/D e <b>não entram nos totais</b> — "
+          + "o que está na tela é a soma do que veio, não o fechamento do exercício.</div></div>";
+      }
+      /* A Base completa não significa DRE completa. As linhas com ponte de
+         peça respondem pela Base enquanto a peça não tiver orçado salvo —
+         é a regra da ponte, e a tabela já marca cada uma com o selo BASE.
+         O que faltava era dizer isso ACIMA da tabela, porque quem lê só os
+         quatro cartões do topo não vê selo nenhum. */
+      var pend = D.integracoes ? (function () {
+        var I = D.integracoes(), fora = [];
+        Object.keys(I).forEach(function (k) {
+          var r = D.valorLinha(Number(k), "orcado2027");
+          if (r && r.fonte === "BASE" && r.semCamada) fora.push(I[k].nome || ("linha " + k));
+        });
+        return fora;
+      })() : [];
+      if (pend.length) {
+        faixaDRE += '<div class="alert" style="margin-bottom:18px"><span>\u2139\ufe0f</span><div>'
+          + "<b>" + pend.length + " "
+          + (pend.length === 1 ? "peça ainda responde" : "peças ainda respondem")
+          + " pela Base, não pelo orçamento da área:</b> " + A.esc(pend.join(", "))
+          + ". O valor exibido nessas linhas é a projeção da Base da Controladoria "
+          + "sobre 2026, não a peça construída pelo gestor. Cada uma aparece na tabela "
+          + "com o selo <b>BASE</b>.</div></div>";
+      }
+    } else {
+      faixaDRE = A.faixaSemFonte();
+    }
+    var out = faixaDRE;
     out += stitle("DRE Gerencial 2027",
       "com o orçamento construído pelas áreas · valores em R$ mil · cenário " + esc(S.cenario));
     out += cardsTopo(t);
