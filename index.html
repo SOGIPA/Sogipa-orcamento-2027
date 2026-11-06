@@ -29227,6 +29227,11 @@ Object.assign(ESP_MODALIDADES,{"basquete":{"id":"basquete","nome":"Basquete","ge
      Base — é assim que ponte e fallback nunca se somam na mesma
      parcela. Linha-mãe sem filhas cai na Base. */
   function valorLinha(id, camada, INT) {
+    /* Deducoes editadas e confirmadas no banco: fonte exclusiva da rubrica 38. */
+    if (Number(id) === 38 && camada === "orcado2027" && window.SOGIPA_DEDUCOES_2027 && window.SOGIPA_DEDUCOES_2027.valor() !== null) {
+      var dv = window.SOGIPA_DEDUCOES_2027.valor();
+      return {valor:dv,fonte:"PEÇA",integra:{nome:"Deduções da Receita 2027",gerencia:"Controladoria",orcado2027:dv,curva2027:window.SOGIPA_DEDUCOES_2027.curva(),observacoes:["Valor confirmado no Supabase"]}};
+    }
     /* Contingência 2027 aprovada: R$ 1.373.000,00 (DRE em R$ mil).
        Somente valor ANUAL; não criar rateio mensal sem premissa. */
     if (Number(id) === 108 && camada === "orcado2027") {
@@ -29389,6 +29394,7 @@ Object.assign(ESP_MODALIDADES,{"basquete":{"id":"basquete","nome":"Basquete","ge
      linha usa a série da Base. Os doze meses somam o mesmo total da
      visão anual — é a mesma fonte, lida por competência. */
   function curvaLinha(id, camada, INT) {
+    if (Number(id) === 38 && camada === "orcado2027" && window.SOGIPA_DEDUCOES_2027 && window.SOGIPA_DEDUCOES_2027.curva()) return window.SOGIPA_DEDUCOES_2027.curva();
     INT = INT || integracoes();
     var i = INT[id];
     /* A curva da peça só vale quando tem algum mês preenchido. Uma peça
@@ -29632,7 +29638,7 @@ Object.assign(ESP_MODALIDADES,{"basquete":{"id":"basquete","nome":"Basquete","ge
       (i && i.modulo ? '<button class="dre-ir" data-drepeca="' + esc(i.modulo) +
         '" title="Abrir a peça que originou este número">abrir peça</button>' : "") +
       "</td>" +
-      '<td class="num forte">' + mil(o.valor) + "</td>" +
+      '<td class="num forte">' + mil(o.valor) + (id === 38 && window.SOGIPA_DEDUCOES_2027 && window.SOGIPA_DEDUCOES_2027.podeEditar() ? ' <button type="button" class="btn" data-ded-editar="1" style="font-size:11px;padding:3px 8px;margin-left:6px" title="Editar deduções da receita 2027">Editar</button>' : '') + "</td>" +
       '<td class="num">' + mil(ref) + "</td>" +
       '<td class="num ' + lt.cls + '">' + (delta === null ? "—" : lt.seta + " " + mil(delta)) + "</td>" +
       '<td class="num ' + lt.cls + '">' + (delta === null || !ref ? "—" : pctTxt(delta / Math.abs(ref))) + "</td>" +
@@ -30885,6 +30891,66 @@ async function save(k){var p=k.split('|'),t=(draft[k]||'').trim();if(!t||!canEdi
 async function edit(k,id){var p=k.split('|'),r=(cache[k]&&cache[k].items||[]).find(function(x){return x.id===id});if(!r||r.criado_por!==user()||!canEdit())return;var t=prompt('Editar anotação (a versão anterior ficará registrada no histórico):',r.texto);if(t===null||!t.trim()||t.trim()===r.texto)return;var result=await window.SB.from('pro_memoria_registros').update({texto:t.trim(),editado_por:user(),atualizado_em:new Date().toISOString()}).eq('id',id).eq('criado_por',user()).select('id');if(result.error||!result.data||!result.data.length){alert('Não foi possível editar o registro.');return}delete cache[k];load(p[0],p[1]);}
 document.addEventListener('input',function(e){var k=e.target&&e.target.getAttribute('data-esp-pm-text');if(k)draft[k]=e.target.value});document.addEventListener('click',function(e){var b=e.target.closest('[data-esp-pm-save]');if(b){e.preventDefault();save(b.getAttribute('data-esp-pm-save'));return}b=e.target.closest('[data-esp-pm-edit]');if(b){e.preventDefault();edit(b.getAttribute('data-esp-pm-edit'),b.getAttribute('data-pm-id'))}});document.addEventListener('toggle',function(e){var k=e.target&&e.target.getAttribute&&e.target.getAttribute('data-esp-pm');if(k)open[k]=e.target.open},true);
 window.SOGIPA_ESP_PM={render:render};
+})();
+</script>
+<script id="sogipa-deducoes-editaveis-2027">
+(function(){
+'use strict';
+var CHAVE='dre:deducoes_receita:2027', estado=null,carregando=false,usuarioCarregado=null,erro=null;
+function auth(){return window.AUTH||null;}
+function podeEditar(){
+ var a=auth(); if(!a||!a.carregado||!a.user||!a.perfil)return false;
+ if(typeof a.podeAdministrar==='function'&&a.podeAdministrar())return true;
+ var nome=String(a.perfil.nome||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+ return /\bdebora\b/.test(nome) && /controladoria|supervisor/.test(String(a.perfil.cargo||'controladoria').toLowerCase());
+}
+function valor(){return estado&&Number.isFinite(estado.totalMil)?estado.totalMil:null;}
+function curva(){return estado&&Array.isArray(estado.mesesMil)&&estado.mesesMil.length===12?estado.mesesMil.slice():null;}
+function atualizar(){if(window.APP&&typeof window.APP.render==='function'&&window.APP.state&&window.APP.state.modulo==='visaogeral'&&window.APP.state.aba==='dre')window.APP.render();}
+async function carregar(){
+ var a=auth(),sb=window.SB;
+ if(!a||!a.user||!a.carregado||!sb)return;
+ if(carregando||usuarioCarregado===a.user.id)return;
+ carregando=true;
+ try{
+  var r=await sb.from('orcamento_matrizes').select('id,dados').eq('chave',CHAVE).limit(1);
+  if(r.error)throw r.error;
+  var d=r.data&&r.data[0]&&r.data[0].dados;
+  if(d&&d.exercicio===2027&&Number.isFinite(Number(d.totalMil))&&Array.isArray(d.mesesMil)&&d.mesesMil.length===12){estado={totalMil:Number(d.totalMil),mesesMil:d.mesesMil.map(Number)};}
+  usuarioCarregado=a.user.id;erro=null;atualizar();
+ }catch(e){erro=e.message||String(e);console.warn('Deducoes: consulta nao confirmada',erro);}finally{carregando=false;}
+}
+function numero(txt){var t=String(txt).trim().replace(/\s/g,'');if(t.indexOf(',')>=0)t=t.replace(/\./g,'').replace(',','.');return Number(t);}
+async function editar(){
+ if(!podeEditar()){alert('Edição restrita à Débora e ao administrador.');return;}
+ var sb=window.SB,a=auth();if(!sb||!a.user){alert('Conexão indisponível.');return;}
+ var atual=valor();if(atual===null){var d=window.DRE_CONSOLIDADA.valorLinha(38,'orcado2027');atual=d&&d.valor;}
+ if(!Number.isFinite(atual)){alert('A referência atual não está disponível.');return;}
+ var entrada=prompt('DEDUÇÕES DA RECEITA — total anual de 2027 em R$ (valor negativo).\nExemplo: -736105,00',String((atual*1000).toFixed(2)).replace('.',','));
+ if(entrada===null)return;
+ var reais=numero(entrada);if(!Number.isFinite(reais)||reais>0){alert('Informe um valor numérico negativo ou zero, em reais.');return;}
+ var totalMil=reais/1000;
+ /* Preserva a sazonalidade do orçamento anterior; nunca inventa rateio uniforme. */
+ var anterior=curva()||(window.DRE_CONSOLIDADA.curvaLinha(38,'orcado2027')||[]);
+ if(anterior.length!==12||anterior.some(function(x){return !Number.isFinite(x);})){alert('A distribuição mensal não está disponível. Não foi salvo nenhum valor.');return;}
+ var soma=anterior.reduce(function(x,y){return x+y;},0);
+ if(!Number.isFinite(soma)||Math.abs(soma)<0.0000001){alert('Sem base mensal para distribuir a alteração. Nada foi salvo.');return;}
+ var mesesMil=anterior.map(function(v){return v/soma*totalMil;});
+ var dados={exercicio:2027,totalMil:totalMil,mesesMil:mesesMil,origem:'ajuste_controladoria_deducoes',atualizado_por:a.user.id,atualizado_em:new Date().toISOString()};
+ if(!confirm('Salvar Deduções da Receita 2027: R$ '+reais.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})+'? O DRE será recalculado após confirmação do banco.'))return;
+ try{
+  var q=await sb.from('orcamento_matrizes').select('id').eq('chave',CHAVE).limit(1);if(q.error)throw q.error;
+  var gravacao=q.data&&q.data.length?await sb.from('orcamento_matrizes').update({dados:dados}).eq('id',q.data[0].id).select('id'):await sb.from('orcamento_matrizes').insert({chave:CHAVE,gerencia_id:9,dados:dados}).select('id');
+  if(gravacao.error)throw gravacao.error;
+  if(!gravacao.data||gravacao.data.length!==1)throw Error('O banco não confirmou a gravação.');
+  var check=await sb.from('orcamento_matrizes').select('dados').eq('id',gravacao.data[0].id).single();if(check.error)throw check.error;
+  if(!check.data||Math.abs(Number(check.data.dados.totalMil)-totalMil)>0.000001)throw Error('Verificação de leitura divergente.');
+  estado={totalMil:totalMil,mesesMil:mesesMil};erro=null;atualizar();alert('Deduções salvas e confirmadas no Supabase. DRE recalculado.');
+ }catch(e){console.error('Falha ao salvar deduções:',e);alert('Não foi possível confirmar o salvamento no Supabase. Nenhum valor foi aplicado na tela. Verifique as permissões de gravação: '+(e.message||e));}
+}
+document.addEventListener('click',function(ev){var b=ev.target&&ev.target.closest&&ev.target.closest('[data-ded-editar]');if(!b)return;ev.preventDefault();ev.stopPropagation();ev.stopImmediatePropagation();editar();},true);
+var tentativas=0;var espera=setInterval(function(){tentativas++;if(window.AUTH&&window.AUTH.user&&window.SB){clearInterval(espera);carregar();}else if(tentativas>120)clearInterval(espera);},500);
+window.SOGIPA_DEDUCOES_2027={podeEditar:podeEditar,valor:valor,curva:curva,carregar:carregar};
 })();
 </script>
 </body>
