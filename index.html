@@ -30952,12 +30952,12 @@ async function editar(){
   var dados={exercicio:2027,totalMil:totalMil,mesesMil:mesesMil,impostoReais:tax,origem:'ajuste_controladoria_deducoes',atualizado_por:a.user.id,atualizado_em:new Date().toISOString()};
   try{
    var q=await sb.from('orcamento_matrizes').select('id').eq('chave',CHAVE).limit(1);if(q.error)throw q.error;
-   var gravacao=q.data&&q.data.length?await sb.from('orcamento_matrizes').update({dados:dados}).eq('id',q.data[0].id).select('id'):await sb.from('orcamento_matrizes').insert({chave:CHAVE,gerencia_id:9,dados:dados}).select('id');
+   var gravacao=q.data&&q.data.length?await sb.from('orcamento_matrizes').update({dados:dados}).eq('id',q.data[0].id).select('id'):await sb.from('orcamento_matrizes').insert({chave:CHAVE,exercicio_id:1,gerencia_id:9,dados:dados}).select('id');
    if(gravacao.error)throw gravacao.error;
    if(!gravacao.data||gravacao.data.length!==1)throw Error('Banco não confirmou gravação. Verifique a permissão da Controladoria.');
    var check=await sb.from('orcamento_matrizes').select('dados').eq('id',gravacao.data[0].id).single();if(check.error)throw check.error;
    if(!check.data||Math.abs(Number(check.data.dados.totalMil)-totalMil)>0.000001||tax!==null&&Math.abs(Number(check.data.dados.impostoReais)-tax)>.001)throw Error('Leitura de conferência divergente.');
-   estado={totalMil:totalMil,mesesMil:mesesMil,impostoReais:tax};erro=null;mask.remove();atualizar();alert('Deduções salvas e confirmadas no Supabase.');
+   estado={totalMil:totalMil,mesesMil:mesesMil,impostoReais:tax};erro=null;mask.remove();atualizar();alert('Deduções gravadas no Sistema com sucesso.');
   }catch(e){msg.textContent='NÃO SALVO: '+(e.message||String(e));console.error('Deduções: falha na persistência',e)}finally{salvar.disabled=false}
  };
 }
