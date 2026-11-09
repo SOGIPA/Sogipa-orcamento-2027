@@ -11161,7 +11161,7 @@ var APP = (function () {
       '<div class="tw' + (mostrar.length > 12 ? " long" : "") + '"><table><thead><tr><th>Colaborador</th><th>Cargo</th><th>CC</th>' +
       '<th class="num">Salário-base</th><th class="num">Adicionais</th><th class="num">Benefícios</th>' +
       '<th class="num">Encargos</th>' +
-      '<th class="num">Custo mensal</th><th class="num">Custo anual</th><th class="num">% da gerência</th></tr></thead><tbody>' +
+      '<th class="num">Custo mensal</th><th class="num">Custo anual</th><th class="num">% da gerência</th><th>Gestão do quadro</th></tr></thead><tbody>' +
       mostrar.map(function (x) {
         var cm = PP.custoMensal(x.c);
         return '<tr class="hoverable" data-pcolab="' + x.cc.id + ":" + x.c.id + '" style="cursor:pointer"><td><b>' +
@@ -11173,7 +11173,9 @@ var APP = (function () {
           '<td class="num">' + fmt(PP.somaRubricas(x.c, ["beneficio"])) + "</td>" +
           '<td class="num">' + fmt(PP.encargos(x.c)) + "</td>" +
           '<td class="num"><b>' + fmt(cm) + "</b></td>" +
-          '<td class="num">' + r$(PP.custoAnual(x.c)) + '</td><td class="num muted">' + pct(cm / (totMensal || 1)) + "</td></tr>";
+          '<td class="num muted">' + pct(cm / (totMensal || 1)) + '</td><td>'+
+          (window.__rhPapelPAConfirmado==='rh'?'Somente consulta':
+          '<button class="btn sm" data-pa-retirar="'+esc(x.c.matricula||'')+'" data-pa-cc="'+esc(x.cc.numero||'')+'" data-pa-ger="'+esc(window.NAVPERM&&window.NAVPERM.idInstitucional?window.NAVPERM.idInstitucional(x.origem.nome):'')+'" type="button">Excluir funcionário</button>')+'</td></tr>';
       }).join("") + "</tbody></table></div>" +
       (lista.length > LIM && !S.pQuadroTodos
         ? '<div class="maisitens"><button class="btn" data-pacao="quadro-todos">Mostrar as ' + lista.length + " pessoas</button></div>"
@@ -12638,8 +12640,10 @@ var APP = (function () {
           if (typeof window.render === "function") { try { window.render(); } catch (e) { } }
         });
       }
-      out += D.telaFilaRH() + '<div class="gap"></div>' + (typeof D.telaGestaoQuadroRH==='function'?D.telaGestaoQuadroRH():'');
+      out += D.telaFilaRH() + '<div class="gap"></div>' + (typeof D.telaRetiradas==='function'?D.telaRetiradas():'') + (typeof D.telaGestaoQuadroRH==='function'?D.telaGestaoQuadroRH():'');
     }
+
+    if(window.PA_RETORNO && typeof window.PA_RETORNO.painel==='function')out+=window.PA_RETORNO.painel(g);
 
     out += '<div class="row" style="margin-bottom:18px">' +
       '<button class="btn pri" data-sacao="nova">+ Nova solicitação</button>' +
@@ -12869,6 +12873,7 @@ var APP = (function () {
         '"><small class="dica">remuneração, adicionais, benefícios, encargos e provisão — da matriz</small></div>';
     }
     if (SO.usa(tipo, "rescisao")) {
+      f += '<div class="field full"><label for="soDataDesligamento">Data prevista do desligamento (obrigatória)</label><input type="date" id="soDataDesligamento" required><small class="dica">Por regra interna, desligamentos entre 15/02 e 15/03 não são permitidos. O banco também bloqueia esse período.</small></div>';
       f += campo("soRescisao", "Estimativa de rescisão (opcional; RH confirmará)", "money", "");
       f += '<div class="field full dica-full">O gestor pode deixar este campo vazio. ' +
         "O RH informará o valor da rescisão antes de encaminhar ao Gerente Geral. O painel não calcula verbas rescisórias.</div>";
@@ -12930,6 +12935,7 @@ var APP = (function () {
       adicionais: num("soAdic") || 0, beneficios: num("soBenef") || 0,
       mesInicio: parseInt(val("soMes"), 10) || 1,
       modalidade: val("soModalidade") || null,
+      dataDesligamento: val("soDataDesligamento") || null,
       rescisaoValor: num("soRescisao") || 0,
       temReposicao: !!(document.getElementById("soTemRep") || {}).checked,
       mesReposicao: parseInt(val("soMesRep"), 10) || null,
@@ -13344,6 +13350,11 @@ function validarSolicitacao(d) {
   if (window.SOLICITACOES.usa(d.tipo, "adicionais") && t.regra === "adicional" && !d.adicionais)
     return marcarErro("soAdic", "Preencha o campo Adicionais para enviar a solicitação.");
   if (t.regra === "saida") {
+    var data = String(d.dataDesligamento||'');
+    if (!/^20\d{2}-\d{2}-\d{2}$/.test(data)) return marcarErro('soDataDesligamento','Informe a data prevista do desligamento.');
+    var dt=new Date(data+'T12:00:00');
+    if (isNaN(dt.getTime()) || dt.toISOString().slice(0,10)!==data) return marcarErro('soDataDesligamento','Data de desligamento inválida.');
+    if ((dt.getMonth()===1&&dt.getDate()>=15)||(dt.getMonth()===2&&dt.getDate()<=15)) return marcarErro('soDataDesligamento','Período restrito por regra interna de dissídio: não é permitido solicitar desligamentos de 15/02 a 15/03. Consulte o RH.');
     /* A rescisão é informada e validada pelo RH na etapa seguinte. */
     if (d.temReposicao && (d.salarioReposicao === null || d.salarioReposicao === undefined || !d.salarioReposicao))
       return marcarErro("soSalRep", "Informe o salário do substituto para calcular a economia líquida.");
@@ -25284,7 +25295,7 @@ if (typeof APP !== "undefined" && APP) {
       },Math.min(3000*Math.pow(2,rhFalhas-1),24000));
     }
     DESLIG.filaRH().then(function (r) {
-      if(r.ok){DESLIG.fila=r.itens;rhUltimaBoa=true;rhFalhas=0;DESLIG.estadoFila='pronto';DESLIG.mensagemFila=null;
+      if(r.ok){DESLIG.fila=r.itens.slice().sort(function(a,b){return String(a.criada_em||'').localeCompare(String(b.criada_em||''));});rhUltimaBoa=true;rhFalhas=0;DESLIG.estadoFila='pronto';DESLIG.mensagemFila=null;
         if(rhTimer){clearTimeout(rhTimer);rhTimer=null;}}
       else falhou(r.mensagem||'Não foi possível ler a fila do RH.');
       if (typeof depois === "function") depois();
@@ -25331,6 +25342,10 @@ if (typeof APP !== "undefined" && APP) {
       if(typeof window.render==='function')window.render();
     }).catch(function(){DESLIG.quadroRHEstado='erro';DESLIG.quadroRHMsg='Nao foi possivel consultar o quadro RH. Tente novamente.';if(typeof window.render==='function')window.render();});
   };
+  DESLIG.retiradas=[];DESLIG.retiradasEstado='nao-carregado';
+  DESLIG.carregarRetiradas=function(){if(!window.SB||!window.SB.rpc)return;DESLIG.retiradasEstado='carregando';window.SB.rpc('pa_2027_rh_retiradas_listar').then(function(r){if(r.error)throw r.error;DESLIG.retiradas=Array.isArray(r.data)?r.data:[];DESLIG.retiradasEstado='pronto';if(window.render)window.render();}).catch(function(){DESLIG.retiradasEstado='erro';if(window.render)window.render();});};
+  DESLIG.telaRetiradas=function(){if(!DESLIG.podeAnalisar())return '';if(DESLIG.retiradasEstado==='nao-carregado')setTimeout(DESLIG.carregarRetiradas,0);var esc=window.APP.esc;var out='<section style="margin:20px 0;padding:16px;border:1px solid #536079;border-radius:10px"><h3>Retiradas do quadro pelos gestores — acompanhamento RH</h3><p class="muted">Histórico auditado, em ordem cronológica decrescente. Retirar do quadro não formaliza desligamento.</p>';if(DESLIG.retiradasEstado!=='pronto')return out+'<p>'+esc(DESLIG.retiradasEstado==='erro'?'Não foi possível consultar o histórico.':'Consultando histórico...')+'</p><button class="btn" data-rh-atualizar-retiradas="1">Atualizar</button></section>';out+='<div class="tw"><table><thead><tr><th>Data</th><th>Responsável (ID)</th><th>Matrícula</th><th>CC</th><th>Gerência</th><th>Motivo</th></tr></thead><tbody>';DESLIG.retiradas.forEach(function(x){out+='<tr><td>'+esc(new Date(x.retirada_em).toLocaleString('pt-BR'))+'</td><td>'+esc(x.retirada_por||'Não identificado')+'</td><td>'+esc(x.matricula)+'</td><td>'+esc(x.cc)+'</td><td>'+esc(x.gerencia_id)+'</td><td>'+esc(x.motivo||'Retirada RH anterior')+'</td></tr>';});return out+'</tbody></table></div><p class="muted">'+DESLIG.retiradas.length+' retiradas registradas.</p><button class="btn" data-rh-atualizar-retiradas="1">Atualizar</button></section>';};
+  document.addEventListener('click',function(e){if(e.target.closest('[data-rh-atualizar-retiradas]')){e.stopImmediatePropagation();DESLIG.carregarRetiradas();}},true);
   DESLIG.telaGestaoQuadroRH=function(){
     if(!DESLIG.podeAnalisar())return '';
     var esc=window.APP&&window.APP.esc||function(v){return String(v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});};
@@ -25423,10 +25438,11 @@ if (typeof APP !== "undefined" && APP) {
       '<p><b>Modalidade:</b> '+esc(d.modalidade||'Não informada')+' · <b>Mês:</b> '+esc(d.mesInicio||'—')+'</p>'+
       '<p><b>Justificativa do gestor:</b> '+esc(d.justificativa||'Não informada')+'</p>'+
       '<div class="field"><label>Valor da rescisão (R$)</label><input id="rhDetalheRescisao" inputmode="decimal" placeholder="0,00" value="'+esc(v)+'"></div>'+
+      '<div class="field full"><label>Dados do pedido — revisão RH (JSON estruturado)</label><textarea id="rhDadosEditaveis" rows="9" spellcheck="false" style="font-family:monospace">'+esc(JSON.stringify(d,null,2))+'</textarea><small class="dica">O RH pode corrigir os campos do pedido. O tipo e o colaborador não podem ser trocados. As alterações são versionadas e devolvidas ao gestor antes de qualquer decisão.</small></div>'+ 
       '<div class="field"><label>Parecer / justificativa do RH</label><textarea id="rhDetalheParecer" rows="3">'+esc(d.rh_parecer||'')+'</textarea></div>'+
       '<p class="muted">Salvar mantém a solicitação no RH. Somente Autorizar envio libera a decisão do Gerente Geral. A rescisão é uma despesa extraordinária simulada, sem alterar a base oficial.</p>'+'<div id="rhSimulacaoFinanceira">'+DESLIG.rescisaoFinanceiraHTML(x)+'</div>'+msg+
       '<div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn" data-rh-salvar="'+esc(id)+'">Salvar cálculo</button> '+
-      '<button class="btn pri" data-rh-validar="'+esc(id)+'">Autorizar envio ao Gerente Geral</button> '+
+      '<button class="btn pri" data-rh-validar="'+esc(id)+'">Salvar análise e devolver ao gestor</button> '+
       '<button class="btn" data-rh-devolver="'+esc(id)+'">Devolver ao gestor</button> '+
       '<button class="btn sec" data-rh-fechar="1">Fechar</button></div></div>';
     var el=document.getElementById('rhDetalheOverlay');
@@ -25443,7 +25459,13 @@ if (typeof APP !== "undefined" && APP) {
     if(DESLIG.rhProcessando)return;
     if(acao==='devolver'&&!parecer.trim()){alert('Informe a justificativa para devolver.');return;}
     var p;
-    if(acao==='salvar'){
+    if(acao==='validar'){
+      var raw=document.getElementById('rhDadosEditaveis');var dados;
+      try{dados=JSON.parse(raw.value);}catch(e){alert('Dados do pedido em formato inválido. Confira antes de salvar.');return;}
+      dados.rh_rescisao=n;dados.rh_parecer=parecer;
+      if(!parecer.trim()||parecer.trim().length<5){alert('Descreva a análise ou alteração do RH.');return;}
+      p=window.SB.rpc('pa_2027_rh_editar_devolver',{p_id:id,p_dados:dados,p_comentario:parecer}).then(function(r){return {ok:!r.error,mensagem:r.error?'Não foi possível devolver ao gestor: '+String(r.error.message||'verifique dados'):'Análise salva e devolvida ao gestor para confirmação.'};});
+    }else if(acao==='salvar'){
       if(!window.SB||!window.SB.rpc){alert('Serviço temporariamente indisponível. Tente novamente.');return;}
       p=window.SB.rpc('pa_2027_rh_salvar_rescisao',{p_id:id,p_rescisao:n,p_comentario:parecer}).then(function(r){return {ok:!r.error,mensagem:r.error?'Não foi possível salvar a análise. Tente novamente ou contate o suporte.':'Cálculo salvo no RH, sem encaminhar.'};});
     }else p=acao==='validar'?DESLIG.validar(id,n,parecer):DESLIG.devolver(id,parecer);
@@ -30536,6 +30558,7 @@ function ler(force){
   aguardandoRH=rows.filter(function(x){return x.status==='sol_aguardando_rh';});
   demaisStatus=rows.filter(function(x){return x.status!=='sol_aguardando_rh'&&['sol_enviada','sol_aprovada','sol_reprovada','sol_ajuste'].indexOf(x.status)<0;});
   registros=rows.filter(function(x){var d=x.dados||{};return ['sol_enviada','sol_aprovada','sol_reprovada','sol_ajuste'].indexOf(x.status)>=0&&(d.tipo!=='desligamento'||d.rh_validado===true);});
+  registros.sort(function(a,b){return String(a.criada_em||'').localeCompare(String(b.criada_em||''));});
   estado='pronto';erro='';falhas=0;ultimaLeituraBoa=Date.now();
   if(timerRetry){clearTimeout(timerRetry);timerRetry=null;}
  }).catch(function(e){
@@ -31241,5 +31264,30 @@ function render(){var imp=window.ESPORTES_IMPORT,rows=HIST.map(function(h){retur
 })();
 </script>
 
+
+<script>
+(function(){'use strict';
+ document.addEventListener('click',function(ev){var b=ev.target.closest('[data-pa-retirar]');if(!b)return;ev.stopImmediatePropagation();ev.preventDefault();
+ var mat=b.getAttribute('data-pa-retirar'),cc=b.getAttribute('data-pa-cc'),ger=Number(b.getAttribute('data-pa-ger'));
+ if(!mat||!cc||!ger){alert('Matrícula, centro de custo ou gerência não identificados. Não foi feita nenhuma retirada.');return;}
+ var motivo=prompt('Justifique a retirada de '+mat+' do quadro ativo. O RH receberá o registro. Não substitui desligamento formal.');if(motivo===null)return;
+ if(motivo.trim().length<8){alert('Informe uma justificativa com pelo menos 8 caracteres.');return;}
+ if(!confirm('Confirmar retirada de '+mat+' do quadro de apoio? A operação ficará registrada para acompanhamento do RH.'))return;
+ if(!window.SB||!window.SB.rpc){alert('Serviço indisponível.');return;}
+ b.disabled=true;window.SB.rpc('pa_2027_gestor_retirar_quadro',{p_matricula:mat,p_cc:cc,p_gerencia_id:ger,p_motivo:motivo.trim()}).then(function(r){if(r.error)throw r.error;alert('Retirada registrada para acompanhamento do RH. Recarregue a página para atualizar o quadro.');}).catch(function(e){b.disabled=false;alert('Não foi possível retirar: '+String(e.message||'verifique a permissão e se existe solicitação em andamento'));});
+ },true);
+})();
+</script>
+<script>
+(function(){'use strict';
+var R={itens:[],estado:'inicial',perfil:null};window.PA_RETORNO=R;
+function esc(x){return String(x===null||x===undefined?'':x).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function buscar(){if(!window.SB||!window.SB.rpc)return;R.estado='carregando';Promise.all([window.SB.rpc('pa_2027_perfil'),window.SB.rpc('pa_2027_listar')]).then(function(a){if(a[0].error||a[1].error)throw Error('Consulta indisponível');R.perfil=Array.isArray(a[0].data)?a[0].data[0]:a[0].data;R.itens=(Array.isArray(a[1].data)?a[1].data:[]).filter(function(x){return x.status==='sol_retorno_gestor'&&x.dados&&x.dados.tipo==='desligamento'}).sort(function(a,b){return String(a.criada_em||'').localeCompare(String(b.criada_em||''))});R.estado='pronto';if(window.render)window.render();}).catch(function(){R.estado='erro';if(window.render)window.render()})}
+R.painel=function(g){if(R.estado==='inicial'){setTimeout(buscar,0);return ''}if(!R.perfil||R.perfil.papel!=='gestor')return '';var gid=window.NAVPERM&&window.NAVPERM.idInstitucional?window.NAVPERM.idInstitucional(g.nome):null;if(String(gid)!==String(R.perfil.gerencia_id))return '';var l=R.itens.filter(function(x){return String(x.gerencia_id)===String(gid)});var out='<section style="margin:0 0 18px;padding:16px;border:1px solid #536079;border-radius:10px"><h3>Retorno do RH — aguardando sua confirmação</h3><p class="muted">Revise a análise e a rescisão. Se concordar, encaminhe ao Gerente Geral. Se precisar corrigir, salve e devolva ao RH. Toda movimentação é registrada.</p>';if(R.estado==='erro')return out+'<p>Não foi possível consultar o retorno do RH.</p><button class="btn" data-pa-retorno-recarregar="1">Tentar novamente</button></section>';if(!l.length)return out+'<p class="muted">Nenhum retorno pendente.</p></section>';out+='<div class="tw"><table><thead><tr><th>Colaborador</th><th>Rescisão RH</th><th>Recebido</th><th>Ação</th></tr></thead><tbody>';l.forEach(function(x){out+='<tr><td>'+esc(x.dados.colaboradorNome||x.dados.colaboradorId)+'</td><td>'+esc(x.dados.rh_rescisao)+'</td><td>'+esc(new Date(x.atualizada_em).toLocaleString('pt-BR'))+'</td><td><button class="btn sm pri" data-pa-retorno-abrir="'+esc(x.id)+'">Revisar retorno</button></td></tr>'});return out+'</tbody></table></div></section>'};
+function abrir(id){var x=R.itens.find(function(a){return a.id===id});if(!x)return;var e=document.getElementById('paRetornoModal');if(!e){e=document.createElement('div');e.id='paRetornoModal';e.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:999999;display:flex;align-items:center;justify-content:center;padding:18px';document.body.appendChild(e)}e.innerHTML='<div style="background:#202431;color:white;border:1px solid #536079;border-radius:12px;padding:22px;width:100%;max-width:780px;max-height:90vh;overflow:auto"><h3>Revisão do gestor — retorno do RH</h3><p>Colaborador: '+esc(x.dados.colaboradorNome||x.dados.colaboradorId)+'</p><p>Rescisão validada pelo RH: '+esc(x.dados.rh_rescisao)+'</p><p>Parecer RH: '+esc(x.dados.rh_parecer)+'</p><label>Dados da solicitação (editar somente se precisar devolver ao RH)</label><textarea id="paRetornoDados" rows="10" style="width:100%;font-family:monospace">'+esc(JSON.stringify(x.dados,null,2))+'</textarea><label>Comentário do gestor</label><textarea id="paRetornoComentario" rows="3" style="width:100%" placeholder="Confirmo a análise ou descrevo os ajustes"></textarea><div class="row" style="gap:8px;flex-wrap:wrap;margin-top:12px"><button class="btn pri" data-pa-retorno-acao="confirmar" data-pa-retorno-id="'+esc(id)+'">Confirmar e encaminhar ao Gerente Geral</button><button class="btn" data-pa-retorno-acao="revisar" data-pa-retorno-id="'+esc(id)+'">Salvar alterações e devolver ao RH</button><button class="btn" data-pa-retorno-fechar="1">Fechar</button></div></div>'}
+document.addEventListener('click',function(e){var b=e.target.closest('[data-pa-retorno-recarregar]');if(b){e.stopImmediatePropagation();buscar();return}b=e.target.closest('[data-pa-retorno-abrir]');if(b){e.stopImmediatePropagation();abrir(b.getAttribute('data-pa-retorno-abrir'));return}b=e.target.closest('[data-pa-retorno-fechar]');if(b){e.stopImmediatePropagation();document.getElementById('paRetornoModal').remove();return}b=e.target.closest('[data-pa-retorno-acao]');if(!b)return;e.stopImmediatePropagation();var id=b.getAttribute('data-pa-retorno-id'),x=R.itens.find(function(y){return y.id===id}),dados,confirmar=b.getAttribute('data-pa-retorno-acao')==='confirmar';if(!x)return;try{dados=JSON.parse(document.getElementById('paRetornoDados').value)}catch(err){alert('Dados inválidos.');return}var obs=document.getElementById('paRetornoComentario').value.trim();if(obs.length<3){alert('Informe comentário de pelo menos 3 caracteres.');return}if(confirmar&&JSON.stringify(dados)!==JSON.stringify(x.dados)){alert('Você modificou os dados. Para alterar, devolva ao RH. Para confirmar, mantenha os dados originais.');return}if(!confirm('Confirmar esta movimentação?'))return;b.disabled=true;window.SB.rpc('pa_2027_gestor_revisar_rh',{p_id:id,p_dados:dados,p_confirmar:confirmar,p_comentario:obs}).then(function(r){if(r.error)throw r.error;alert(confirmar?'Solicitação encaminhada ao Gerente Geral.':'Solicitação devolvida ao RH para nova revisão.');document.getElementById('paRetornoModal').remove();buscar()}).catch(function(err){b.disabled=false;alert('Operação não concluída: '+String(err.message||'erro de comunicação'))})},true);
+setTimeout(buscar,1400);
+})();
+</script>
 </body>
 </html>
