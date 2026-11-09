@@ -15289,14 +15289,13 @@ window.SOL_ACOES = function (cmd, render) {
       '<button class="btn pri" data-sacao="nova">+ Nova solicitação</button>' +
       '<span class="muted" style="font-size:12.5px">' + A.plural(p.total, "pessoa") + " · " + A.plural(g.ccs.length, "centro de custo", "centros de custo") + "</span></div>";
 
-    /* RH: alerta de fila transversal, independente das solicitações da própria gerência. */
+    /* RH: fila transversal VISIVEL na Visao Geral, alem da aba Solicitacoes.
+       A gerencia 6 e a unica destinataria; autorizacao final vem da RPC.
+       Nao confundir a lista local do RH com os desligamentos de Operacoes. */
     var RH=window.DESLIGAMENTO;
-    if(RH&&RH.podeAnalisar&&RH.podeAnalisar()&&String(g.nome||'').toLowerCase().indexOf('recursos humanos')>=0){
+    if(Number(g.id)===6 && RH && RH.podeAnalisar && RH.podeAnalisar()){
       if(RH.estadoFila==='nao-carregada')RH.carregarFila(function(){if(typeof window.render==='function')window.render();});
-      if(RH.estadoFila==='pronto'&&RH.fila.length){
-        out+='<div class="alert" style="margin:0 0 18px"><span>🔔</span><div><b>'+RH.fila.length+' desligamento(s) aguardando análise do RH.</b> '+
-          '<button class="btn sm pri" data-paba="solicitacoes">Abrir fila e calcular rescisões</button></div></div>';
-      }
+      out+='<div style="margin-bottom:20px">'+RH.telaFilaRH()+'</div>';
     }
     /* quatro números, sem checklist */
     out += '<div class="kpis principal">' +
@@ -25312,7 +25311,7 @@ if (typeof APP !== "undefined" && APP) {
     var A=window.APP, SO=window.SOLICITACOES;
     if(!A||!SO)return '';
     var esc=A.esc, S=A.state;
-    var cab='<div class="card-pad"><b>Desligamentos aguardando validação do RH</b><div class="muted" style="font-size:12px;margin-top:4px">Abra o pedido, confira o colaborador e registre o cálculo da rescisão antes de encaminhar ao Gerente Geral.</div></div>';
+    var cab='<div class="card-pad"><b>Desligamentos aguardando validação do RH</b><div class="muted" style="font-size:12px;margin-top:4px">Solicitações de todas as gerências, ordenadas da mais antiga para a mais recente. Abra o pedido para analisar a rescisão e devolver ao gestor.</div><button class="btn sm" style="margin-top:10px" data-rh-recarregar-fila="1">Atualizar solicitações</button></div>';
     function card(body){return typeof A.card==='function'?A.card('Fila do RH',DESLIG.fila.length+' aguardando validação',cab+body):cab+body;}
     if(DESLIG.estadoFila==='nao-carregada'||DESLIG.estadoFila==='carregando')return card('<div class="card-pad">Carregando fila do RH…</div>');
     if(DESLIG.estadoFila==='erro')return card('<div class="card-pad desf">Conexão temporariamente indisponível. Tentando novamente. Nenhuma solicitação foi apagada.</div>');
@@ -25487,6 +25486,7 @@ if (typeof APP !== "undefined" && APP) {
   },true);
   document.addEventListener('click',function(ev){
     var t=ev.target;if(!t||!t.closest)return;var a;
+    if((a=t.closest('[data-rh-recarregar-fila]'))){ev.stopImmediatePropagation();DESLIG.carregarFila(function(){if(window.render)window.render();});return;}
     if((a=t.closest('[data-rh-abrir]'))){ev.stopImmediatePropagation();DESLIG.abrir(a.getAttribute('data-rh-abrir'));return;}
     if((a=t.closest('[data-rh-fechar]'))){ev.stopImmediatePropagation();DESLIG.fecharDetalhe();return;}
     ['salvar','validar','devolver'].some(function(k){a=t.closest('[data-rh-'+k+']');if(!a)return false;ev.stopImmediatePropagation();DESLIG.executarRH(k,a.getAttribute('data-rh-'+k));return true;});
