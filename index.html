@@ -12628,6 +12628,7 @@ var APP = (function () {
     var vis = SO.visoes(g.id);
     var lista = SO.filtrar({ gerenciaId: g.id });
     var out = "";
+    if (Number(g.id) === 6) out += '<div class="rh-fila-2027-mount" data-rh-fila-tela="solicitacoes"></div>';
 
     /* Fila transversal de desligamentos: exibicao EXCLUSIVA na pasta RH (id 6).
        Administradores podem analisar a fila no RH, mas jamais em Esportes,
@@ -15284,6 +15285,7 @@ window.SOL_ACOES = function (cmd, render) {
     var st = SO.situacaoGerencia(g.id);
     var o = PP.orcamento(g), p = PP.gerPessoas(g);
     var out = "";
+    if (Number(g.id) === 6) out += '<div class="rh-fila-2027-mount" data-rh-fila-tela="visao"></div>';
 
     out += '<div class="row" style="margin-bottom:18px">' +
       '<button class="btn pri" data-sacao="nova">+ Nova solicitação</button>' +
@@ -31287,40 +31289,21 @@ document.addEventListener('click',function(e){var b=e.target.closest('[data-pa-r
 setTimeout(buscar,1400);
 })();
 </script>
-<script id="sogipa-rh-fila-visivel-v3">
-/* 10/11/2026 - leitura da fila real do Pessoal de Apoio, sem criar ou alterar registros. */
+<script id="sogipa-rh-fila-ancorada-v3">
+/* RH 2027: montagem deterministica na propria subaba. Leitura apenas. */
 (function(){'use strict';
-var painel=null,estado='aguardando',erro='',fila=[],papel='',gerencia=null,ultima=0,emCurso=false,perfilEmCurso=false,ultimoPerfil=0;
-function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]});}
-function vis(e){return !!(e&&e.getClientRects().length);}
-function alvo(){
- var titulos=Array.from(document.querySelectorAll('h1,h2')).filter(function(x){return vis(x)&&x.textContent.trim()==='Recursos Humanos';});
- if(!titulos.length)return null;
- var t=titulos[0],raiz=t.closest('main')||t.parentElement.parentElement.parentElement;
- if(!raiz)return null;
- var btns=Array.from(raiz.querySelectorAll('button')).filter(vis);
- var nova=btns.find(function(x){return /Nova solicita[cç][aã]o/i.test(x.textContent);});
- if(!nova)return null;
- // A aba de solicitacoes tem o botao Nova solicitacao. Evita dependencia de classes CSS de aba ativa.
- var subt=Array.from(raiz.querySelectorAll('h2,h3,p,small,span')).filter(vis).some(function(x){return x.children.length===0&&x.textContent.trim()==='Solicitações';});
- var aba=btns.find(function(x){return x.textContent.trim()==='Solicitações'&&(x.classList.contains('active')||x.classList.contains('ativo')||x.classList.contains('sel')||x.classList.contains('on')||x.getAttribute('aria-selected')==='true');});
- if(!subt&&!aba)return null;
- return nova.parentElement;
-}
-function identificar(x){var d=x.dados||{},z=window.DESLIGAMENTO,c=z&&typeof z.identificarColaborador==='function'?z.identificarColaborador(x):{};return {nome:c.nome||d.nome||d.colaboradorNome||d.funcionarioNome||d.colaboradorId||'Colaborador '+(d.colaboradorId||''),matricula:c.matricula||d.matricula||d.colaboradorId||'—',gerencia:z&&typeof z.nomeGerencia==='function'?z.nomeGerencia(x):'Gerência '+x.gerencia_id};}
-function render(){var lugar=alvo();if(!lugar){if(painel){painel.remove();painel=null;}return;}
- if(!painel||!painel.isConnected){painel=document.createElement('section');painel.id='rh-fila-real-2027';painel.style.cssText='margin:16px 0 22px;padding:18px;border:1px solid #536079;border-radius:12px;background:#1d2231;color:#f1f4fa';lugar.insertAdjacentElement('afterend',painel);}
- var titulo='<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><div><h3 style="margin:0 0 4px">Solicitações de desligamento — fila oficial</h3><div style="font-size:12px;color:#b7c4e3">Registros existentes no Supabase · sem recriar pedidos</div></div><button type="button" class="btn sm" id="rh-fila-real-atualizar">Atualizar fila</button></div>';
- if(estado==='aguardando'||estado==='carregando'){painel.innerHTML=titulo+'<p>Consultando solicitações e permissões...</p>';return;}
- if(estado==='erro'){painel.innerHTML=titulo+'<p style="color:#ffb5b5">Falha ao consultar fila: '+esc(erro)+'. Nenhuma solicitação foi alterada.</p>';return;}
- if(!fila.length){painel.innerHTML=titulo+'<p>Nenhuma solicitação de desligamento acessível para este perfil nesta consulta.</p>';return;}
- var linhas=fila.map(function(x){var d=x.dados||{},c=identificar(x),data=x.criada_em?new Date(x.criada_em).toLocaleString('pt-BR'):'—';var st=x.status==='sol_aguardando_rh'?'Aguardando RH':x.status==='sol_aprovada'?'Aprovada':x.status;var botao=(papel==='rh'||papel==='admin')&&x.status==='sol_aguardando_rh'?'<button type="button" class="btn sm pri" data-rh-abrir="'+esc(x.id)+'">Abrir e analisar</button>':'<span style="font-size:12px;color:#b7c4e3">Acompanhamento</span>';return '<tr><td style="padding:9px;border-top:1px solid #3c465c"><b>'+esc(c.nome)+'</b><div style="font-size:11px;color:#b7c4e3">Matrícula: '+esc(c.matricula)+'</div></td><td style="padding:9px;border-top:1px solid #3c465c">'+esc(c.gerencia)+'</td><td style="padding:9px;border-top:1px solid #3c465c">'+esc(st)+'</td><td style="padding:9px;border-top:1px solid #3c465c">'+esc(data)+'</td><td style="padding:9px;border-top:1px solid #3c465c">'+botao+'</td></tr>';}).join('');
- painel.innerHTML=titulo+'<p style="margin:12px 0"><b>'+fila.length+' solicitação(ões)</b> encontradas para seu perfil. A lista acima de solicitações gerais é independente desta fila de desligamentos.</p><div style="overflow:auto"><table style="width:100%;border-collapse:collapse"><thead><tr><th>Colaborador</th><th>Origem</th><th>Situação</th><th>Data</th><th>Ação</th></tr></thead><tbody>'+linhas+'</tbody></table></div>';
-}
-function consultar(force){if(emCurso||!papel||!window.SB||!window.SB.rpc)return;if(!force&&Date.now()-ultima<30000)return;emCurso=true;estado='carregando';render();window.SB.rpc('pa_2027_listar').then(function(r){if(r.error)throw Error(r.error.message||'Consulta negada');if(!Array.isArray(r.data))throw Error('Resposta inesperada da fila');fila=r.data.filter(function(x){return x&&x.dados&&x.dados.tipo==='desligamento'&&['sol_aguardando_rh','sol_aprovada','sol_retorno_gestor','sol_ajuste'].indexOf(x.status)>=0;}).filter(function(x){return papel!=='gestor'||String(x.gerencia_id)===String(gerencia);}).sort(function(a,b){return String(a.criada_em||'').localeCompare(String(b.criada_em||''));});estado='pronto';erro='';ultima=Date.now();if(window.DESLIGAMENTO){window.DESLIGAMENTO.fila=fila.filter(function(x){return x.status==='sol_aguardando_rh';});window.DESLIGAMENTO.estadoFila='pronto';}}).catch(function(e){estado='erro';erro=e.message||String(e);ultima=Date.now();}).finally(function(){emCurso=false;render();});}
-function perfil(){if(perfilEmCurso||papel||!window.SB||!window.SB.rpc||Date.now()-ultimoPerfil<5000)return;ultimoPerfil=Date.now();perfilEmCurso=true;window.SB.rpc('pa_2027_perfil').then(function(r){if(r.error)throw Error(r.error.message||'Perfil indisponível');var p=Array.isArray(r.data)?r.data[0]:r.data;if(!p||!p.papel)throw Error('Perfil não encontrado');papel=p.papel;gerencia=p.gerencia_id;consultar(true);}).catch(function(e){estado='erro';erro=e.message||String(e);render();}).finally(function(){perfilEmCurso=false;});}
-document.addEventListener('click',function(e){if(e.target&&e.target.closest('#rh-fila-real-atualizar')){e.preventDefault();ultima=0;consultar(true);}},true);
-setInterval(function(){if(!alvo()){if(painel){painel.remove();painel=null;}return;}render();if(!papel)perfil();else consultar(false);},1300);
+var perfil=null, linhas=[], retiradas=[], estado='aguardando',estadoRet='aguardando', erro='', erroRet='', carregando=false,carregandoRet=false,ultimo=0,ultimoRet=0,ultimoPerfil=0;
+function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function pode(){return perfil==='rh'||perfil==='admin';}
+function carregarPerfil(){if(pode()||Date.now()-ultimoPerfil<7000||!window.SB||!window.SB.rpc)return;ultimoPerfil=Date.now();window.SB.rpc('pa_2027_perfil').then(function(r){if(r.error)throw r.error;var p=Array.isArray(r.data)?r.data[0]:r.data;if(p&&(p.papel==='rh'||p.papel==='admin')){perfil=p.papel;window.__rhPapelPAConfirmado=p.papel;carregar(true);carregarRet(true);}}).catch(function(){});}
+function carregar(force){if(!pode()||carregando||!window.SB||!window.SB.rpc||(!force&&Date.now()-ultimo<20000))return;carregando=true;ultimo=Date.now();estado='carregando';window.SB.rpc('pa_2027_listar').then(function(r){if(r.error)throw r.error;if(!Array.isArray(r.data))throw Error('Resposta inesperada da consulta');linhas=r.data.filter(function(x){return x&&x.status==='sol_aguardando_rh'&&x.dados&&x.dados.tipo==='desligamento';}).sort(function(a,b){return String(a.criada_em).localeCompare(String(b.criada_em));});estado='ok';erro='';if(window.DESLIGAMENTO){window.DESLIGAMENTO.fila=linhas.slice();window.DESLIGAMENTO.estadoFila='pronto';}}).catch(function(e){estado='erro';erro=e.message||String(e);}).finally(function(){carregando=false;pintar();});}
+function carregarRet(force){if(!pode()||carregandoRet||!window.SB||!window.SB.rpc||(!force&&Date.now()-ultimoRet<30000))return;carregandoRet=true;ultimoRet=Date.now();estadoRet='carregando';window.SB.rpc('pa_2027_rh_retiradas_listar').then(function(r){if(r.error)throw r.error;if(!Array.isArray(r.data))throw Error('Resposta inesperada do historico');retiradas=r.data;estadoRet='ok';erroRet='';}).catch(function(e){estadoRet='erro';erroRet=e.message||String(e);}).finally(function(){carregandoRet=false;pintar();});}
+function cab(){return '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap"><div><h3 style="margin:0 0 5px">Desligamentos aguardando rescisão do RH</h3><div style="font-size:12px;color:#bac6e2">Fila oficial de todas as gerências · dados do Supabase · sem recriar solicitações</div></div><button class="btn sm" type="button" data-rh2027-refresh="1">Atualizar fila</button></div>';}
+function fila(){var out='<section style="padding:18px;border:1px solid #536079;border-radius:12px;background:#1d2231;color:#f4f6fb;margin:0 0 16px">'+cab();if(!pode())return out+'<p>Verificando autorização do RH/ADMIN...</p></section>';if(estado==='aguardando'||estado==='carregando')return out+'<p>Consultando solicitações...</p></section>';if(estado==='erro')return out+'<p style="color:#ffb5b5">Falha na consulta: '+esc(erro)+'. Clique em Atualizar fila.</p></section>';out+='<p style="margin:14px 0"><b>'+linhas.length+' solicitação(ões) aguardando o RH preencher a rescisão</b></p>';if(!linhas.length)return out+'<p>Nenhum desligamento aguardando RH retornado pela consulta.</p></section>';out+='<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse"><thead><tr><th>Colaborador</th><th>Origem</th><th>Solicitado em</th><th>Ação RH</th></tr></thead><tbody>';linhas.forEach(function(x){var d=x.dados||{},D=window.DESLIGAMENTO,c=D&&D.identificarColaborador?D.identificarColaborador(x):{},nome=c.nome||d.colaboradorNome||d.colaboradorId||'Colaborador '+String(d.colaboradorId||'não identificado'),ger=D&&D.nomeGerencia?D.nomeGerencia(x):'Gerência '+x.gerencia_id;out+='<tr><td style="padding:10px;border-top:1px solid #475169"><b>'+esc(nome)+'</b></td><td style="padding:10px;border-top:1px solid #475169">'+esc(ger)+'</td><td style="padding:10px;border-top:1px solid #475169">'+esc(x.criada_em?new Date(x.criada_em).toLocaleString('pt-BR'):'—')+'</td><td style="padding:10px;border-top:1px solid #475169"><button class="btn sm pri" type="button" data-rh-abrir="'+esc(x.id)+'">Abrir / preencher rescisão</button></td></tr>';});return out+'</tbody></table></div></section>';}
+function historico(){var out='<section style="padding:18px;border:1px solid #536079;border-radius:12px;background:#1d2231;color:#f4f6fb;margin:0 0 16px"><div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><h3 style="margin:0">Excluídos do quadro — histórico de retiradas</h3><button type="button" class="btn sm" data-rh2027-refresh-ret="1">Atualizar excluídos</button></div><p style="font-size:12px;color:#bac6e2">Registro auditado de retiradas. Não substitui desligamento formal.</p>';if(!pode())return out+'<p>Verificando autorização...</p></section>';if(estadoRet==='aguardando'||estadoRet==='carregando')return out+'<p>Consultando histórico...</p></section>';if(estadoRet==='erro')return out+'<p style="color:#ffb5b5">Falha na consulta: '+esc(erroRet)+'</p></section>';out+='<p><b>'+retiradas.length+' retirada(s) registrada(s)</b></p>';if(!retiradas.length)return out+'<p>Não há retiradas registradas nesta base.</p></section>';out+='<div style="max-height:350px;overflow:auto"><table style="width:100%;border-collapse:collapse"><thead><tr><th>Data</th><th>Matrícula</th><th>Centro de custo</th><th>Gerência</th><th>Motivo</th></tr></thead><tbody>';retiradas.forEach(function(x){out+='<tr><td>'+esc(x.retirada_em?new Date(x.retirada_em).toLocaleString('pt-BR'):'—')+'</td><td>'+esc(x.matricula)+'</td><td>'+esc(x.cc)+'</td><td>'+esc(x.gerencia_id)+'</td><td>'+esc(x.motivo||'—')+'</td></tr>';});return out+'</tbody></table></div></section>';}
+function pintar(){if(!document.querySelector('.rh-fila-2027-mount'))return;var html=fila()+historico();document.querySelectorAll('.rh-fila-2027-mount').forEach(function(el){if(el.dataset.rhVersion!==String(ultimo)+'-'+String(ultimoRet)+'-'+estado+'-'+estadoRet){el.innerHTML=html;el.dataset.rhVersion=String(ultimo)+'-'+String(ultimoRet)+'-'+estado+'-'+estadoRet;}});}
+document.addEventListener('click',function(e){var b=e.target.closest('[data-rh2027-refresh]');if(b){e.preventDefault();e.stopPropagation();carregar(true);return;}b=e.target.closest('[data-rh2027-refresh-ret]');if(b){e.preventDefault();e.stopPropagation();carregarRet(true);}},true);
+setInterval(function(){if(!document.querySelector('.rh-fila-2027-mount'))return;carregarPerfil();if(pode()){carregar(false);carregarRet(false);}pintar();},1100);
 })();
 </script>
 </body>
