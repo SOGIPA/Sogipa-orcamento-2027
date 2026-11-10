@@ -31296,11 +31296,29 @@ var S={papel:'',dados:[],excluidos:[],fase:'inicial',faseEx:'inicial',erro:'',er
 function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 function autorizado(){return S.papel==='rh'||S.papel==='admin';}
 function sb(){return window.SB&&typeof window.SB.rpc==='function'?window.SB:null;}
-function consultarPerfil(){if(S.perfilEmCurso||Date.now()-S.ultimoPerfil<4000)return;S.ultimoPerfil=Date.now();var cli=sb();if(!cli){S.fase='erro';S.erro='Cliente Supabase ainda não está disponível. Aguarde ou clique em Atualizar.';desenhar();return;}S.perfilEmCurso=true;cli.rpc('pa_2027_perfil').then(function(r){if(r.error)throw r.error;var p=Array.isArray(r.data)?r.data[0]:r.data;S.papel=p&&p.papel||'';if(!autorizado())throw Error('Perfil não autorizado ou sessão sem autenticação: '+(S.papel||'não identificado'));consultar(true);consultarEx(true);}).catch(function(e){S.fase='erro';S.erro=e.message||String(e);desenhar();}).finally(function(){S.perfilEmCurso=false;});}
+function consultarPerfil(){if(S.perfilEmCurso||Date.now()-S.ultimoPerfil<4000)return;S.ultimoPerfil=Date.now();var cli=sb();if(!cli){S.fase='erro';S.erro='Cliente Supabase ainda não está disponível. Aguarde ou clique em Atualizar.';desenhar();return;}S.perfilEmCurso=true;cli.rpc('pa_2027_perfil').then(function(r){if(r.error)throw r.error;var p=Array.isArray(r.data)?r.data[0]:r.data;S.papel=String(p&&p.papel||'').toLowerCase();if(autorizado()){window.__rhPapelPAConfirmado=S.papel;}if(!autorizado())throw Error('Perfil não autorizado ou sessão sem autenticação: '+(S.papel||'não identificado'));consultar(true);consultarEx(true);}).catch(function(e){S.fase='erro';S.erro=e.message||String(e);desenhar();}).finally(function(){S.perfilEmCurso=false;});}
 function consultar(forcar){if(!autorizado()||S.consultando||(!forcar&&Date.now()-S.ultimo<15000))return;var cli=sb();if(!cli){S.fase='erro';S.erro='Supabase indisponível';desenhar();return;}S.consultando=true;S.ultimo=Date.now();S.fase='carregando';desenhar();cli.rpc('pa_2027_listar').then(function(r){if(r.error)throw r.error;if(!Array.isArray(r.data))throw Error('A consulta não retornou uma lista.');S.dados=r.data.filter(function(x){return x&&x.status==='sol_aguardando_rh'&&x.dados&&x.dados.tipo==='desligamento';});S.dados.sort(function(a,b){return String(a.criada_em||'').localeCompare(String(b.criada_em||''));});S.fase='ok';S.erro='';if(window.DESLIGAMENTO){window.DESLIGAMENTO.fila=S.dados.slice();window.DESLIGAMENTO.estadoFila='pronto';}desenhar();}).catch(function(e){S.fase='erro';S.erro=e.message||String(e);desenhar();}).finally(function(){S.consultando=false;});}
 function consultarEx(forcar){if(!autorizado()||S.consultandoEx||(!forcar&&Date.now()-S.ultimoEx<30000))return;var cli=sb();if(!cli)return;S.consultandoEx=true;S.ultimoEx=Date.now();S.faseEx='carregando';cli.rpc('pa_2027_rh_retiradas_listar').then(function(r){if(r.error)throw r.error;S.excluidos=Array.isArray(r.data)?r.data:[];S.faseEx='ok';S.erroEx='';desenhar();}).catch(function(e){S.faseEx='erro';S.erroEx=e.message||String(e);desenhar();}).finally(function(){S.consultandoEx=false;});}
-function local(){var tit=Array.from(document.querySelectorAll('h1,h2,h3')).find(function(e){return e.textContent.trim()==='Recursos Humanos';});if(!tit)return null;var raiz=tit.closest('main')||tit.parentElement.parentElement;var b=Array.from(raiz.querySelectorAll('button')).find(function(e){return e.textContent.trim()==='Solicitações';});if(!b)return null;return {tit:tit,raiz:raiz};}
-function montar(){var a=local();if(!a)return false;var mounts=Array.from(a.raiz.querySelectorAll('.rh-fila-2027-mount'));mounts.forEach(function(m){m.remove();});var alvo=a.raiz.querySelector('#rh-fila-v5');if(alvo)return true;alvo=document.createElement('div');alvo.id='rh-fila-v5';alvo.style.cssText='width:100%;margin:18px 0;';var subt=a.tit.nextElementSibling;var anchor=subt&&subt.textContent.length<100?subt:a.tit;anchor.insertAdjacentElement('afterend',alvo);desenhar();return true;}
+function local(){
+ var mount=document.querySelector('.rh-fila-2027-mount');
+ if(mount)return {mount:mount};
+ var titles=Array.from(document.querySelectorAll('h1,h2,h3'));
+ var tit=titles.find(function(e){return e.textContent.trim()==='Recursos Humanos';});
+ if(!tit)return null;
+ var root=tit.closest('main')||tit.parentElement.parentElement;
+ if(!root)return null;
+ var b=Array.from(root.querySelectorAll('button')).find(function(e){return e.textContent.trim()==='Solicitações';});
+ if(!b)return null;
+ return {tit:tit,raiz:root};
+}
+function montar(){
+ var a=local();if(!a)return false;
+ var alvo=document.getElementById('rh-fila-v5');
+ if(alvo && alvo.isConnected)return true;
+ alvo=document.createElement('div');alvo.id='rh-fila-v5';alvo.style.cssText='width:100%;margin:18px 0;';
+ if(a.mount){a.mount.replaceWith(alvo);}else{var subt=a.tit.nextElementSibling;var anchor=subt&&subt.textContent.length<100?subt:a.tit;anchor.insertAdjacentElement('afterend',alvo);}
+ desenhar();return true;
+}
 function desenhar(){var el=document.getElementById('rh-fila-v5');if(!el)return;var h='<section style="padding:18px;background:#1d2332;color:#f4f6ff;border:2px solid #477bff;border-radius:12px;margin-bottom:12px"><div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><div><h3 style="margin:0 0 6px">Solicitações aguardando rescisão do RH</h3><div style="color:#bfcbe4;font-size:12px">Fila oficial de todas as gerências · disponível para RH e ADMIN</div></div><button type="button" class="btn sm" data-rhv5-atualizar="1">Atualizar solicitações</button></div>';
 if(S.fase==='inicial'||S.fase==='carregando')h+='<p style="margin:12px 0">Consultando solicitações no Supabase...</p>';
 else if(S.fase==='erro')h+='<p style="color:#ffb7b7;margin:12px 0"><b>Erro de consulta:</b> '+esc(S.erro)+'</p>';
