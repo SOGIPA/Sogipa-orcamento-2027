@@ -10591,7 +10591,7 @@ var APP = (function () {
     var extras = abasExtras(g);
     /* Apoio fica com as três abas operacionais. Manutenção conserva a sua
        subárea de Despesas Fixas, que é peça de despesa, não de pessoal. */
-    if (ehApoio(g)) return ABAS_APOIO.concat((Number(g.id)===6 && (window.__rhPapelPAConfirmado==='rh' || window.__rhPapelPAConfirmado==='admin')) ? [{id:"excluidos",nome:"Funcionários excluídos"}] : [], extras);
+    if (ehApoio(g)) return ABAS_APOIO.concat(Number(g.id)===6 ? [{id:"excluidos",nome:"Funcionários excluídos"}] : [], extras);
     if (!extras.length) return ABAS;
     /* Entra logo após a Visão da Área, antes do planejamento da gerência. */
     return [ABAS[0]].concat(extras, ABAS.slice(1));
@@ -25349,7 +25349,17 @@ if (typeof APP !== "undefined" && APP) {
   };
   DESLIG.retiradas=[];DESLIG.retiradasEstado='nao-carregado';
   DESLIG.carregarRetiradas=function(){if(!window.SB||!window.SB.rpc)return;DESLIG.retiradasEstado='carregando';window.SB.rpc('pa_2027_rh_retiradas_detalhes').then(function(r){if(r.error)throw r.error;DESLIG.retiradas=Array.isArray(r.data)?r.data:[];DESLIG.retiradasEstado='pronto';if(window.render)window.render();}).catch(function(){DESLIG.retiradasEstado='erro';if(window.render)window.render();});};
-  DESLIG.telaRetiradas=function(){if(!DESLIG.podeAnalisar())return '';if(DESLIG.retiradasEstado==='nao-carregado')setTimeout(DESLIG.carregarRetiradas,0);var esc=window.APP.esc;var out='<section style="margin:20px 0;padding:16px;border:1px solid #536079;border-radius:10px"><h3>Excluídos do quadro — histórico do RH</h3><p class="muted">Histórico auditado, em ordem cronológica decrescente. Retirar do quadro não formaliza desligamento.</p>';if(DESLIG.retiradasEstado!=='pronto')return out+'<p>'+esc(DESLIG.retiradasEstado==='erro'?'Não foi possível consultar o histórico.':'Consultando histórico...')+'</p><button class="btn" data-rh-atualizar-retiradas="1">Atualizar</button></section>';out+='<div class="tw"><table><thead><tr><th>Data</th><th>Responsável</th><th>Funcionário</th><th>Matrícula</th><th>CC</th><th>Gerência</th><th>Motivo</th></tr></thead><tbody>';DESLIG.retiradas.forEach(function(x){out+='<tr><td>'+esc(new Date(x.retirada_em).toLocaleString('pt-BR'))+'</td><td>'+esc(x.retirada_por||'Não identificado')+'</td><td>'+esc(x.matricula)+'</td><td>'+esc(x.cc)+'</td><td>'+esc(x.gerencia_id)+'</td><td>'+esc(x.motivo||'Retirada RH anterior')+'</td></tr>';});return out+'</tbody></table></div><p class="muted">'+DESLIG.retiradas.length+' retiradas registradas.</p><button class="btn" data-rh-atualizar-retiradas="1">Atualizar</button></section>';};
+  DESLIG.telaRetiradas=function(){
+    if(!DESLIG.podeAnalisar())return '<section class="card">Acesso restrito ao RH e ADMIN.</section>';
+    if(DESLIG.retiradasEstado==='nao-carregado')setTimeout(DESLIG.carregarRetiradas,0);
+    var esc=window.APP.esc;
+    var out='<section style="margin:20px 0;padding:16px;border:1px solid #536079;border-radius:10px"><h3>Funcionários excluídos</h3><p class="muted">Histórico permanente das retiradas do quadro. A exclusão não substitui o desligamento formal.</p>';
+    if(DESLIG.retiradasEstado!=='pronto')return out+'<p>'+esc(DESLIG.retiradasEstado==='erro'?'Erro ao consultar histórico. Clique em Atualizar.':'Consultando histórico...')+'</p><button class="btn" data-rh-atualizar-retiradas="1">Atualizar</button></section>';
+    out+='<div class="tw"><table><thead><tr><th>Data e hora</th><th>Responsável</th><th>Funcionário</th><th>Matrícula</th><th>CC</th><th>Gerência</th><th>Justificativa</th></tr></thead><tbody>';
+    DESLIG.retiradas.forEach(function(x){out+='<tr><td>'+esc(new Date(x.retirada_em).toLocaleString('pt-BR'))+'</td><td>'+esc(x.responsavel||'Não identificado')+'</td><td>'+esc((x.dados&&x.dados.funcionario)||'Não informado')+'</td><td>'+esc(x.matricula||'')+'</td><td>'+esc(x.cc||'')+'</td><td>'+esc(x.gerencia_id||'')+'</td><td>'+esc(x.motivo||'Não informado')+'</td></tr>';});
+    if(!DESLIG.retiradas.length)out+='<tr><td colspan="7">Nenhum funcionário excluído registrado.</td></tr>';
+    return out+'</tbody></table></div><p class="muted">'+DESLIG.retiradas.length+' exclusão(ões) registrada(s).</p><button class="btn" data-rh-atualizar-retiradas="1">Atualizar</button></section>';
+  };
   document.addEventListener('click',function(e){if(e.target.closest('[data-rh-atualizar-retiradas]')){e.stopImmediatePropagation();DESLIG.carregarRetiradas();}},true);
   DESLIG.telaGestaoQuadroRH=function(){
     if(!DESLIG.podeAnalisar())return '';
