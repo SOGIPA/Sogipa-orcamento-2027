@@ -10452,6 +10452,7 @@ var APP = (function () {
     { id: "visao", nome: "Visão da Área" },
     { id: "planejamento", nome: "Planejamento Orçamentário" },
     { id: "solicitacoes", nome: "Solicitações" }, { id: "quadro", nome: "Quadro Atual" },
+    { id: "excluidos", nome: "Funcionários excluídos" },
     { id: "detalhes", nome: "Detalhes" }
   ];
   /* ─────────── PESSOAL DE APOIO ───────────
@@ -10590,7 +10591,7 @@ var APP = (function () {
     var extras = abasExtras(g);
     /* Apoio fica com as três abas operacionais. Manutenção conserva a sua
        subárea de Despesas Fixas, que é peça de despesa, não de pessoal. */
-    if (ehApoio(g)) return ABAS_APOIO.concat(extras);
+    if (ehApoio(g)) return ABAS_APOIO.concat((Number(g.id)===6 && (window.__rhPapelPAConfirmado==='rh' || window.__rhPapelPAConfirmado==='admin')) ? [{id:"excluidos",nome:"Funcionários excluídos"}] : [], extras);
     if (!extras.length) return ABAS;
     /* Entra logo após a Visão da Área, antes do planejamento da gerência. */
     return [ABAS[0]].concat(extras, ABAS.slice(1));
@@ -11174,8 +11175,7 @@ var APP = (function () {
           '<td class="num">' + fmt(PP.encargos(x.c)) + "</td>" +
           '<td class="num"><b>' + fmt(cm) + "</b></td>" +
           '<td class="num">' + r$(PP.custoAnual(x.c)) + '</td><td class="num muted">' + pct(cm / (totMensal || 1)) + '</td><td>'+
-          (window.__rhPapelPAConfirmado==='rh'?'Somente consulta':
-          '<button class="btn sm" data-pa-retirar="'+esc(x.c.matricula||'')+'" data-pa-cc="'+esc(x.cc.numero||'')+'" data-pa-ger="'+esc(window.NAVPERM&&window.NAVPERM.idInstitucional?window.NAVPERM.idInstitucional(x.origem.nome):'')+'" type="button">Excluir funcionário</button>')+'</td></tr>';
+          '<button class="btn sm" data-pa-retirar="'+esc(x.c.matricula||'')+'" data-pa-nome="'+esc(x.c.nome||'')+'" data-pa-cc="'+esc(x.cc.numero||'')+'" data-pa-ger="'+esc(window.NAVPERM&&window.NAVPERM.idInstitucional?window.NAVPERM.idInstitucional(x.origem.nome):'')+'" type="button">Excluir funcionário</button>'+'</td></tr>';
       }).join("") + "</tbody></table></div>" +
       (lista.length > LIM && !S.pQuadroTodos
         ? '<div class="maisitens"><button class="btn" data-pacao="quadro-todos">Mostrar as ' + lista.length + " pessoas</button></div>"
@@ -11820,6 +11820,7 @@ var APP = (function () {
       dfo: function () { return window.DFO_VIEW.render(); },
       simulacoes: function (gg) { return window.GESTOR_VIEW.simulacoes(gg); },
       solicitacoes: function (gg) { return window.SOLICITACOES_VIEW.render(gg); },
+      excluidos: function (gg) { return Number(gg.id)===6 && window.DESLIGAMENTO && window.DESLIGAMENTO.podeAnalisar() ? window.DESLIGAMENTO.telaRetiradas() : "Acesso restrito ao RH."; },
       quadro: quadro,
       detalhes: function (gg) { return window.GESTOR_VIEW.detalhes(gg, det); }
     };
@@ -12640,8 +12641,10 @@ var APP = (function () {
           if (typeof window.render === "function") { try { window.render(); } catch (e) { } }
         });
       }
-      out += D.telaFilaRH() + '<div class="gap"></div>' + (D.podeAnalisar() && typeof D.telaRetiradas==='function'?D.telaRetiradas():'') + (D.podeAnalisar() && typeof D.telaGestaoQuadroRH==='function'?D.telaGestaoQuadroRH():'');
+      out += D.telaFilaRH() + '<div class="gap"></div>' + (D.podeAnalisar() && typeof D.telaGestaoQuadroRH==='function'?D.telaGestaoQuadroRH():'');
     }
+
+    if (Number(g.id)===6 && window.APP && window.APP.state && window.APP.state.pAba==='excluidos' && D && typeof D.telaRetiradas==='function') return D.telaRetiradas();
 
     if(window.PA_RETORNO && typeof window.PA_RETORNO.painel==='function')out+=window.PA_RETORNO.painel(g);
 
@@ -25345,8 +25348,8 @@ if (typeof APP !== "undefined" && APP) {
     }).catch(function(){DESLIG.quadroRHEstado='erro';DESLIG.quadroRHMsg='Nao foi possivel consultar o quadro RH. Tente novamente.';if(typeof window.render==='function')window.render();});
   };
   DESLIG.retiradas=[];DESLIG.retiradasEstado='nao-carregado';
-  DESLIG.carregarRetiradas=function(){if(!window.SB||!window.SB.rpc)return;DESLIG.retiradasEstado='carregando';window.SB.rpc('pa_2027_rh_retiradas_listar').then(function(r){if(r.error)throw r.error;DESLIG.retiradas=Array.isArray(r.data)?r.data:[];DESLIG.retiradasEstado='pronto';if(window.render)window.render();}).catch(function(){DESLIG.retiradasEstado='erro';if(window.render)window.render();});};
-  DESLIG.telaRetiradas=function(){if(!DESLIG.podeAnalisar())return '';if(DESLIG.retiradasEstado==='nao-carregado')setTimeout(DESLIG.carregarRetiradas,0);var esc=window.APP.esc;var out='<section style="margin:20px 0;padding:16px;border:1px solid #536079;border-radius:10px"><h3>Excluídos do quadro — histórico do RH</h3><p class="muted">Histórico auditado, em ordem cronológica decrescente. Retirar do quadro não formaliza desligamento.</p>';if(DESLIG.retiradasEstado!=='pronto')return out+'<p>'+esc(DESLIG.retiradasEstado==='erro'?'Não foi possível consultar o histórico.':'Consultando histórico...')+'</p><button class="btn" data-rh-atualizar-retiradas="1">Atualizar</button></section>';out+='<div class="tw"><table><thead><tr><th>Data</th><th>Responsável (ID)</th><th>Matrícula</th><th>CC</th><th>Gerência</th><th>Motivo</th></tr></thead><tbody>';DESLIG.retiradas.forEach(function(x){out+='<tr><td>'+esc(new Date(x.retirada_em).toLocaleString('pt-BR'))+'</td><td>'+esc(x.retirada_por||'Não identificado')+'</td><td>'+esc(x.matricula)+'</td><td>'+esc(x.cc)+'</td><td>'+esc(x.gerencia_id)+'</td><td>'+esc(x.motivo||'Retirada RH anterior')+'</td></tr>';});return out+'</tbody></table></div><p class="muted">'+DESLIG.retiradas.length+' retiradas registradas.</p><button class="btn" data-rh-atualizar-retiradas="1">Atualizar</button></section>';};
+  DESLIG.carregarRetiradas=function(){if(!window.SB||!window.SB.rpc)return;DESLIG.retiradasEstado='carregando';window.SB.rpc('pa_2027_rh_retiradas_detalhes').then(function(r){if(r.error)throw r.error;DESLIG.retiradas=Array.isArray(r.data)?r.data:[];DESLIG.retiradasEstado='pronto';if(window.render)window.render();}).catch(function(){DESLIG.retiradasEstado='erro';if(window.render)window.render();});};
+  DESLIG.telaRetiradas=function(){if(!DESLIG.podeAnalisar())return '';if(DESLIG.retiradasEstado==='nao-carregado')setTimeout(DESLIG.carregarRetiradas,0);var esc=window.APP.esc;var out='<section style="margin:20px 0;padding:16px;border:1px solid #536079;border-radius:10px"><h3>Excluídos do quadro — histórico do RH</h3><p class="muted">Histórico auditado, em ordem cronológica decrescente. Retirar do quadro não formaliza desligamento.</p>';if(DESLIG.retiradasEstado!=='pronto')return out+'<p>'+esc(DESLIG.retiradasEstado==='erro'?'Não foi possível consultar o histórico.':'Consultando histórico...')+'</p><button class="btn" data-rh-atualizar-retiradas="1">Atualizar</button></section>';out+='<div class="tw"><table><thead><tr><th>Data</th><th>Responsável</th><th>Funcionário</th><th>Matrícula</th><th>CC</th><th>Gerência</th><th>Motivo</th></tr></thead><tbody>';DESLIG.retiradas.forEach(function(x){out+='<tr><td>'+esc(new Date(x.retirada_em).toLocaleString('pt-BR'))+'</td><td>'+esc(x.retirada_por||'Não identificado')+'</td><td>'+esc(x.matricula)+'</td><td>'+esc(x.cc)+'</td><td>'+esc(x.gerencia_id)+'</td><td>'+esc(x.motivo||'Retirada RH anterior')+'</td></tr>';});return out+'</tbody></table></div><p class="muted">'+DESLIG.retiradas.length+' retiradas registradas.</p><button class="btn" data-rh-atualizar-retiradas="1">Atualizar</button></section>';};
   document.addEventListener('click',function(e){if(e.target.closest('[data-rh-atualizar-retiradas]')){e.stopImmediatePropagation();DESLIG.carregarRetiradas();}},true);
   DESLIG.telaGestaoQuadroRH=function(){
     if(!DESLIG.podeAnalisar())return '';
@@ -25356,7 +25359,7 @@ if (typeof APP !== "undefined" && APP) {
     if(DESLIG.quadroRHEstado==='carregando'||DESLIG.quadroRHEstado==='nao-carregado')return out+'<p>Carregando quadro...</p></section>';
     if(DESLIG.quadroRHEstado==='erro')return out+'<p>'+esc(DESLIG.quadroRHMsg)+'</p><button class="btn" data-rh-recarregar-quadro="1">Tentar novamente</button></section>';
     out+='<div style="margin-bottom:10px"><input id="rhBuscaQuadro" placeholder="Buscar nome ou matricula" style="width:100%;max-width:380px" /></div><div style="max-height:390px;overflow:auto"><table style="width:100%"><thead><tr><th>Colaborador</th><th>Matricula</th><th>CC</th><th>Acao</th></tr></thead><tbody>';
-    DESLIG.quadroRH.forEach(function(x,i){var d=x.dados||{};var nome=d.nome||d.Nome||d.NOME||d.colaborador||d.nome_colaborador||'Colaborador';out+='<tr data-rh-quadro-linha="'+esc(String(nome)+' '+String(x.matricula||''))+'"><td>'+esc(nome)+'</td><td>'+esc(x.matricula||'')+'</td><td>'+esc(x.cc||'')+'</td><td><button class="btn sm danger" data-rh-retirar-indice="'+i+'">Retirar do quadro</button></td></tr>';});
+    DESLIG.quadroRH.forEach(function(x,i){var d=x.dados||{};var nome=d.funcionario||d.nome||d.Nome||d.NOME||d.colaborador||d.nome_colaborador||'Colaborador';out+='<tr data-rh-quadro-linha="'+esc(String(nome)+' '+String(x.matricula||''))+'"><td>'+esc(nome)+'</td><td>'+esc(x.matricula||'')+'</td><td>'+esc(x.cc||'')+'</td><td><button class="btn sm danger" data-rh-retirar-indice="'+i+'">Retirar do quadro</button></td></tr>';});
     return out+'</tbody></table></div><p class="muted">'+DESLIG.quadroRH.length+' registros ativos retornados pelo banco.</p></section>';
   };
   document.addEventListener('input',function(ev){if(!ev.target||ev.target.id!=='rhBuscaQuadro')return;var q=String(ev.target.value||'').toLowerCase();document.querySelectorAll('[data-rh-quadro-linha]').forEach(function(tr){tr.style.display=String(tr.getAttribute('data-rh-quadro-linha')||'').toLowerCase().includes(q)?'':'none';});},true);
@@ -25367,13 +25370,7 @@ if (typeof APP !== "undefined" && APP) {
     ev.stopImmediatePropagation();
     var x=DESLIG.quadroRH[Number(b.getAttribute('data-rh-retirar-indice'))];if(!x||!DESLIG.podeAnalisar())return;
     var d=x.dados||{},nome=d.nome||d.Nome||d.NOME||d.colaborador||x.matricula;
-    var motivo=prompt('Justifique a exclusão de '+nome+' (matrícula '+x.matricula+') do quadro atual. A retirada ficará registrada em Excluídos do RH.');if(motivo===null)return;if(motivo.trim().length<8){alert('Informe uma justificativa de pelo menos 8 caracteres.');return;}if(!confirm('Confirmar exclusão de '+nome+' do quadro ativo? O histórico será preservado no RH. Solicitações em andamento impedem a retirada.'))return;
-    b.disabled=true;
-    window.SB.rpc('pa_2027_rh_retirar_quadro',{p_matricula:String(x.matricula),p_cc:String(x.cc),p_gerencia_id:Number(x.gerencia_id),p_motivo:motivo.trim()}).then(function(r){
-      if(r.error)throw r.error;
-      alert('Exclusão confirmada. Registro preservado no histórico Excluídos do RH.');
-      DESLIG.carregarRetiradas();DESLIG.carregarQuadroRH();setTimeout(function(){location.reload();},700);
-    }).catch(function(e){b.disabled=false;alert('Nao foi possivel retirar: '+String(e.message||'falha de conexao'));});
+    var button=document.createElement('button');button.type='button';button.setAttribute('data-pa-retirar',String(x.matricula));button.setAttribute('data-pa-nome',String(nome));button.setAttribute('data-pa-cc',String(x.cc));button.setAttribute('data-pa-ger',String(x.gerencia_id));button.style.display='none';document.body.appendChild(button);button.click();button.remove();
   },true);
   DESLIG.identificarColaborador=function(x){
     var d=x.dados||{}, id=String(d.colaboradorId||''), nome=d.colaboradorNome||d.colaborador||d.funcionario||null;
@@ -31270,17 +31267,28 @@ function render(){var imp=window.ESPORTES_IMPORT,rows=HIST.map(function(h){retur
 </script>
 
 
-<script>
+<script id="sogipa-exclusao-modal-v11">
 (function(){'use strict';
- document.addEventListener('click',function(ev){var b=ev.target.closest('[data-pa-retirar]');if(!b)return;ev.stopImmediatePropagation();ev.preventDefault();
- var mat=b.getAttribute('data-pa-retirar'),cc=b.getAttribute('data-pa-cc'),ger=Number(b.getAttribute('data-pa-ger'));
- if(!mat||!cc||!ger){alert('Matrícula, centro de custo ou gerência não identificados. Não foi feita nenhuma retirada.');return;}
- var motivo=prompt('Justifique a retirada de '+mat+' do quadro ativo. O RH receberá o registro. Não substitui desligamento formal.');if(motivo===null)return;
- if(motivo.trim().length<8){alert('Informe uma justificativa com pelo menos 8 caracteres.');return;}
- if(!confirm('Confirmar retirada de '+mat+' do quadro de apoio? Se houver desligamento em andamento, o banco impedirá a retirada e manterá o colaborador ativo.'))return;
- if(!window.SB||!window.SB.rpc){alert('Serviço indisponível.');return;}
- b.disabled=true;window.SB.rpc('pa_2027_gestor_retirar_quadro',{p_matricula:mat,p_cc:cc,p_gerencia_id:ger,p_motivo:motivo.trim()}).then(function(r){if(r.error)throw r.error;alert('Retirada confirmada no Supabase. O quadro será recarregado para refletir a mudança.');if(window.DESLIGAMENTO&&window.DESLIGAMENTO.carregarRetiradas)window.DESLIGAMENTO.carregarRetiradas();setTimeout(function(){location.reload();},500);}).catch(function(e){b.disabled=false;alert('Não foi possível retirar: '+String(e.message||'verifique a permissão e se existe solicitação em andamento'));});
+function esc(x){return String(x==null?'':x).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+var job=null,busy=false;
+function close(){if(busy)return;var m=document.getElementById('paExcluirModalV11');if(m)m.remove();job=null;}
+function open(b){var mat=b.getAttribute('data-pa-retirar'),cc=b.getAttribute('data-pa-cc'),ger=Number(b.getAttribute('data-pa-ger')),nome=b.getAttribute('data-pa-nome')||mat;
+ if(!mat||!cc||!ger){alert('Identificação incompleta. Nenhuma retirada realizada.');return;}
+ job={mat:mat,cc:cc,ger:ger,nome:nome};var m=document.getElementById('paExcluirModalV11');if(m)m.remove();m=document.createElement('div');m.id='paExcluirModalV11';m.style.cssText='position:fixed;inset:0;z-index:2147483646;background:rgba(0,0,0,.79);display:flex;align-items:center;justify-content:center;padding:18px';
+ m.innerHTML='<div role="dialog" aria-modal="true" aria-labelledby="paExcluirTituloV11" style="width:min(570px,100%);background:#202431;border:1px solid #66718d;border-radius:14px;padding:26px;color:#fff;box-shadow:0 20px 60px #0008"><h2 id="paExcluirTituloV11" style="margin:0 0 12px;font-size:21px">Excluir funcionário do quadro atual</h2><p style="line-height:1.6"><b>'+esc(nome)+'</b><br>Matrícula '+esc(mat)+' · Centro de custo '+esc(cc)+'</p><p style="font-size:13px;color:#c6cee2">A exclusão remove o funcionário do orçamento ativo e registra o histórico na subaba Funcionários excluídos do RH. Não substitui o desligamento formal.</p><label for="paExcluirMotivoV11" style="display:block;margin:15px 0 7px">Justificativa obrigatória</label><textarea id="paExcluirMotivoV11" rows="4" maxlength="1200" placeholder="Explique por que o funcionário não integra mais o quadro" style="width:100%;box-sizing:border-box;background:#121725;color:white;border:1px solid #64708c;border-radius:8px;padding:12px"></textarea><p id="paExcluirErroV11" role="alert" style="color:#ffc0c0;min-height:20px;font-size:13px"></p><div style="display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap"><button class="btn" type="button" data-pa-excluir-cancelar="1">Cancelar</button><button class="btn pri" type="button" data-pa-excluir-confirmar="1">Confirmar exclusão</button></div></div>';
+ document.body.appendChild(m);document.getElementById('paExcluirMotivoV11').focus();}
+document.addEventListener('click',function(ev){var t=ev.target;if(!t||!t.closest)return;var b=t.closest('[data-pa-retirar]');if(b){ev.preventDefault();ev.stopImmediatePropagation();open(b);return;}
+ if(t.closest('[data-pa-excluir-cancelar]')){ev.preventDefault();ev.stopImmediatePropagation();close();return;}
+ b=t.closest('[data-pa-excluir-confirmar]');if(!b||!job)return;ev.preventDefault();ev.stopImmediatePropagation();if(busy)return;
+ var motivo=String(document.getElementById('paExcluirMotivoV11').value||'').trim(),erro=document.getElementById('paExcluirErroV11');if(motivo.length<8){erro.textContent='Informe uma justificativa com pelo menos 8 caracteres.';return;}
+ if(!window.SB||typeof window.SB.rpc!=='function'){erro.textContent='Serviço indisponível. Tente novamente.';return;}
+ busy=true;b.disabled=true;b.textContent='Registrando...';var j=job;
+ window.SB.rpc('pa_2027_perfil').then(function(r){if(r.error)throw r.error;var p=Array.isArray(r.data)?r.data[0]:r.data,role=String(p&&p.papel||'').toLowerCase();if(role!=='rh'&&role!=='gestor')throw Error('Perfil sem permissão para retirada.');
+ var fn=role==='rh'?'pa_2027_rh_retirar_quadro':'pa_2027_gestor_retirar_quadro';return window.SB.rpc(fn,{p_matricula:j.mat,p_cc:j.cc,p_gerencia_id:j.ger,p_motivo:motivo});
+ }).then(function(r){if(r.error)throw r.error;busy=false;close();if(window.DESLIGAMENTO){window.DESLIGAMENTO.retiradasEstado='nao-carregado';window.DESLIGAMENTO.quadroRHEstado='nao-carregado';}alert('Exclusão registrada. O funcionário foi retirado do quadro ativo e enviado ao histórico do RH.');location.reload();
+ }).catch(function(e){busy=false;b.disabled=false;b.textContent='Confirmar exclusão';erro.textContent='Exclusão não realizada: '+String(e.message||e);});
  },true);
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!busy&&document.getElementById('paExcluirModalV11'))close();},true);
 })();
 </script>
 <script>
