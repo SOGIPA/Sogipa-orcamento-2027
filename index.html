@@ -10591,7 +10591,7 @@ var APP = (function () {
     var extras = abasExtras(g);
     /* Apoio fica com as três abas operacionais. Manutenção conserva a sua
        subárea de Despesas Fixas, que é peça de despesa, não de pessoal. */
-    if (ehApoio(g)) return ABAS_APOIO.concat(Number(g.id)===6 ? [{id:"excluidos",nome:"Funcionários excluídos"}] : [], extras);
+    if (ehApoio(g)) return ABAS_APOIO.concat(g && (g.nome === "RH" || Number(g.id) === 6) ? [{id:"excluidos",nome:"Funcionários excluídos"}] : [], extras);
     if (!extras.length) return ABAS;
     /* Entra logo após a Visão da Área, antes do planejamento da gerência. */
     return [ABAS[0]].concat(extras, ABAS.slice(1));
@@ -11820,7 +11820,7 @@ var APP = (function () {
       dfo: function () { return window.DFO_VIEW.render(); },
       simulacoes: function (gg) { return window.GESTOR_VIEW.simulacoes(gg); },
       solicitacoes: function (gg) { return window.SOLICITACOES_VIEW.render(gg); },
-      excluidos: function (gg) { return Number(gg.id)===6 && window.DESLIGAMENTO && window.DESLIGAMENTO.podeAnalisar() ? window.DESLIGAMENTO.telaRetiradas() : "Acesso restrito ao RH."; },
+      excluidos: function (gg) { return gg && (gg.nome === "RH" || Number(gg.id)===6) && window.DESLIGAMENTO && typeof window.DESLIGAMENTO.telaRetiradas === "function" ? window.DESLIGAMENTO.telaRetiradas() : "Histórico indisponível nesta área."; },
       quadro: quadro,
       detalhes: function (gg) { return window.GESTOR_VIEW.detalhes(gg, det); }
     };
@@ -25350,7 +25350,7 @@ if (typeof APP !== "undefined" && APP) {
   DESLIG.retiradas=[];DESLIG.retiradasEstado='nao-carregado';
   DESLIG.carregarRetiradas=function(){if(!window.SB||!window.SB.rpc)return;DESLIG.retiradasEstado='carregando';window.SB.rpc('pa_2027_rh_retiradas_detalhes').then(function(r){if(r.error)throw r.error;DESLIG.retiradas=Array.isArray(r.data)?r.data:[];DESLIG.retiradasEstado='pronto';if(window.render)window.render();}).catch(function(){DESLIG.retiradasEstado='erro';if(window.render)window.render();});};
   DESLIG.telaRetiradas=function(){
-    if(!DESLIG.podeAnalisar())return '<section class="card">Acesso restrito ao RH e ADMIN.</section>';
+    if(!DESLIG.podeAnalisar() && !(window.__rhPapelPAConfirmado==='rh'||window.__rhPapelPAConfirmado==='admin'))return '<section class="card">Acesso restrito ao RH e ADMIN.</section>';
     if(DESLIG.retiradasEstado==='nao-carregado')setTimeout(DESLIG.carregarRetiradas,0);
     var esc=window.APP.esc;
     var out='<section style="margin:20px 0;padding:16px;border:1px solid #536079;border-radius:10px"><h3>Funcionários excluídos</h3><p class="muted">Histórico permanente das retiradas do quadro. A exclusão não substitui o desligamento formal.</p>';
