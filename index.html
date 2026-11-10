@@ -31295,7 +31295,7 @@ setTimeout(buscar,1400);
 var perfil=null, linhas=[], retiradas=[], estado='aguardando',estadoRet='aguardando', erro='', erroRet='', carregando=false,carregandoRet=false,ultimo=0,ultimoRet=0,ultimoPerfil=0;
 function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 function pode(){return perfil==='rh'||perfil==='admin';}
-function carregarPerfil(){if(pode()||Date.now()-ultimoPerfil<7000||!window.SB||!window.SB.rpc)return;ultimoPerfil=Date.now();window.SB.rpc('pa_2027_perfil').then(function(r){if(r.error)throw r.error;var p=Array.isArray(r.data)?r.data[0]:r.data;if(p&&(p.papel==='rh'||p.papel==='admin')){perfil=p.papel;window.__rhPapelPAConfirmado=p.papel;carregar(true);carregarRet(true);}}).catch(function(){});}
+function carregarPerfil(){if(pode()||Date.now()-ultimoPerfil<7000||!window.SB||!window.SB.rpc)return;ultimoPerfil=Date.now();window.SB.rpc('pa_2027_perfil').then(function(r){if(r.error)throw r.error;var p=Array.isArray(r.data)?r.data[0]:r.data;if(p&&(p.papel==='rh'||p.papel==='admin')){perfil=p.papel;window.__rhPapelPAConfirmado=p.papel;carregar(true);carregarRet(true);}}).catch(function(e){estado='erro';erro='Falha ao validar perfil: '+(e.message||String(e));pintar();});}
 function carregar(force){if(!pode()||carregando||!window.SB||!window.SB.rpc||(!force&&Date.now()-ultimo<20000))return;carregando=true;ultimo=Date.now();estado='carregando';window.SB.rpc('pa_2027_listar').then(function(r){if(r.error)throw r.error;if(!Array.isArray(r.data))throw Error('Resposta inesperada da consulta');linhas=r.data.filter(function(x){return x&&x.status==='sol_aguardando_rh'&&x.dados&&x.dados.tipo==='desligamento';}).sort(function(a,b){return String(a.criada_em).localeCompare(String(b.criada_em));});estado='ok';erro='';if(window.DESLIGAMENTO){window.DESLIGAMENTO.fila=linhas.slice();window.DESLIGAMENTO.estadoFila='pronto';}}).catch(function(e){estado='erro';erro=e.message||String(e);}).finally(function(){carregando=false;pintar();});}
 function carregarRet(force){if(!pode()||carregandoRet||!window.SB||!window.SB.rpc||(!force&&Date.now()-ultimoRet<30000))return;carregandoRet=true;ultimoRet=Date.now();estadoRet='carregando';window.SB.rpc('pa_2027_rh_retiradas_listar').then(function(r){if(r.error)throw r.error;if(!Array.isArray(r.data))throw Error('Resposta inesperada do historico');retiradas=r.data;estadoRet='ok';erroRet='';}).catch(function(e){estadoRet='erro';erroRet=e.message||String(e);}).finally(function(){carregandoRet=false;pintar();});}
 function cab(){return '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap"><div><h3 style="margin:0 0 5px">Desligamentos aguardando rescisão do RH</h3><div style="font-size:12px;color:#bac6e2">Fila oficial de todas as gerências · dados do Supabase · sem recriar solicitações</div></div><button class="btn sm" type="button" data-rh2027-refresh="1">Atualizar fila</button></div>';}
@@ -31303,7 +31303,25 @@ function fila(){var out='<section style="padding:18px;border:1px solid #536079;b
 function historico(){var out='<section style="padding:18px;border:1px solid #536079;border-radius:12px;background:#1d2231;color:#f4f6fb;margin:0 0 16px"><div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><h3 style="margin:0">Excluídos do quadro — histórico de retiradas</h3><button type="button" class="btn sm" data-rh2027-refresh-ret="1">Atualizar excluídos</button></div><p style="font-size:12px;color:#bac6e2">Registro auditado de retiradas. Não substitui desligamento formal.</p>';if(!pode())return out+'<p>Verificando autorização...</p></section>';if(estadoRet==='aguardando'||estadoRet==='carregando')return out+'<p>Consultando histórico...</p></section>';if(estadoRet==='erro')return out+'<p style="color:#ffb5b5">Falha na consulta: '+esc(erroRet)+'</p></section>';out+='<p><b>'+retiradas.length+' retirada(s) registrada(s)</b></p>';if(!retiradas.length)return out+'<p>Não há retiradas registradas nesta base.</p></section>';out+='<div style="max-height:350px;overflow:auto"><table style="width:100%;border-collapse:collapse"><thead><tr><th>Data</th><th>Matrícula</th><th>Centro de custo</th><th>Gerência</th><th>Motivo</th></tr></thead><tbody>';retiradas.forEach(function(x){out+='<tr><td>'+esc(x.retirada_em?new Date(x.retirada_em).toLocaleString('pt-BR'):'—')+'</td><td>'+esc(x.matricula)+'</td><td>'+esc(x.cc)+'</td><td>'+esc(x.gerencia_id)+'</td><td>'+esc(x.motivo||'—')+'</td></tr>';});return out+'</tbody></table></div></section>';}
 function pintar(){if(!document.querySelector('.rh-fila-2027-mount'))return;var html=fila()+historico();document.querySelectorAll('.rh-fila-2027-mount').forEach(function(el){if(el.dataset.rhVersion!==String(ultimo)+'-'+String(ultimoRet)+'-'+estado+'-'+estadoRet){el.innerHTML=html;el.dataset.rhVersion=String(ultimo)+'-'+String(ultimoRet)+'-'+estado+'-'+estadoRet;}});}
 document.addEventListener('click',function(e){var b=e.target.closest('[data-rh2027-refresh]');if(b){e.preventDefault();e.stopPropagation();carregar(true);return;}b=e.target.closest('[data-rh2027-refresh-ret]');if(b){e.preventDefault();e.stopPropagation();carregarRet(true);}},true);
-setInterval(function(){if(!document.querySelector('.rh-fila-2027-mount'))return;carregarPerfil();if(pode()){carregar(false);carregarRet(false);}pintar();},1100);
+function garantirMontagem(){
+  /* A tela de RH possui caminhos diferentes de renderizacao. Nunca depender apenas de g.id. */
+  var titulos=Array.from(document.querySelectorAll('h1,h2,h3'));
+  var rh=titulos.find(function(el){return el.textContent.trim()==='Recursos Humanos';});
+  if(!rh)return;
+  var texto=document.body.innerText||'';
+  var area=rh.closest('main')||rh.parentElement&&rh.parentElement.parentElement;
+  if(!area)return;
+  var botoes=Array.from(area.querySelectorAll('button'));
+  var aba=botoes.find(function(b){return b.textContent.trim()==='Solicitações' && (b.classList.contains('active')||b.getAttribute('aria-selected')==='true'||b.classList.contains('on'));});
+  var abaVisao=botoes.find(function(b){return b.textContent.trim()==='Visão Geral' && (b.classList.contains('active')||b.getAttribute('aria-selected')==='true'||b.classList.contains('on'));});
+  var conteudo=Array.from(area.querySelectorAll('button')).find(function(b){return b.textContent.indexOf('Nova solicitação')>=0});
+  if(!conteudo || (!aba && !abaVisao))return;
+  var alvo=conteudo.closest('.toolbar')||conteudo.parentElement;
+  if(!alvo||!alvo.parentElement)return;
+  var mount=area.querySelector('.rh-fila-2027-mount');
+  if(!mount){mount=document.createElement('div');mount.className='rh-fila-2027-mount';mount.dataset.rhFilaTela='solicitacoes';alvo.parentElement.insertBefore(mount,alvo);}
+}
+setInterval(function(){garantirMontagem();if(!document.querySelector('.rh-fila-2027-mount'))return;carregarPerfil();if(pode()){carregar(false);carregarRet(false);}pintar();},1100);
 })();
 </script>
 </body>
