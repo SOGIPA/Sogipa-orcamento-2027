@@ -31287,38 +31287,40 @@ document.addEventListener('click',function(e){var b=e.target.closest('[data-pa-r
 setTimeout(buscar,1400);
 })();
 </script>
-<script id="sogipa-rh-fila-autonoma-v2">
-/* Fila RH independente da lista local da gerencia. Nao altera dados. */
+<script id="sogipa-rh-fila-visivel-v3">
+/* 10/11/2026 - leitura da fila real do Pessoal de Apoio, sem criar ou alterar registros. */
 (function(){'use strict';
-var painel=null,ultima=0,carregando=false,permitido=false,perfilEmCurso=false,perfilEm=0,cache=[],estado='inicial',erro='';
-function esc(x){return String(x==null?'':x).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
-function visivel(el){return !!(el&&el.getClientRects().length);}
+var painel=null,estado='aguardando',erro='',fila=[],papel='',gerencia=null,ultima=0,emCurso=false,perfilEmCurso=false,ultimoPerfil=0;
+function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]});}
+function vis(e){return !!(e&&e.getClientRects().length);}
 function alvo(){
- var titulos=Array.from(document.querySelectorAll('h1,h2')).filter(function(e){return visivel(e)&&e.textContent.trim()==='Recursos Humanos';});
+ var titulos=Array.from(document.querySelectorAll('h1,h2')).filter(function(x){return vis(x)&&x.textContent.trim()==='Recursos Humanos';});
  if(!titulos.length)return null;
  var t=titulos[0],raiz=t.closest('main')||t.parentElement.parentElement.parentElement;
  if(!raiz)return null;
- var botoes=Array.from(raiz.querySelectorAll('button')).filter(visivel);
- var aba=botoes.find(function(b){return b.textContent.trim()==='Solicitações'&&(b.classList.contains('active')||b.classList.contains('ativo')||b.classList.contains('on')||b.classList.contains('sel')||b.getAttribute('aria-selected')==='true');});
- if(!aba)return null;
- var novo=botoes.find(function(b){return b.textContent.indexOf('Nova solicitação')>=0;});
- return novo&&novo.parentElement?novo.parentElement:null;
+ var btns=Array.from(raiz.querySelectorAll('button')).filter(vis);
+ var nova=btns.find(function(x){return /Nova solicita[cç][aã]o/i.test(x.textContent);});
+ if(!nova)return null;
+ // A aba de solicitacoes tem o botao Nova solicitacao. Evita dependencia de classes CSS de aba ativa.
+ var subt=Array.from(raiz.querySelectorAll('h2,h3,p,small,span')).filter(vis).some(function(x){return x.children.length===0&&x.textContent.trim()==='Solicitações';});
+ var aba=btns.find(function(x){return x.textContent.trim()==='Solicitações'&&(x.classList.contains('active')||x.classList.contains('ativo')||x.classList.contains('sel')||x.classList.contains('on')||x.getAttribute('aria-selected')==='true');});
+ if(!subt&&!aba)return null;
+ return nova.parentElement;
 }
-function tela(){var lugar=alvo();if(!lugar){if(painel){painel.remove();painel=null;}return;}
- if(!painel||!painel.isConnected){painel=document.createElement('section');painel.id='rh-fila-operacional-2027';painel.style.cssText='margin:16px 0 22px;padding:18px;border:1px solid #536079;border-radius:12px;background:#1d2231;color:#f1f4fc';lugar.parentNode.insertBefore(painel,lugar);}
- if(!permitido){painel.innerHTML='<h3 style="margin:0 0 8px">Solicitações encaminhadas ao RH</h3><p>Confirmando acesso e consultando solicitações...</p>';return;}
- var topo='<div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap"><div><h3 style="margin:0 0 5px">Solicitações aguardando análise do RH</h3><p style="font-size:12px;color:#b7c4e3;margin:0">Fila de todas as gerências · mais antigas primeiro · dados do Supabase</p></div><button type="button" id="rh-fila-autonoma-atualizar" class="btn sm">Atualizar solicitações</button></div>';
- if(estado==='carregando'||estado==='inicial'){painel.innerHTML=topo+'<p style="margin-top:14px">Consultando solicitações...</p>';return;}
- if(estado==='erro'){painel.innerHTML=topo+'<p style="color:#ffb5b5;margin-top:14px">Não foi possível carregar a fila: '+esc(erro)+'. Os registros permanecem no banco.</p>';return;}
- if(!cache.length){painel.innerHTML=topo+'<p style="margin-top:14px">Nenhuma solicitação de desligamento aguardando RH.</p>';return;}
- var D=window.DESLIGAMENTO;
- var linhas=cache.map(function(x){var d=x.dados||{},c=D&&D.identificarColaborador?D.identificarColaborador(x):{};var nome=c.nome||d.nome||d.colaboradorNome||d.funcionarioNome||'Colaborador não identificado';var matricula=c.matricula||d.matricula||'—';var ger=D&&D.nomeGerencia?D.nomeGerencia(x):'Gerência '+x.gerencia_id;var data=x.criada_em?new Date(x.criada_em).toLocaleString('pt-BR'): '—';return '<tr><td style="padding:10px;border-top:1px solid #3c465c"><strong>'+esc(nome)+'</strong><div style="font-size:11px;color:#b7c4e3">Matrícula: '+esc(matricula)+'</div></td><td style="padding:10px;border-top:1px solid #3c465c">'+esc(ger)+'</td><td style="padding:10px;border-top:1px solid #3c465c">'+esc(data)+'</td><td style="padding:10px;border-top:1px solid #3c465c"><button type="button" class="btn sm pri" data-rh-abrir="'+esc(x.id)+'">Abrir e analisar</button></td></tr>';}).join('');
- painel.innerHTML=topo+'<p style="margin:12px 0"><strong>'+cache.length+' solicitação(ões)</strong> aguardando rescisão e análise do RH</p><div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse"><thead><tr><th style="text-align:left">Colaborador</th><th style="text-align:left">Gerência</th><th style="text-align:left">Registrada em</th><th style="text-align:left">Análise</th></tr></thead><tbody>'+linhas+'</tbody></table></div>';
+function identificar(x){var d=x.dados||{},z=window.DESLIGAMENTO,c=z&&typeof z.identificarColaborador==='function'?z.identificarColaborador(x):{};return {nome:c.nome||d.nome||d.colaboradorNome||d.funcionarioNome||d.colaboradorId||'Colaborador '+(d.colaboradorId||''),matricula:c.matricula||d.matricula||d.colaboradorId||'—',gerencia:z&&typeof z.nomeGerencia==='function'?z.nomeGerencia(x):'Gerência '+x.gerencia_id};}
+function render(){var lugar=alvo();if(!lugar){if(painel){painel.remove();painel=null;}return;}
+ if(!painel||!painel.isConnected){painel=document.createElement('section');painel.id='rh-fila-real-2027';painel.style.cssText='margin:16px 0 22px;padding:18px;border:1px solid #536079;border-radius:12px;background:#1d2231;color:#f1f4fa';lugar.insertAdjacentElement('afterend',painel);}
+ var titulo='<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><div><h3 style="margin:0 0 4px">Solicitações de desligamento — fila oficial</h3><div style="font-size:12px;color:#b7c4e3">Registros existentes no Supabase · sem recriar pedidos</div></div><button type="button" class="btn sm" id="rh-fila-real-atualizar">Atualizar fila</button></div>';
+ if(estado==='aguardando'||estado==='carregando'){painel.innerHTML=titulo+'<p>Consultando solicitações e permissões...</p>';return;}
+ if(estado==='erro'){painel.innerHTML=titulo+'<p style="color:#ffb5b5">Falha ao consultar fila: '+esc(erro)+'. Nenhuma solicitação foi alterada.</p>';return;}
+ if(!fila.length){painel.innerHTML=titulo+'<p>Nenhuma solicitação de desligamento acessível para este perfil nesta consulta.</p>';return;}
+ var linhas=fila.map(function(x){var d=x.dados||{},c=identificar(x),data=x.criada_em?new Date(x.criada_em).toLocaleString('pt-BR'):'—';var st=x.status==='sol_aguardando_rh'?'Aguardando RH':x.status==='sol_aprovada'?'Aprovada':x.status;var botao=(papel==='rh'||papel==='admin')&&x.status==='sol_aguardando_rh'?'<button type="button" class="btn sm pri" data-rh-abrir="'+esc(x.id)+'">Abrir e analisar</button>':'<span style="font-size:12px;color:#b7c4e3">Acompanhamento</span>';return '<tr><td style="padding:9px;border-top:1px solid #3c465c"><b>'+esc(c.nome)+'</b><div style="font-size:11px;color:#b7c4e3">Matrícula: '+esc(c.matricula)+'</div></td><td style="padding:9px;border-top:1px solid #3c465c">'+esc(c.gerencia)+'</td><td style="padding:9px;border-top:1px solid #3c465c">'+esc(st)+'</td><td style="padding:9px;border-top:1px solid #3c465c">'+esc(data)+'</td><td style="padding:9px;border-top:1px solid #3c465c">'+botao+'</td></tr>';}).join('');
+ painel.innerHTML=titulo+'<p style="margin:12px 0"><b>'+fila.length+' solicitação(ões)</b> encontradas para seu perfil. A lista acima de solicitações gerais é independente desta fila de desligamentos.</p><div style="overflow:auto"><table style="width:100%;border-collapse:collapse"><thead><tr><th>Colaborador</th><th>Origem</th><th>Situação</th><th>Data</th><th>Ação</th></tr></thead><tbody>'+linhas+'</tbody></table></div>';
 }
-function consultar(forcar){if(!permitido||carregando||!window.SB||!window.SB.rpc)return;if(!forcar&&Date.now()-ultima<30000)return;carregando=true;estado='carregando';tela();window.SB.rpc('pa_2027_listar').then(function(r){if(r.error)throw Error(r.error.message||'Falha no Supabase');if(!Array.isArray(r.data))throw Error('Formato inesperado da lista');cache=r.data.filter(function(x){return x&&x.status==='sol_aguardando_rh'&&x.dados&&x.dados.tipo==='desligamento';}).sort(function(a,b){return String(a.criada_em||'').localeCompare(String(b.criada_em||''));});if(window.DESLIGAMENTO){window.DESLIGAMENTO.fila=cache.slice();window.DESLIGAMENTO.estadoFila='pronto';}estado='pronto';erro='';ultima=Date.now();}).catch(function(e){estado='erro';erro=e.message||'Erro de conexão';ultima=Date.now();}).finally(function(){carregando=false;tela();});}
-function verificarPerfil(){if(permitido||perfilEmCurso||!window.SB||!window.SB.rpc||!window.AUTH||!window.AUTH.autenticado||!window.AUTH.autenticado())return;if(Date.now()-perfilEm<5000)return;perfilEm=Date.now();perfilEmCurso=true;window.SB.rpc('pa_2027_perfil').then(function(r){if(r.error)throw r.error;var p=Array.isArray(r.data)?r.data[0]:r.data;permitido=!!(p&&(p.papel==='rh'||p.papel==='admin'));if(permitido){window.__rhPapelPAConfirmado=p.papel;consultar(true);}}).catch(function(){}).finally(function(){perfilEmCurso=false;tela();});}
-document.addEventListener('click',function(e){if(e.target&&e.target.id==='rh-fila-autonoma-atualizar'){e.preventDefault();consultar(true);}},true);
-setInterval(function(){var local=alvo();if(!local){if(painel){painel.remove();painel=null;}return;}tela();if(!permitido)verificarPerfil();else consultar(false);},1300);
+function consultar(force){if(emCurso||!papel||!window.SB||!window.SB.rpc)return;if(!force&&Date.now()-ultima<30000)return;emCurso=true;estado='carregando';render();window.SB.rpc('pa_2027_listar').then(function(r){if(r.error)throw Error(r.error.message||'Consulta negada');if(!Array.isArray(r.data))throw Error('Resposta inesperada da fila');fila=r.data.filter(function(x){return x&&x.dados&&x.dados.tipo==='desligamento'&&['sol_aguardando_rh','sol_aprovada','sol_retorno_gestor','sol_ajuste'].indexOf(x.status)>=0;}).filter(function(x){return papel!=='gestor'||String(x.gerencia_id)===String(gerencia);}).sort(function(a,b){return String(a.criada_em||'').localeCompare(String(b.criada_em||''));});estado='pronto';erro='';ultima=Date.now();if(window.DESLIGAMENTO){window.DESLIGAMENTO.fila=fila.filter(function(x){return x.status==='sol_aguardando_rh';});window.DESLIGAMENTO.estadoFila='pronto';}}).catch(function(e){estado='erro';erro=e.message||String(e);ultima=Date.now();}).finally(function(){emCurso=false;render();});}
+function perfil(){if(perfilEmCurso||papel||!window.SB||!window.SB.rpc||Date.now()-ultimoPerfil<5000)return;ultimoPerfil=Date.now();perfilEmCurso=true;window.SB.rpc('pa_2027_perfil').then(function(r){if(r.error)throw Error(r.error.message||'Perfil indisponível');var p=Array.isArray(r.data)?r.data[0]:r.data;if(!p||!p.papel)throw Error('Perfil não encontrado');papel=p.papel;gerencia=p.gerencia_id;consultar(true);}).catch(function(e){estado='erro';erro=e.message||String(e);render();}).finally(function(){perfilEmCurso=false;});}
+document.addEventListener('click',function(e){if(e.target&&e.target.closest('#rh-fila-real-atualizar')){e.preventDefault();ultima=0;consultar(true);}},true);
+setInterval(function(){if(!alvo()){if(painel){painel.remove();painel=null;}return;}render();if(!papel)perfil();else consultar(false);},1300);
 })();
 </script>
 </body>
