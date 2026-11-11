@@ -31379,5 +31379,26 @@ document.addEventListener('click',function(e){if(e.target.closest('[data-pa-fila
 setInterval(function(){paint();if(Date.now()-state.last>12000&&!state.busy)refresh()},4000);window.addEventListener('focus',refresh);setTimeout(refresh,1200);
 })();
 </script>
+
+<script id="sogipa-v22-anti-json-e-versao">
+(function(){'use strict';
+ var VERSION='V22 · 11/11/2026';
+ function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+ function check(){
+  var box=document.getElementById('paRetornoModal');if(!box)return;
+  var fields=box.querySelectorAll('textarea');
+  fields.forEach(function(el){if(el.id==='paRetornoComentario')return;var value=(el.value||el.textContent||'').trim();
+   if(value.startsWith('{')||value.startsWith('[')){el.style.display='none';el.setAttribute('aria-hidden','true');var lab=el.previousElementSibling;if(lab&&/dados da solicita/i.test(lab.textContent||''))lab.style.display='none';}
+  });
+  var txt=box.textContent||'';
+  if(/Dados da solicita[cç][aã]o.*editar somente/i.test(txt)&&!box.querySelector('[data-v22-legacy-warning]')){
+    var warn=document.createElement('p');warn.setAttribute('data-v22-legacy-warning','');warn.style.cssText='color:#ffcc99;font-weight:600';warn.textContent='Visualização técnica antiga detectada. Feche e reabra esta solicitação pelo quadro de Retorno do RH.';box.firstElementChild&&box.firstElementChild.prepend(warn);
+  }
+ }
+ function mark(){var el=document.getElementById('sogipa-build-v22');if(!el){el=document.createElement('div');el.id='sogipa-build-v22';el.style.cssText='position:fixed;bottom:8px;right:9px;z-index:2147483640;background:#192c4d;color:#e6f1ff;border:1px solid #477bff;border-radius:6px;padding:4px 8px;font:11px Arial,sans-serif;pointer-events:none';document.body.appendChild(el)}el.textContent='SOGIPA · '+VERSION;}
+ document.addEventListener('DOMContentLoaded',function(){mark();check();});
+ setInterval(function(){mark();check()},2500);
+})();
+</script>
 </body>
 </html>
