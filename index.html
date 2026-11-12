@@ -31445,7 +31445,7 @@ function paint(){var c=context(),old=document.getElementById('sogipa-fila-unific
  else {html+='<div style="overflow:auto"><table style="width:100%;border-collapse:collapse"><thead><tr><th style="text-align:left">Colaborador</th><th style="text-align:left">Etapa</th><th style="text-align:left">Atualiza\u00e7\u00e3o</th><th>A\u00e7\u00e3o</th></tr></thead><tbody>';
  rows.forEach(function(x){var p=person(x),label={'sol_retorno_gestor':'Com gestor \u2014 retorno do RH','sol_aguardando_rh':'Aguardando RH','sol_aprovada':'Aprovada','sol_enviada':'Encaminhada'}[x.status]||x.status;
  var canAct=S.role==='gestor'&&x.status==='sol_retorno_gestor'&&String(x.gerencia_id)===String(S.gid); /* Autorização conferida novamente no RPC ao salvar. */
- html+='<tr><td style="padding:9px;border-top:1px solid #3b4960"><b>'+esc(p.nome||'Nome pendente de identifica\u00e7\u00e3o')+'</b><div style="font-size:12px">Matr\u00edcula: '+esc(p.matricula)+'</div></td><td style="padding:9px;border-top:1px solid #3b4960">'+esc(label)+'</td><td style="padding:9px;border-top:1px solid #3b4960">'+esc(x.atualizada_em?new Date(x.atualizada_em).toLocaleString('pt-BR'):'')+'</td><td style="padding:9px;border-top:1px solid #3b4960">'+(canAct?'<button class="btn sm pri" type="button" data-v23-review="'+esc(x.id)+'">Revisar</button>':(!p.nome?'Identificacao pendente':'Acompanhar'))+'</td></tr>';
+ html+='<tr><td style="padding:9px;border-top:1px solid #3b4960"><b>'+esc(p.nome||'Nome pendente de identifica\u00e7\u00e3o')+'</b><div style="font-size:12px">Matr\u00edcula: '+esc(p.matricula)+'</div></td><td style="padding:9px;border-top:1px solid #3b4960">'+esc(label)+'</td><td style="padding:9px;border-top:1px solid #3b4960">'+esc(x.atualizada_em?new Date(x.atualizada_em).toLocaleString('pt-BR'):'')+'</td><td style="padding:9px;border-top:1px solid #3b4960">'+(canAct?'<button class="btn sm pri" type="button" data-v23-review="'+esc(x.id)+'">Revisar</button>':(S.role==='admin'?'<button class="btn sm" type="button" data-v32-detail="'+esc(x.id)+'">Ver detalhes</button>':(!p.nome?'Identificacao pendente':'Acompanhar')))+'</td></tr>';
  });html+='</tbody></table></div>';}}
  if(c.rh&&S.role==='rh'&&S.teamRows.length){
   var groups={};S.teamRows.forEach(function(r){var d=r.dados||{},g=d.gerencia||'Gerencia nao informada';(groups[g]||(groups[g]=[])).push(d);});
@@ -31458,6 +31458,19 @@ function paint(){var c=context(),old=document.getElementById('sogipa-fila-unific
  /* Compartilha a lista com o modal existente, sem alterar os dados do banco. */
  if(window.PA_RETORNO){window.PA_RETORNO.itens=S.rows.filter(function(x){return x.status==='sol_retorno_gestor'}).map(function(x){var p=person(x);return Object.assign({},x,{dados:Object.assign({},x.dados,{colaboradorNome:p.nome||x.dados.colaboradorNome})})});window.PA_RETORNO.perfil={papel:S.role,gerencia_id:S.gid};window.PA_RETORNO.estado='pronto';}
 }
+function showAdminDetails(id){
+ if(S.role!=='admin')return;
+ var x=S.rows.find(function(r){return String(r.id)===String(id)});if(!x)return;
+ var d=x.dados||{},p=person(x);
+ var fields=[['Colaborador',p.nome],['Matrícula',p.matricula],['Etapa',x.status],['Gerência',x.gerencia_id],['Data da solicitação',x.criada_em],['Última atualização',x.atualizada_em]];
+ var financial=['rh_rescisao','rescisaoValor','valor_rescisao','valorRescisao','rh_parecer','parecer_rh','rh_comentario','comentario_rh','dataDesligamento','data_desligamento','dataPrevista','data_prevista','justificativa','comentario_gestor','observacao'];
+ financial.forEach(function(k){if(Object.prototype.hasOwnProperty.call(d,k))fields.push([k,d[k]]);});
+ var root=document.createElement('div');root.id='sogipa-admin-detail-v32';root.style.cssText='position:fixed;inset:0;z-index:999999;background:rgba(0,0,0,.82);display:flex;align-items:center;justify-content:center;padding:18px';
+ var val=function(v){return v&&typeof v==='object'?JSON.stringify(v,null,2):String(v==null?'Não informado':v)};
+ root.innerHTML='<section role="dialog" aria-modal="true" aria-label="Detalhes da solicitação" style="width:100%;max-width:760px;max-height:90vh;overflow:auto;background:#202431;color:#fff;border:1px solid #536079;border-radius:12px;padding:22px"><h3>Detalhes da solicitação — consulta ADMIN</h3><p>Somente leitura. Nenhuma alteração será gravada nesta tela.</p>'+fields.map(function(f){return '<div style="padding:8px 0;border-bottom:1px solid #3b4357"><small>'+esc(f[0])+'</small><div style="white-space:pre-wrap;overflow-wrap:anywhere">'+esc(val(f[1]))+'</div></div>'}).join('')+'<button type="button" class="btn sm" data-v32-close style="margin-top:18px">Fechar</button></section>';
+ document.body.appendChild(root);
+}
+document.addEventListener('click',function(e){var b=e.target.closest('[data-v32-detail]');if(b){e.preventDefault();showAdminDetails(b.getAttribute('data-v32-detail'));return;}if(e.target.closest('[data-v32-close]')){e.preventDefault();var m=document.getElementById('sogipa-admin-detail-v32');if(m)m.remove();}},false);
 document.addEventListener('click',function(e){var b=e.target.closest('[data-v23-refresh]');if(b){e.preventDefault();S.last=0;load();return;}b=e.target.closest('[data-v23-review]');if(b){e.preventDefault();var id=b.getAttribute('data-v23-review');if(window.PA_RETORNO&&typeof window.PA_RETORNO.abrir==='function'){window.PA_RETORNO.abrir(id);}else{alert('A revisão ainda está carregando. Aguarde e tente novamente.');}}},false);
 setInterval(function(){paint();if(!S.busy&&(!S.last||Date.now()-S.last>20000)&&Date.now()-S.attempt>5000)load()},2500);
 window.addEventListener('focus',function(){load();paint()});document.addEventListener('visibilitychange',function(){if(!document.hidden)load()});setTimeout(load,1700);
@@ -31466,7 +31479,7 @@ window.addEventListener('focus',function(){load();paint()});document.addEventLis
 
 <script id="sogipa-v22-anti-json-e-versao">
 (function(){'use strict';
- var VERSION='V31 · 12/11/2026';
+ var VERSION='V32 · 12/11/2026';
  function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
  function check(){
   var box=document.getElementById('paRetornoModal');if(!box)return;
