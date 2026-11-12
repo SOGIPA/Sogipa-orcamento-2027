@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- SOGIPA V28 | CORRECAO FILA OPERACOES: pageT fora de main | 2026-11-12 -->
+<!-- SOGIPA V30 | FILA OPERACOES GESTOR + REVISAO RH | 2026-11-12 -->
 <!-- SOGIPA ORCAMENTO 2027 | Revisao 2026-11-06 | DRE: recarga de dados disponivel; integracoes existentes preservadas -->
 <!-- SOGIPA 2027 · ETAPA 3 — CANDIDATA
      A base da DRE foi retirada deste arquivo: 5224 valores mensais de
@@ -31339,7 +31339,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!busy&&docu
 (function(){'use strict';
 var R={itens:[],estado:'inicial',perfil:null};window.PA_RETORNO=R;
 function esc(x){return String(x===null||x===undefined?'':x).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
-function pessoa(x){var d=x.dados||{},c={};try{if(window.DESLIGAMENTO&&window.DESLIGAMENTO.identificarColaborador)c=window.DESLIGAMENTO.identificarColaborador(x)||{}}catch(_){}var n=c.nome||d.colaboradorNome||d.colaborador||d.nome||'';if(n==='Nome não localizado no quadro'||String(n)===String(d.colaboradorId||''))n='';return {nome:n,matricula:c.matricula||d.matricula||'',cargo:d.cargo||'',gerencia:(window.DESLIGAMENTO&&window.DESLIGAMENTO.nomeGerencia?window.DESLIGAMENTO.nomeGerencia(x):'Gerência '+x.gerencia_id)};}
+function pessoa(x){var d=x.dados||{},c={};try{if(window.DESLIGAMENTO&&window.DESLIGAMENTO.identificarColaborador)c=window.DESLIGAMENTO.identificarColaborador(x)||{}}catch(_){}var n=d.colaboradorNome||c.nome||d.colaborador||d.nome||'';if(n==='Nome não localizado no quadro'||String(n)===String(d.colaboradorId||''))n='';return {nome:n,matricula:c.matricula||d.matricula||'',cargo:d.cargo||'',gerencia:(window.DESLIGAMENTO&&window.DESLIGAMENTO.nomeGerencia?window.DESLIGAMENTO.nomeGerencia(x):'Gerência '+x.gerencia_id)};}
 function rescisao(d){var v=d.rh_rescisao;if(v&&typeof v==='object')return JSON.stringify(v);if(v===null||v===undefined||v==='')v=d.rescisaoValor;return v===null||v===undefined||v===''?'Não informada':String(v);}
 function buscar(){if(!window.SB||!window.SB.rpc)return;R.estado='carregando';Promise.all([window.SB.rpc('pa_2027_perfil'),window.SB.rpc('pa_2027_listar')]).then(function(a){if(a[0].error||a[1].error)throw Error('Consulta indisponível');R.perfil=Array.isArray(a[0].data)?a[0].data[0]:a[0].data;R.itens=(Array.isArray(a[1].data)?a[1].data:[]).filter(function(x){return x.status==='sol_retorno_gestor'&&x.dados&&x.dados.tipo==='desligamento'}).sort(function(a,b){return String(a.criada_em||'').localeCompare(String(b.criada_em||''))});R.estado='pronto';if(window.render)window.render();}).catch(function(){R.estado='erro';if(window.render)window.render()})}
 R.painel=function(g){if(R.estado==='inicial'){setTimeout(buscar,0);return ''}if(!R.perfil||R.perfil.papel!=='gestor')return '';var gid=(g&&g.id!==undefined&&g.id!==null)?g.id:null;if(String(gid)!==String(R.perfil.gerencia_id))return '';var l=R.itens.filter(function(x){return String(x.gerencia_id)===String(gid)});var out='<section style="margin:0 0 18px;padding:16px;border:1px solid #536079;border-radius:10px"><h3>Retorno do RH — aguardando sua confirmação</h3><p class="muted">Revise a análise e a rescisão. Se concordar, encaminhe ao Gerente Geral. Se precisar corrigir, salve e devolva ao RH. Toda movimentação é registrada.</p>';if(R.estado==='erro')return out+'<p>Não foi possível consultar o retorno do RH.</p><button class="btn" data-pa-retorno-recarregar="1">Tentar novamente</button></section>';if(!l.length)return out+'<p class="muted">Nenhum retorno pendente.</p></section>';out+='<div class="tw"><table><thead><tr><th>Colaborador</th><th>Rescisão RH</th><th>Recebido</th><th>Ação</th></tr></thead><tbody>';l.forEach(function(x){out+='<tr><td>'+esc(pessoa(x).nome||'Nome não localizado — matrícula '+(pessoa(x).matricula||x.dados.colaboradorId||'não informada'))+'</td><td>'+esc(x.dados.rh_rescisao)+'</td><td>'+esc(new Date(x.atualizada_em).toLocaleString('pt-BR'))+'</td><td><button class="btn sm pri" data-pa-retorno-abrir="'+esc(x.id)+'">Revisar retorno</button></td></tr>'});return out+'</tbody></table></div></section>'};
@@ -31402,7 +31402,7 @@ function norm(x){return String(x==null?'':x).trim().replace(/^SB-/i,'')}
 function load(){if(S.busy||!window.SB||typeof window.SB.rpc!=='function')return;S.busy=true;S.attempt=Date.now();
  Promise.all([window.SB.rpc('pa_2027_perfil'),window.SB.rpc('pa_2027_listar')]).then(function(r){
  var profile=arr(data(r[0]))[0];if(!profile||!profile.papel)throw Error('Perfil de Pessoal de Apoio indisponivel');
- var raw=data(r[1]);if(!Array.isArray(raw))throw Error('Resposta inesperada: a fila nao retornou uma lista');var rows=raw;S.role=String(profile.papel).toLowerCase();S.gid=profile.gerencia_id;
+ var raw=data(r[1]);if(!Array.isArray(raw))throw Error('Resposta inesperada: a fila nao retornou uma lista');var rows=raw;S.role=String(profile.papel).trim().toLowerCase();S.gid=profile.gerencia_id;
  if(!['rh','admin','gestor','gerente_geral'].includes(S.role))throw Error('Perfil sem acesso a esta fila');
  S.rows=rows.filter(function(x){return x&&x.dados&&x.dados.tipo==='desligamento'&&statuses.includes(x.status)});
  S.ok=true;S.err='';S.last=Date.now();
@@ -31426,7 +31426,7 @@ function context(){
  /* A fila aparece no contexto de solicitacoes. O RH tambem pode consultar
     o quadro transversal sem perder sua aba de trabalho. */
  var requests=state.pAba==='solicitacoes'||/solicita[cç][oõ]es/i.test(sub);
- if(op&&!requests)return null;
+ /* V30: a fila de desligamentos nao depende da subaba: fica sempre acessivel na gerencia Operacoes. */
  return {main:main,op:op,rh:rh,requests:requests};
 }
 function person(x){var d=x.dados||{},mat=norm(d.colaboradorId||d.matricula),a=S.people[mat]||{},fallback={};try{if(window.DESLIGAMENTO&&window.DESLIGAMENTO.identificarColaborador)fallback=window.DESLIGAMENTO.identificarColaborador(x)||{}}catch(e){}
@@ -31443,7 +31443,7 @@ function paint(){var c=context(),old=document.getElementById('sogipa-fila-unific
  if(!rows.length)html+='<p>Nenhuma solicita\u00e7\u00e3o de desligamento retornada para esta ger\u00eancia. Esta se\u00e7\u00e3o n\u00e3o representa solicita\u00e7\u00f5es gerais.</p>';
  else {html+='<div style="overflow:auto"><table style="width:100%;border-collapse:collapse"><thead><tr><th style="text-align:left">Colaborador</th><th style="text-align:left">Etapa</th><th style="text-align:left">Atualiza\u00e7\u00e3o</th><th>A\u00e7\u00e3o</th></tr></thead><tbody>';
  rows.forEach(function(x){var p=person(x),label={'sol_retorno_gestor':'Com gestor \u2014 retorno do RH','sol_aguardando_rh':'Aguardando RH','sol_aprovada':'Aprovada','sol_enviada':'Encaminhada'}[x.status]||x.status;
- var canAct=S.role==='gestor'&&x.status==='sol_retorno_gestor'&&String(x.gerencia_id)===String(S.gid)&&!!p.nome;
+ var canAct=S.role==='gestor'&&x.status==='sol_retorno_gestor'&&String(x.gerencia_id)===String(S.gid);
  html+='<tr><td style="padding:9px;border-top:1px solid #3b4960"><b>'+esc(p.nome||'Nome pendente de identifica\u00e7\u00e3o')+'</b><div style="font-size:12px">Matr\u00edcula: '+esc(p.matricula)+'</div></td><td style="padding:9px;border-top:1px solid #3b4960">'+esc(label)+'</td><td style="padding:9px;border-top:1px solid #3b4960">'+esc(x.atualizada_em?new Date(x.atualizada_em).toLocaleString('pt-BR'):'')+'</td><td style="padding:9px;border-top:1px solid #3b4960">'+(canAct?'<button class="btn sm pri" type="button" data-v23-review="'+esc(x.id)+'">Revisar</button>':(!p.nome?'Identificacao pendente':'Acompanhar'))+'</td></tr>';
  });html+='</tbody></table></div>';}}
  if(c.rh&&S.role==='rh'&&S.teamRows.length){
@@ -31465,7 +31465,7 @@ window.addEventListener('focus',function(){load();paint()});document.addEventLis
 
 <script id="sogipa-v22-anti-json-e-versao">
 (function(){'use strict';
- var VERSION='V29 · 12/11/2026';
+ var VERSION='V30 · 12/11/2026';
  function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
  function check(){
   var box=document.getElementById('paRetornoModal');if(!box)return;
