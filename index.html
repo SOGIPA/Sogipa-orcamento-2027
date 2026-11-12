@@ -31364,40 +31364,42 @@ setInterval(function(){if(!authorized())check();else if(!Q.loading&&Date.now()-Q
 window.addEventListener('focus',function(){if(authorized())update();else check();});
 })();
 </script>
-<script id="sogipa-fila-unificada-v23">
+<script id="sogipa-fila-unificada-v25">
 (function(){'use strict';
-/* V23: quadro de leitura persistente. Nenhum registro e alterado por este modulo. */
+/* V24: quadro de leitura persistente. Nenhum registro e alterado por este modulo. */
 var S={role:'',gid:null,rows:[],people:{},ok:false,err:'',busy:false,last:0,attempt:0};
 var statuses=['sol_retorno_gestor','sol_aguardando_rh','sol_aprovada','sol_enviada'];
 function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
-function data(r){if(!r)throw Error('Resposta vazia');if(r.error)throw Error(r.error.message||'Consulta recusada');return r.data}
+function data(r){if(!r)throw Error('Resposta vazia');if(r.error||r.ok===false)throw Error((r.error&&r.error.message)||r.motivo||'Consulta recusada');return Object.prototype.hasOwnProperty.call(r,'dados')?r.dados:r.data}
 function arr(x){return Array.isArray(x)?x:(x?[x]:[])}
 function norm(x){return String(x==null?'':x).trim().replace(/^SB-/i,'')}
 function load(){if(S.busy||!window.SB||typeof window.SB.rpc!=='function')return;S.busy=true;S.attempt=Date.now();
  Promise.all([window.SB.rpc('pa_2027_perfil'),window.SB.rpc('pa_2027_listar')]).then(function(r){
  var profile=arr(data(r[0]))[0];if(!profile||!profile.papel)throw Error('Perfil de Pessoal de Apoio indisponivel');
- var rows=arr(data(r[1]));S.role=String(profile.papel).toLowerCase();S.gid=profile.gerencia_id;
+ var raw=data(r[1]);if(!Array.isArray(raw))throw Error('Resposta inesperada: a fila nao retornou uma lista');var rows=raw;S.role=String(profile.papel).toLowerCase();S.gid=profile.gerencia_id;
  if(!['rh','admin','gestor','gerente_geral'].includes(S.role))throw Error('Perfil sem acesso a esta fila');
  S.rows=rows.filter(function(x){return x&&x.dados&&x.dados.tipo==='desligamento'&&statuses.includes(x.status)});
  S.ok=true;S.err='';S.last=Date.now();
  /* A fonte oficial de nomes ja respeita a autorizacao do RH e de cada gestor. */
  return window.SB.rpc('pa_2027_rh_minha_equipe').then(function(v){
-  if(v&&v.error){S.err='Nomes ainda nao carregados: '+(v.error.message||'consulta indisponivel');return;}
-  var map={};arr(v.data).forEach(function(r){var d=r.dados||{},key=norm(r.matricula||d.matricula),name=d.funcionario||d.nome||'';if(key&&name)map[key]={nome:name,matricula:r.matricula,cargo:d.cargo,gerencia:d.gerencia};});S.people=map;
+  if(v&&(v.error||v.ok===false)){S.err='Nomes ainda nao carregados: '+((v.error&&v.error.message)||v.motivo||'consulta indisponivel');return;}
+  var map={};arr(data(v)).forEach(function(r){var d=r.dados||{},key=norm(r.matricula||d.matricula),name=d.funcionario||d.nome||'';if(key&&name)map[key]={nome:name,matricula:r.matricula,cargo:d.cargo,gerencia:d.gerencia};});S.people=map;
  });
  }).catch(function(e){S.err=String(e.message||e);/* manter ultimo resultado em memoria */}).finally(function(){S.busy=false;paint()});}
 function context(){var main=document.getElementById('main');if(!main)return null;
  var h=main.querySelector('h1,h2'),head=(h&&h.textContent||'').toLowerCase(),txt=(main.textContent||'').slice(0,1300).toLowerCase();
- var op=/opera[cç][oõ]es/.test(head),rh=/recursos humanos|^rh\b/.test(head),person=/solicita[cç][oõ]es|quadro atual|pessoal de apoio|vis[aã]o geral/.test(txt);
+ var st=window.APP&&window.APP.state||{};var op=/opera[cç][oõ]es/.test(head)||String(st.gerenciaId||st.gerencia_id||'')==='3';var rh=/recursos humanos|^rh\b/.test(head);var person=/solicita[cç][oõ]es|quadro atual|pessoal de apoio|vis[aã]o geral/.test(txt);
+ /* O titulo pode estar em um elemento fora do main; buscar o cabecalho visivel. */
+ if(!op&&!rh){var hs=document.querySelectorAll('h1,h2');for(var i=0;i<hs.length;i++){var htxt=(hs[i].textContent||'').toLowerCase();if(/opera[cç][oõ]es/.test(htxt))op=true;if(/recursos humanos|^rh\b/.test(htxt))rh=true;}}
  if(!person||(!op&&!rh))return null;
  return {main:main,op:op,rh:rh};}
 function person(x){var d=x.dados||{},mat=norm(d.colaboradorId||d.matricula),a=S.people[mat]||{},fallback={};try{if(window.DESLIGAMENTO&&window.DESLIGAMENTO.identificarColaborador)fallback=window.DESLIGAMENTO.identificarColaborador(x)||{}}catch(e){}
  var name=a.nome||d.colaboradorNome||d.funcionario||d.nome||fallback.nome||'';if(/^nome n[aã]o localizado/i.test(name)||name===String(d.colaboradorId))name='';return {nome:name,matricula:a.matricula||d.matricula||d.colaboradorId||'',cargo:a.cargo||d.cargo||''};}
-function paint(){var c=context(),old=document.getElementById('sogipa-fila-unificada-v23');if(!c){if(old)old.remove();return;}
- var permitted=['rh','admin','gestor','gerente_geral'].includes(S.role);if(!permitted&&!S.err){if(old)old.remove();return;}
+function paint(){var c=context(),old=document.getElementById('sogipa-fila-unificada-v25');if(!c){if(old)old.remove();return;}
+ var permitted=['rh','admin','gestor','gerente_geral'].includes(S.role);if(!permitted&&!S.err&&!S.ok){S.err='Aguardando identificacao do perfil autenticado';}
  var rows=S.rows.filter(function(x){if(S.role==='rh'||S.role==='admin'||S.role==='gerente_geral')return !c.op||Number(x.gerencia_id)===3;return String(x.gerencia_id)===String(S.gid)});
  var pending=rows.filter(function(x){return x.status==='sol_retorno_gestor'}).length,waiting=rows.filter(function(x){return x.status==='sol_aguardando_rh'}).length;
- var html='<section id="sogipa-fila-unificada-v23" style="margin:0 0 20px;padding:18px;border:1px solid #5484f4;border-radius:12px;background:#1b2335;color:#f4f7ff">'+
+ var html='<section id="sogipa-fila-unificada-v25" style="margin:0 0 20px;padding:18px;border:1px solid #5484f4;border-radius:12px;background:#1b2335;color:#f4f7ff">'+
  '<div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap"><strong>Solicita\u00e7\u00f5es de Pessoal de Apoio \u2014 acompanhamento</strong><button class="btn sm" type="button" data-v23-refresh>Atualizar solicita\u00e7\u00f5es</button></div>';
  if(!S.ok)html+='<p role="status">'+esc(S.err?'Consulta indispon\u00edvel: '+S.err:'Carregando solicita\u00e7\u00f5es do Supabase...')+'</p>';
  else {html+='<p style="margin:12px 0">Aguardando revis\u00e3o do gestor: <b>'+pending+'</b> \u00b7 Aguardando RH: <b>'+waiting+'</b> \u00b7 Total neste fluxo: <b>'+rows.length+'</b></p>';
@@ -31405,8 +31407,8 @@ function paint(){var c=context(),old=document.getElementById('sogipa-fila-unific
  if(!rows.length)html+='<p>Nenhuma solicita\u00e7\u00e3o de desligamento retornada para esta ger\u00eancia. Esta se\u00e7\u00e3o n\u00e3o representa solicita\u00e7\u00f5es gerais.</p>';
  else {html+='<div style="overflow:auto"><table style="width:100%;border-collapse:collapse"><thead><tr><th style="text-align:left">Colaborador</th><th style="text-align:left">Etapa</th><th style="text-align:left">Atualiza\u00e7\u00e3o</th><th>A\u00e7\u00e3o</th></tr></thead><tbody>';
  rows.forEach(function(x){var p=person(x),label={'sol_retorno_gestor':'Com gestor \u2014 retorno do RH','sol_aguardando_rh':'Aguardando RH','sol_aprovada':'Aprovada','sol_enviada':'Encaminhada'}[x.status]||x.status;
- var canAct=S.role==='gestor'&&x.status==='sol_retorno_gestor'&&String(x.gerencia_id)===String(S.gid);
- html+='<tr><td style="padding:9px;border-top:1px solid #3b4960"><b>'+esc(p.nome||'Nome pendente de identifica\u00e7\u00e3o')+'</b><div style="font-size:12px">Matr\u00edcula: '+esc(p.matricula)+'</div></td><td style="padding:9px;border-top:1px solid #3b4960">'+esc(label)+'</td><td style="padding:9px;border-top:1px solid #3b4960">'+esc(x.atualizada_em?new Date(x.atualizada_em).toLocaleString('pt-BR'):'')+'</td><td style="padding:9px;border-top:1px solid #3b4960">'+(canAct?'<button class="btn sm pri" type="button" data-v23-review="'+esc(x.id)+'">Revisar</button>':'Acompanhar')+'</td></tr>';
+ var canAct=S.role==='gestor'&&x.status==='sol_retorno_gestor'&&String(x.gerencia_id)===String(S.gid)&&!!p.nome;
+ html+='<tr><td style="padding:9px;border-top:1px solid #3b4960"><b>'+esc(p.nome||'Nome pendente de identifica\u00e7\u00e3o')+'</b><div style="font-size:12px">Matr\u00edcula: '+esc(p.matricula)+'</div></td><td style="padding:9px;border-top:1px solid #3b4960">'+esc(label)+'</td><td style="padding:9px;border-top:1px solid #3b4960">'+esc(x.atualizada_em?new Date(x.atualizada_em).toLocaleString('pt-BR'):'')+'</td><td style="padding:9px;border-top:1px solid #3b4960">'+(canAct?'<button class="btn sm pri" type="button" data-v23-review="'+esc(x.id)+'">Revisar</button>':(!p.nome?'Identificacao pendente':'Acompanhar'))+'</td></tr>';
  });html+='</tbody></table></div>';}}
  html+='</section>';
  /* Renderiza uma unica vez por mudanca, sem substituir o DOM em cada tick. */
@@ -31422,7 +31424,7 @@ window.addEventListener('focus',function(){load();paint()});document.addEventLis
 
 <script id="sogipa-v22-anti-json-e-versao">
 (function(){'use strict';
- var VERSION='V23 · 12/11/2026';
+ var VERSION='V25 · 12/11/2026';
  function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
  function check(){
   var box=document.getElementById('paRetornoModal');if(!box)return;
