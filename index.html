@@ -31389,10 +31389,10 @@ setInterval(function(){if(!authorized())check();else if(!Q.loading&&Date.now()-Q
 window.addEventListener('focus',function(){if(authorized())update();else check();});
 })();
 </script>
-<script id="sogipa-fila-unificada-v25">
+<script id="sogipa-fila-unificada-v27">
 (function(){'use strict';
 /* V24: quadro de leitura persistente. Nenhum registro e alterado por este modulo. */
-var S={role:'',gid:null,rows:[],people:{},ok:false,err:'',busy:false,last:0,attempt:0};
+var S={role:'',gid:null,rows:[],people:{},teamRows:[],ok:false,err:'',busy:false,last:0,attempt:0};
 var statuses=['sol_retorno_gestor','sol_aguardando_rh','sol_aprovada','sol_enviada'];
 function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 function data(r){if(!r)throw Error('Resposta vazia');if(r.error||r.ok===false)throw Error((r.error&&r.error.message)||r.motivo||'Consulta recusada');return Object.prototype.hasOwnProperty.call(r,'dados')?r.dados:r.data}
@@ -31408,23 +31408,28 @@ function load(){if(S.busy||!window.SB||typeof window.SB.rpc!=='function')return;
  /* A fonte oficial de nomes ja respeita a autorizacao do RH e de cada gestor. */
  return window.SB.rpc('pa_2027_rh_minha_equipe').then(function(v){
   if(v&&(v.error||v.ok===false)){S.err='Nomes ainda nao carregados: '+((v.error&&v.error.message)||v.motivo||'consulta indisponivel');return;}
-  var map={};arr(data(v)).forEach(function(r){var d=r.dados||{},key=norm(r.matricula||d.matricula),name=d.funcionario||d.nome||'';if(key&&name)map[key]={nome:name,matricula:r.matricula,cargo:d.cargo,gerencia:d.gerencia};});S.people=map;
+  var map={};arr(data(v)).forEach(function(r){var d=r.dados||{},key=norm(r.matricula||d.matricula),name=d.funcionario||d.nome||'';if(key&&name)map[key]={nome:name,matricula:r.matricula,cargo:d.cargo,gerencia:d.gerencia};});S.people=map;S.teamRows=arr(data(v));
  });
  }).catch(function(e){S.err=String(e.message||e);/* manter ultimo resultado em memoria */}).finally(function(){S.busy=false;paint()});}
-function context(){var main=document.getElementById('main');if(!main)return null;
- var h=main.querySelector('h1,h2,h3'),head=(h&&h.textContent||'').toLowerCase(),txt=(main.textContent||'').toLowerCase();
- var st=window.APP&&window.APP.state||{};var op=/opera[cç][oõ]es/.test(head)||String(st.gerenciaId||st.gerencia_id||'')==='3';var rh=/recursos humanos|^rh\b/.test(head);var person=/solicita[cç][oõ]es|quadro atual|pessoal de apoio|vis[aã]o geral/.test(txt);
- /* O titulo pode estar em um elemento fora do main; buscar o cabecalho visivel. */
- if(!op&&!rh){var hs=document.querySelectorAll('h1,h2');for(var i=0;i<hs.length;i++){var htxt=(hs[i].textContent||'').toLowerCase();if(/opera[cç][oõ]es/.test(htxt))op=true;if(/recursos humanos|^rh\b/.test(htxt))rh=true;}}
- if(!person||(!op&&!rh))return null;
- return {main:main,op:op,rh:rh};}
+function context(){
+ var main=document.getElementById('main');if(!main)return null;
+ var headings=Array.from(main.querySelectorAll('h1,h2,h3')).map(function(n){return (n.textContent||'').toLowerCase()}).join(' ');
+ var txt=(main.textContent||'').toLowerCase();
+ var op=/opera[cç][oõ]es/.test(headings),rh=/recursos humanos|\brh\b/.test(headings);
+ /* A gerencia ativa e determinada pelo titulo da pagina, nao por textos escondidos da sidebar. */
+ var page=main.querySelector('h1,h2');if(page){var h=(page.textContent||'').toLowerCase();op=/opera[cç][oõ]es/.test(h);rh=/recursos humanos|^rh\b/.test(h);}
+ var active=Array.from(main.querySelectorAll('button,[role=tab]')).filter(function(n){return n.classList.contains('active')||n.getAttribute('aria-selected')==='true'||n.classList.contains('sel')}).map(function(n){return (n.textContent||'').toLowerCase()}).join(' ');
+ var requests=/solicita[cç][oõ]es/.test(active)||/solicita[cç][oõ]es/.test(headings)||/nenhuma solicita[cç][aã]o registrada/.test(txt);
+ if(!op&&!rh)return null;
+ /* Mostrar a fila na gerencia ativa, inclusive na aba de solicitacoes, sem depender de texto de outro componente. */
+ return {main:main,op:op,rh:rh,requests:requests};}
 function person(x){var d=x.dados||{},mat=norm(d.colaboradorId||d.matricula),a=S.people[mat]||{},fallback={};try{if(window.DESLIGAMENTO&&window.DESLIGAMENTO.identificarColaborador)fallback=window.DESLIGAMENTO.identificarColaborador(x)||{}}catch(e){}
  var name=a.nome||d.colaboradorNome||d.funcionario||d.nome||fallback.nome||'';if(/^nome n[aã]o localizado/i.test(name)||name===String(d.colaboradorId))name='';return {nome:name,matricula:a.matricula||d.matricula||d.colaboradorId||'',cargo:a.cargo||d.cargo||''};}
-function paint(){var c=context(),old=document.getElementById('sogipa-fila-unificada-v25');if(!c){if(old)old.remove();return;}
+function paint(){var c=context(),old=document.getElementById('sogipa-fila-unificada-v27');if(!c){if(old)old.remove();return;}
  var permitted=['rh','admin','gestor','gerente_geral'].includes(S.role);if(!permitted&&!S.err&&!S.ok){S.err='Aguardando identificacao do perfil autenticado';}
  var rows=S.rows.filter(function(x){if(S.role==='rh'||S.role==='admin'||S.role==='gerente_geral')return !c.op||Number(x.gerencia_id)===3;return String(x.gerencia_id)===String(S.gid)});
  var pending=rows.filter(function(x){return x.status==='sol_retorno_gestor'}).length,waiting=rows.filter(function(x){return x.status==='sol_aguardando_rh'}).length;
- var html='<section id="sogipa-fila-unificada-v25" style="margin:0 0 20px;padding:18px;border:1px solid #5484f4;border-radius:12px;background:#1b2335;color:#f4f7ff">'+
+ var html='<section id="sogipa-fila-unificada-v27" style="margin:0 0 20px;padding:18px;border:1px solid #5484f4;border-radius:12px;background:#1b2335;color:#f4f7ff">'+
  '<div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap"><strong>Solicita\u00e7\u00f5es de Pessoal de Apoio \u2014 acompanhamento</strong><button class="btn sm" type="button" data-v23-refresh>Atualizar solicita\u00e7\u00f5es</button></div>';
  if(!S.ok)html+='<p role="status">'+esc(S.err?'Consulta indispon\u00edvel: '+S.err:'Carregando solicita\u00e7\u00f5es do Supabase...')+'</p>';
  else {html+='<p style="margin:12px 0">Aguardando revis\u00e3o do gestor: <b>'+pending+'</b> \u00b7 Aguardando RH: <b>'+waiting+'</b> \u00b7 Total neste fluxo: <b>'+rows.length+'</b></p>';
@@ -31435,6 +31440,11 @@ function paint(){var c=context(),old=document.getElementById('sogipa-fila-unific
  var canAct=S.role==='gestor'&&x.status==='sol_retorno_gestor'&&String(x.gerencia_id)===String(S.gid)&&!!p.nome;
  html+='<tr><td style="padding:9px;border-top:1px solid #3b4960"><b>'+esc(p.nome||'Nome pendente de identifica\u00e7\u00e3o')+'</b><div style="font-size:12px">Matr\u00edcula: '+esc(p.matricula)+'</div></td><td style="padding:9px;border-top:1px solid #3b4960">'+esc(label)+'</td><td style="padding:9px;border-top:1px solid #3b4960">'+esc(x.atualizada_em?new Date(x.atualizada_em).toLocaleString('pt-BR'):'')+'</td><td style="padding:9px;border-top:1px solid #3b4960">'+(canAct?'<button class="btn sm pri" type="button" data-v23-review="'+esc(x.id)+'">Revisar</button>':(!p.nome?'Identificacao pendente':'Acompanhar'))+'</td></tr>';
  });html+='</tbody></table></div>';}}
+ if(c.rh&&S.role==='rh'&&S.teamRows.length){
+  var groups={};S.teamRows.forEach(function(r){var d=r.dados||{},g=d.gerencia||'Gerencia nao informada';(groups[g]||(groups[g]=[])).push(d);});
+  html+='<details style="margin-top:15px;border-top:1px solid #44536a;padding-top:12px"><summary style="cursor:pointer;font-weight:700">Pessoal de Apoio de todas as gerencias — consulta RH ('+S.teamRows.length+' registros)</summary><p style="font-size:12px;color:#becae1">Consulta somente leitura. Edicao permanece restrita aos processos autorizados do RH.</p>';
+  Object.keys(groups).sort().forEach(function(g){html+='<details style="padding:7px 0"><summary style="cursor:pointer">'+esc(g)+' — '+groups[g].length+' colaborador(es)</summary><div style="max-height:350px;overflow:auto"><table style="width:100%"><thead><tr><th style="text-align:left">Colaborador</th><th style="text-align:left">Cargo</th><th style="text-align:left">Matricula</th></tr></thead><tbody>';groups[g].forEach(function(d){html+='<tr><td>'+esc(d.funcionario||'')+'</td><td>'+esc(d.cargo||'')+'</td><td>'+esc(d.matricula||'')+'</td></tr>'});html+='</tbody></table></div></details>'});html+='</details>';
+ }
  html+='</section>';
  /* Renderiza uma unica vez por mudanca, sem substituir o DOM em cada tick. */
  if(old){if(old.outerHTML!==html)old.outerHTML=html;}else c.main.insertAdjacentHTML('afterbegin',html);
@@ -31449,7 +31459,7 @@ window.addEventListener('focus',function(){load();paint()});document.addEventLis
 
 <script id="sogipa-v22-anti-json-e-versao">
 (function(){'use strict';
- var VERSION='V26 · 12/11/2026';
+ var VERSION='V27 · 12/11/2026';
  function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
  function check(){
   var box=document.getElementById('paRetornoModal');if(!box)return;
