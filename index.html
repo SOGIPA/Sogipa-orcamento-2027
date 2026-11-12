@@ -24573,7 +24573,29 @@ if (typeof APP !== "undefined" && APP) {
     SBDATA.areasCarregadas = {};
     pintar();
 
-    return rpc("pa_2027_perfil").then(function (rp) {
+    /* Fonte de exclusoes confirmadas: auditoria do banco, antes de montar o quadro.
+       Nunca transformar erro de leitura em lista vazia (risco de reexibir excluidos). */
+    return rpc("pa_2027_matriculas_retiradas_visiveis").then(function (ex) {
+      if (!ex.ok) throw new Error("Nao foi possivel validar as exclusoes; quadro bloqueado para evitar reexibicao indevida.");
+      var registros = Array.isArray(ex.dados) ? ex.dados : (ex.dados ? [ex.dados] : []);
+      SBDATA.exclusoesConfirmadas = registros;
+      SBDATA.exclusoesMatriculas = {};
+      registros.forEach(function (x) {
+        var mat = String(x.matricula || '').trim().replace(/^SB-/i,'');
+        if(mat) SBDATA.exclusoesMatriculas[mat] = true;
+      });
+      /* Limpa quaisquer pessoas ja montadas pela camada anterior. */
+      if(window.PESSOAL && window.PESSOAL.PES) {
+        (window.PESSOAL.PES.gerencias||[]).forEach(function(g) {
+          (g.ccs||[]).forEach(function(cc) {
+            if(Array.isArray(cc.colaboradores)) cc.colaboradores = cc.colaboradores.filter(function(c) {
+              return !SBDATA.exclusoesMatriculas[String(c.matricula||'').trim().replace(/^SB-/i,'')];
+            });
+          });
+        });
+      }
+      return rpc("pa_2027_perfil");
+    }).then(function (rp) {
       if (rp.ok) { anotarForma("pa_2027_perfil", rp.dados);
         SBDATA.perfil = Array.isArray(rp.dados) ? (rp.dados[0] || null) : rp.dados;
         if (SBDATA.perfil && String(SBDATA.perfil.papel || '').toLowerCase() === 'rh') {
@@ -24648,6 +24670,7 @@ if (typeof APP !== "undefined" && APP) {
     var aceitos = [], recusados = 0;
     linhas.forEach(function (l) {
       var r = adaptarRegistro(l);
+      if (r && SBDATA.exclusoesMatriculas && SBDATA.exclusoesMatriculas[String(r.matricula||'').trim().replace(/^SB-/i,'')]) { recusados++; return; }
       if (r) aceitos.push(r); else recusados++;
     });
     SBDATA.recusados = recusados;
