@@ -3185,9 +3185,17 @@ tr.hoverable:hover>td{background:rgba(61,123,255,.06);}
   }
   function refsMod(id) { return MOD_REF[id] || [id]; }
 
+  /* RH: consulta transversal de Pessoal de Apoio, sem ampliar a permissao
+     de edicao de matrizes ou as funcoes de decisao. O papel vem da RPC
+     autenticada pa_2027_perfil; nunca da identificacao textual do usuario. */
+  function papelRH() {
+    var p = window.SBDATA && window.SBDATA.perfil;
+    return !!(p && String(p.papel || '').toLowerCase() === 'rh');
+  }
   NAVPERM.podeGerencia = function (nome) {
     if (!NAVPERM.pronto()) return false;
     if (leituraGlobal() || administra()) return true;
+    if (papelRH()) return true;
     return !!consultarGer(refsGer(nome));
   };
   NAVPERM.podeModulo = function (id) {
@@ -24567,7 +24575,11 @@ if (typeof APP !== "undefined" && APP) {
 
     return rpc("pa_2027_perfil").then(function (rp) {
       if (rp.ok) { anotarForma("pa_2027_perfil", rp.dados);
-        SBDATA.perfil = Array.isArray(rp.dados) ? (rp.dados[0] || null) : rp.dados; }
+        SBDATA.perfil = Array.isArray(rp.dados) ? (rp.dados[0] || null) : rp.dados;
+        if (SBDATA.perfil && String(SBDATA.perfil.papel || '').toLowerCase() === 'rh') {
+          setTimeout(function () { try { if(window.APP && window.APP.render) window.APP.render(); } catch(_){} }, 0);
+        }
+      }
       return rpc("pa_2027_equipes_autorizadas");
     }).then(function (re) {
       if (re.ok) { anotarForma("pa_2027_equipes_autorizadas", re.dados);
@@ -31040,7 +31052,7 @@ function carregar(){if(iniciado||!sb()||!window.AUTH||!window.AUTH.carregado)ret
 function salvar(m,g){if(!autorizado())return Promise.reject(new Error('Perfil sem permissão de edição em Esportes.'));if(!BASE[m]||!BASE[m].grupos[g])return Promise.reject(new Error('Modalidade/origem inválida'));return sb().rpc('orc_2027_esportes_salvar',{p_modalidade:m,p_origem:g,p_dados:registro(m,g)}).then(function(r){if(r.error)throw r.error;return true;});}
 window.ESPORTES_IMPORT={dados:BASE,carregar:carregar,salvar:salvar,grupos:grupos,registros:registros};
 window.SOGIPA_ESP_OFICIAL={versao:'ZIP_OFICIAL_2027_20261112',fontes:{"basquete": "basquete.xlsx", "yoga": "yoga.xlsx", "ginastica_ritmica": "GINASTICA RITMICA.xlsx", "ballet_gutierres": "ballet gutierres.xlsx", "hidroginastica": "HIDROGINASTICA.xlsx", "musculacao": "MUSCULAÇÃO.xlsx", "ginastica_artistica": "GINASTICA ARTISTICA.xlsx", "danca_country": "dança country.xlsx", "beach_tennis": "beach tennis.xlsx", "aikido": "AIKIDO - ORÇAMENTO 2027.xlsx", "boxe": "boxe.xlsx", "ritmos": "ritmos.xlsx", "judo": "JUDO.xlsx", "ginastica_veteranas": "GINASTICA VETERANAS.xlsx", "natacao": "natação.xlsx", "athletic_trainning": "ATHLETIC TRAINNING - ORÇAMENTO 2027.xlsx", "tenis": "tenis.xlsx", "punhobol": "punhobol.xlsx", "esgrima": "esgrima.xlsx", "volei": "volei.xlsx", "tenis_de_mesa": "tênis de mesa - atualização de numeros.xlsx", "kung_fu": "KUNG FU.xlsx", "futebol_racing": "futebol racing.xlsx", "futebol": "futebol.xlsx", "esporte_verao": "esporte verão.xlsx", "personal_postura": "personal postura.xlsx", "tenis_personal_rodrigo": "tenis personal rodrigo.xlsx", "volei_veteranas": "volei veteranas.xlsx"},sincronizar:async function(){if(!adm())throw Error('Somente ADMIN pode sincronizar.');if(!sb())throw Error('Supabase indisponível.');var ok=0,erros=[];for(var m of Object.keys(BASE)){for(var g of Object.keys(BASE[m].grupos)){try{await salvar(m,g);ok++;}catch(e){erros.push(m+' / '+g+': '+(e.message||e));}}}if(erros.length)throw Error(ok+' matrizes gravadas; falhas: '+erros.join('; '));iniciado=false;await carregar();return ok;}};
-(function(){function criar(){if(document.getElementById('esp-oficial-sync')||!adm()||!window.AUTH||!window.AUTH.carregado)return;var b=document.createElement('button');b.id='esp-oficial-sync';b.textContent='Sincronizar Esportes 2027 (planilhas oficiais)';b.style.cssText='position:fixed;right:18px;bottom:16px;z-index:9998;padding:10px 15px;border-radius:9px;background:#156f66;color:white;border:1px solid #7bd9c6;font:600 12px system-ui;box-shadow:0 4px 16px #0005;cursor:pointer';b.onclick=async function(){if(!confirm('Gravar as matrizes oficiais de Esportes 2027 no Supabase? Esta ação atualiza somente Esportes, preservando RH e solicitações.'))return;b.disabled=true;b.textContent='Sincronizando Esportes...';try{var n=await window.SOGIPA_ESP_OFICIAL.sincronizar();alert('Esportes 2027: '+n+' matrizes sincronizadas. Reabra a pasta de Esportes para conferir.');}catch(e){alert('Sincronização incompleta: '+e.message);}finally{b.disabled=false;b.textContent='Sincronizar Esportes 2027 (planilhas oficiais)';}};document.body.appendChild(b);}setInterval(criar,2500);})();
+
 
 function esc(t){return String(t).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 function boot(){if(!window.AUTH||!window.AUTH.carregado){setTimeout(boot,1000);return;}carregar();}
