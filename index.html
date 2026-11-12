@@ -2651,13 +2651,19 @@ tr.hoverable:hover>td{background:rgba(61,123,255,.06);}
     return { total: total, detalhe: det };
   };
   AUTH.salvarPendencias = function () {
-    PECAS.forEach(function (p) {
+    /* Promessas aguardadas e erros propagados: jamais confirmar saida em falso. */
+    return Promise.all(PECAS.filter(function(p){return contaPeca(p)>0;}).map(function (p) {
       try {
-        if (p.salvar) { p.salvar(); return; }
-        var r = repoDe(p);
-        if (r && typeof r.salvarRascunho === "function" && contaPeca(p) > 0) r.salvarRascunho();
-      } catch (e) { avisar("salvar:" + p.id, e); }
-    });
+        var r = repoDe(p), resultado;
+        if (p.salvar) resultado = p.salvar();
+        else if (r && typeof r.salvarRascunho === "function") resultado = r.salvarRascunho();
+        else throw Error('A peca ' + p.nome + ' nao tem rotina de salvamento');
+        return Promise.resolve(resultado).then(function(x){
+          if (x && (x.ok===false || x.error)) throw Error('Falha ao salvar ' + p.nome);
+          return x;
+        });
+      } catch(e) { avisar('salvar:'+p.id,e); return Promise.reject(e); }
+    }));
   };
   AUTH.descartarPendencias = function () {
     PECAS.forEach(function (p) {
@@ -2822,7 +2828,22 @@ tr.hoverable:hover>td{background:rgba(61,123,255,.06);}
       }
       var k = alvo.getAttribute("data-authsaida");
       if (k === "cancelar") { fecharConfirma(); return; }
-      if (k === "salvar") { AUTH.salvarPendencias(); fecharConfirma(); AUTH.sair(); return; }
+      if (k === "salvar") {
+        /* Nunca encerrar a sessao antes de confirmar as gravacoes. */
+        alvo.disabled = true;
+        alvo.textContent = "Verificando salvamentos...";
+        Promise.resolve().then(function () { return AUTH.salvarPendencias(); }).then(function () {
+          var restantes = AUTH.pendencias();
+          if (restantes.total > 0) throw Error(restantes.total + " alteracoes continuam pendentes. A sessao foi preservada.");
+          fecharConfirma(); return AUTH.sair();
+        }).catch(function (e) {
+          alvo.disabled = false; alvo.textContent = "Salvar e sair";
+          var aviso = d.querySelector('[data-auth-erro-saida]');
+          if (!aviso) { aviso = document.createElement('p'); aviso.setAttribute('data-auth-erro-saida',''); aviso.setAttribute('role','alert'); aviso.style.cssText='color:#ffb8a8;margin:12px 0;font-weight:600'; d.querySelector('.drawer-body').appendChild(aviso); }
+          aviso.textContent = 'Saida bloqueada para proteger os dados: ' + String(e.message || e);
+        });
+        return;
+      }
       if (k === "descartar") { AUTH.descartarPendencias(); fecharConfirma(); AUTH.sair(); return; }
     });
     return true;
@@ -19142,6 +19163,10 @@ window.SOL_ACOES = function (cmd, render) {
     }
   };
 
+  /* V26: os valores carregados da matriz sao o estado inicial, nao edicoes.
+     Isso NAO simula gravacao no banco; mudancas reais continuam pendentes. */
+  REPO.salvo = { reajuste: PLANO.reajuste.slice(), incremento: PLANO.incremento.slice(), p27: PLANO.p27.slice() };
+
   /* Saída para a Controladoria: módulo, gerência, mês, natureza, valor. */
   function paraDRE(campo) {
     var out = [];
@@ -31387,7 +31412,7 @@ function load(){if(S.busy||!window.SB||typeof window.SB.rpc!=='function')return;
  });
  }).catch(function(e){S.err=String(e.message||e);/* manter ultimo resultado em memoria */}).finally(function(){S.busy=false;paint()});}
 function context(){var main=document.getElementById('main');if(!main)return null;
- var h=main.querySelector('h1,h2'),head=(h&&h.textContent||'').toLowerCase(),txt=(main.textContent||'').slice(0,1300).toLowerCase();
+ var h=main.querySelector('h1,h2,h3'),head=(h&&h.textContent||'').toLowerCase(),txt=(main.textContent||'').toLowerCase();
  var st=window.APP&&window.APP.state||{};var op=/opera[cç][oõ]es/.test(head)||String(st.gerenciaId||st.gerencia_id||'')==='3';var rh=/recursos humanos|^rh\b/.test(head);var person=/solicita[cç][oõ]es|quadro atual|pessoal de apoio|vis[aã]o geral/.test(txt);
  /* O titulo pode estar em um elemento fora do main; buscar o cabecalho visivel. */
  if(!op&&!rh){var hs=document.querySelectorAll('h1,h2');for(var i=0;i<hs.length;i++){var htxt=(hs[i].textContent||'').toLowerCase();if(/opera[cç][oõ]es/.test(htxt))op=true;if(/recursos humanos|^rh\b/.test(htxt))rh=true;}}
@@ -31424,7 +31449,7 @@ window.addEventListener('focus',function(){load();paint()});document.addEventLis
 
 <script id="sogipa-v22-anti-json-e-versao">
 (function(){'use strict';
- var VERSION='V25 · 12/11/2026';
+ var VERSION='V26 · 12/11/2026';
  function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
  function check(){
   var box=document.getElementById('paRetornoModal');if(!box)return;
