@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- SOGIPA V27.1 | PUBLICACAO GITHUB DESKTOP | 2026-11-12 | arquivo principal -->
+<!-- SOGIPA V28 | CORRECAO FILA OPERACOES: pageT fora de main | 2026-11-12 -->
 <!-- SOGIPA ORCAMENTO 2027 | Revisao 2026-11-06 | DRE: recarga de dados disponivel; integracoes existentes preservadas -->
 <!-- SOGIPA 2027 · ETAPA 3 — CANDIDATA
      A base da DRE foi retirada deste arquivo: 5224 valores mensais de
@@ -31390,7 +31390,7 @@ setInterval(function(){if(!authorized())check();else if(!Q.loading&&Date.now()-Q
 window.addEventListener('focus',function(){if(authorized())update();else check();});
 })();
 </script>
-<script id="sogipa-fila-unificada-v27">
+<script id="sogipa-fila-unificada-v28">
 (function(){'use strict';
 /* V24: quadro de leitura persistente. Nenhum registro e alterado por este modulo. */
 var S={role:'',gid:null,rows:[],people:{},teamRows:[],ok:false,err:'',busy:false,last:0,attempt:0};
@@ -31414,23 +31414,28 @@ function load(){if(S.busy||!window.SB||typeof window.SB.rpc!=='function')return;
  }).catch(function(e){S.err=String(e.message||e);/* manter ultimo resultado em memoria */}).finally(function(){S.busy=false;paint()});}
 function context(){
  var main=document.getElementById('main');if(!main)return null;
- var headings=Array.from(main.querySelectorAll('h1,h2,h3')).map(function(n){return (n.textContent||'').toLowerCase()}).join(' ');
- var txt=(main.textContent||'').toLowerCase();
- var op=/opera[cç][oõ]es/.test(headings),rh=/recursos humanos|\brh\b/.test(headings);
- /* A gerencia ativa e determinada pelo titulo da pagina, nao por textos escondidos da sidebar. */
- var page=main.querySelector('h1,h2');if(page){var h=(page.textContent||'').toLowerCase();op=/opera[cç][oõ]es/.test(h);rh=/recursos humanos|^rh\b/.test(h);}
- var active=Array.from(main.querySelectorAll('button,[role=tab]')).filter(function(n){return n.classList.contains('active')||n.getAttribute('aria-selected')==='true'||n.classList.contains('sel')}).map(function(n){return (n.textContent||'').toLowerCase()}).join(' ');
- var requests=/solicita[cç][oõ]es/.test(active)||/solicita[cç][oõ]es/.test(headings)||/nenhuma solicita[cç][aã]o registrada/.test(txt);
+ /* O titulo verdadeiro fica em #pageT, FORA de #main. A V27 buscava apenas
+    h1/h2/h3 dentro de #main e descartava Operacoes e RH silenciosamente. */
+ var title=(document.getElementById('pageT')||{}).textContent||'';
+ var sub=(document.getElementById('pageS')||{}).textContent||'';
+ var state=window.APP&&window.APP.state||{};
+ var op=/opera[cç][oõ]es/i.test(title),rh=/recursos humanos|^rh$/i.test(title.trim());
+ var g=window.PESSOAL&&typeof window.PESSOAL.gerById==='function'?window.PESSOAL.gerById(state.pGer):null;
+ if(state.modulo==='pessoal'&&g){var gn=String(g.nome||g.name||'');op=op||/opera[cç][oõ]es/i.test(gn);rh=rh||/recursos humanos/i.test(gn);}
  if(!op&&!rh)return null;
- /* Mostrar a fila na gerencia ativa, inclusive na aba de solicitacoes, sem depender de texto de outro componente. */
- return {main:main,op:op,rh:rh,requests:requests};}
+ /* A fila aparece no contexto de solicitacoes. O RH tambem pode consultar
+    o quadro transversal sem perder sua aba de trabalho. */
+ var requests=state.pAba==='solicitacoes'||/solicita[cç][oõ]es/i.test(sub);
+ if(op&&!requests)return null;
+ return {main:main,op:op,rh:rh,requests:requests};
+}
 function person(x){var d=x.dados||{},mat=norm(d.colaboradorId||d.matricula),a=S.people[mat]||{},fallback={};try{if(window.DESLIGAMENTO&&window.DESLIGAMENTO.identificarColaborador)fallback=window.DESLIGAMENTO.identificarColaborador(x)||{}}catch(e){}
  var name=a.nome||d.colaboradorNome||d.funcionario||d.nome||fallback.nome||'';if(/^nome n[aã]o localizado/i.test(name)||name===String(d.colaboradorId))name='';return {nome:name,matricula:a.matricula||d.matricula||d.colaboradorId||'',cargo:a.cargo||d.cargo||''};}
-function paint(){var c=context(),old=document.getElementById('sogipa-fila-unificada-v27');if(!c){if(old)old.remove();return;}
+function paint(){var c=context(),old=document.getElementById('sogipa-fila-unificada-v28');if(!c){if(old)old.remove();return;}
  var permitted=['rh','admin','gestor','gerente_geral'].includes(S.role);if(!permitted&&!S.err&&!S.ok){S.err='Aguardando identificacao do perfil autenticado';}
  var rows=S.rows.filter(function(x){if(S.role==='rh'||S.role==='admin'||S.role==='gerente_geral')return !c.op||Number(x.gerencia_id)===3;return String(x.gerencia_id)===String(S.gid)});
  var pending=rows.filter(function(x){return x.status==='sol_retorno_gestor'}).length,waiting=rows.filter(function(x){return x.status==='sol_aguardando_rh'}).length;
- var html='<section id="sogipa-fila-unificada-v27" style="margin:0 0 20px;padding:18px;border:1px solid #5484f4;border-radius:12px;background:#1b2335;color:#f4f7ff">'+
+ var html='<section id="sogipa-fila-unificada-v28" style="margin:0 0 20px;padding:18px;border:1px solid #5484f4;border-radius:12px;background:#1b2335;color:#f4f7ff">'+
  '<div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap"><strong>Solicita\u00e7\u00f5es de Pessoal de Apoio \u2014 acompanhamento</strong><button class="btn sm" type="button" data-v23-refresh>Atualizar solicita\u00e7\u00f5es</button></div>';
  if(!S.ok)html+='<p role="status">'+esc(S.err?'Consulta indispon\u00edvel: '+S.err:'Carregando solicita\u00e7\u00f5es do Supabase...')+'</p>';
  else {html+='<p style="margin:12px 0">Aguardando revis\u00e3o do gestor: <b>'+pending+'</b> \u00b7 Aguardando RH: <b>'+waiting+'</b> \u00b7 Total neste fluxo: <b>'+rows.length+'</b></p>';
