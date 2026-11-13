@@ -31470,13 +31470,13 @@ function context(){
  var op=/opera[cç][oõ]es/i.test(title),rh=/recursos humanos|^rh$/i.test(title.trim());
  var g=window.PESSOAL&&typeof window.PESSOAL.gerById==='function'?window.PESSOAL.gerById(state.pGer):null;
  if(state.modulo==='pessoal'&&g){var gn=String(g.nome||g.name||'');op=op||/opera[cç][oõ]es/i.test(gn);rh=rh||/recursos humanos/i.test(gn);}
- if(!op&&!rh)return null;
+ if(!op&&!rh&&!(state.modulo==='pessoal'&&g))return null;
  /* A fila aparece no contexto de solicitacoes. O RH tambem pode consultar
     o quadro transversal sem perder sua aba de trabalho. */
  var requests=state.pAba==='solicitacoes'||/solicita[cç][oõ]es/i.test(sub);
- /* V33: em Operacoes, apresentar a fila apenas na subaba Solicitacoes.
-    Preserva consulta RH, dados, RPCs, botoes e fluxo de aprovacao. */
- if(op&&!requests)return null;
+ /* V34: regra global: fila visivel apenas na subaba Solicitacoes
+    de cada gerencia, inclusive RH. Preserva RPCs, botoes e fluxo. */
+ if(!requests)return null;
  return {main:main,op:op,rh:rh,requests:requests};
 }
 function person(x){var d=x.dados||{},mat=norm(d.colaboradorId||d.matricula),a=S.people[mat]||{},fallback={};try{if(window.DESLIGAMENTO&&window.DESLIGAMENTO.identificarColaborador)fallback=window.DESLIGAMENTO.identificarColaborador(x)||{}}catch(e){}
