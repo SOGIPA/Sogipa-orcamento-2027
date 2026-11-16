@@ -31522,7 +31522,9 @@ function person(x){var d=x.dados||{},mat=norm(d.colaboradorId||d.matricula),a=S.
  var name=a.nome||d.colaboradorNome||d.funcionario||d.nome||fallback.nome||'';if(/^nome n[aã]o localizado/i.test(name)||name===String(d.colaboradorId))name='';return {nome:name,matricula:a.matricula||d.matricula||d.colaboradorId||'',cargo:a.cargo||d.cargo||''};}
 function paint(){var c=context(),old=document.getElementById('sogipa-fila-unificada-v28');if(!c){if(old)old.remove();return;}
  var permitted=['rh','admin','gestor','gerente_geral'].includes(S.role);if(!permitted&&!S.err&&!S.ok){S.err='Aguardando identificacao do perfil autenticado';}
- var rows=S.rows.filter(function(x){if(S.role==='rh'||S.role==='admin'||S.role==='gerente_geral')return !c.op||Number(x.gerencia_id)===3;return String(x.gerencia_id)===String(S.gid)});
+ /* V41: a fila contextual SEMPRE pertence a gerencia selecionada, inclusive para ADMIN/RH/GG. A consulta global via RPC e as filas institucionais permanecem intactas. */
+ var contextGid=window.APP&&window.APP.state?window.APP.state.pGer:null;
+ var rows=S.rows.filter(function(x){return contextGid!==null&&contextGid!==undefined&&String(x.gerencia_id)===String(contextGid)});
  var pending=rows.filter(function(x){return x.status==='sol_retorno_gestor'}).length,waiting=rows.filter(function(x){return x.status==='sol_aguardando_rh'}).length;
  var html='<section id="sogipa-fila-unificada-v28" style="margin:0 0 20px;padding:18px;border:1px solid #5484f4;border-radius:12px;background:#1b2335;color:#f4f7ff">'+
  '<div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap"><strong>Solicita\u00e7\u00f5es de Pessoal de Apoio \u2014 acompanhamento</strong><button class="btn sm" type="button" data-v23-refresh>Atualizar solicita\u00e7\u00f5es</button></div>';
