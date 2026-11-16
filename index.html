@@ -31523,8 +31523,13 @@ function person(x){var d=x.dados||{},mat=norm(d.colaboradorId||d.matricula),a=S.
 function paint(){var c=context(),old=document.getElementById('sogipa-fila-unificada-v28');if(!c){if(old)old.remove();return;}
  var permitted=['rh','admin','gestor','gerente_geral'].includes(S.role);if(!permitted&&!S.err&&!S.ok){S.err='Aguardando identificacao do perfil autenticado';}
  /* V41: a fila contextual SEMPRE pertence a gerencia selecionada, inclusive para ADMIN/RH/GG. A consulta global via RPC e as filas institucionais permanecem intactas. */
- var contextGid=window.APP&&window.APP.state?window.APP.state.pGer:null;
- var rows=S.rows.filter(function(x){return contextGid!==null&&contextGid!==undefined&&String(x.gerencia_id)===String(contextGid)});
+ /* V42: IDs do menu PESSOAL sao locais (g1..g10), enquanto as solicitacoes
+    usam IDs institucionais numericos no Supabase. Nunca comparar g3 com 3.
+    Resolver pelo nome da gerencia selecionada; sem correspondencia, ocultar. */
+ var localG=window.APP&&window.APP.state&&window.PESSOAL&&window.PESSOAL.gerById?window.PESSOAL.gerById(window.APP.state.pGer):null;
+ var institutionalIds={'Gerência Geral':1,'Administrativa':2,'Operações':3,'Esportes':4,'Manutenção':5,'RH':6,'TI':7,'Projetos e Obras':8,'Projetos e Planejamento':9,'Comunicação':10};
+ var contextGid=localG&&Object.prototype.hasOwnProperty.call(institutionalIds,localG.nome)?institutionalIds[localG.nome]:null;
+ var rows=S.rows.filter(function(x){return contextGid!==null&&String(x.gerencia_id)===String(contextGid)});
  var pending=rows.filter(function(x){return x.status==='sol_retorno_gestor'}).length,waiting=rows.filter(function(x){return x.status==='sol_aguardando_rh'}).length;
  var html='<section id="sogipa-fila-unificada-v28" style="margin:0 0 20px;padding:18px;border:1px solid #5484f4;border-radius:12px;background:#1b2335;color:#f4f7ff">'+
  '<div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap"><strong>Solicita\u00e7\u00f5es de Pessoal de Apoio \u2014 acompanhamento</strong><button class="btn sm" type="button" data-v23-refresh>Atualizar solicita\u00e7\u00f5es</button></div>';
