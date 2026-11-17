@@ -31685,22 +31685,35 @@ sel.addEventListener('change',render);document.getElementById('sogipa-eventos-hi
 })();
 </script>
 
-<!-- V45: atalho contextual nao destrutivo para historico de eventos -->
-<script id="sogipa-v45-eventos-menu">
+<!-- V46: 37 eventos integrados na arvore renderizada, preservando as quatro contas originais -->
+<style>
+#sogipa-eventos-history-launch{display:none!important}
+.sogipa-v46-evento{display:block;width:calc(100% - 20px);margin:2px 0 2px 20px;padding:7px 5px;border:0;background:transparent;color:#b9c9ef;text-align:left;font-size:11px;cursor:pointer;line-height:1.4}
+.sogipa-v46-evento:hover,.sogipa-v46-evento:focus{background:#263450;color:#fff;border-radius:4px}
+.sogipa-v46-evento-titulo{display:block;margin:10px 0 4px 15px;color:#7de6c6;font-size:11px;font-weight:bold}
+</style>
+<script id="sogipa-v46-eventos-arvore">
 (function(){'use strict';
- function attach(){
-  var candidates=Array.from(document.querySelectorAll('aside *, nav *, [class*="sidebar"] *, [class*="menu"] *'));
-  var target=candidates.find(function(e){return e.children.length===0 && e.textContent.trim().toUpperCase()==='RECEITA DE EVENTOS';});
-  if(!target)return;
-  var parent=target.closest('li,[class*="nav-item"],[class*="tree-item"],[class*="menu-item"]')||target.parentElement;
-  if(!parent||document.getElementById('sogipa-v45-eventos-link'))return;
-  var link=document.createElement('button');link.id='sogipa-v45-eventos-link';link.type='button';link.textContent='▸ 37 matrizes históricas (2022–2026)';
-  link.style.cssText='display:block;width:100%;padding:9px 12px;margin:6px 0 6px 12px;border:1px solid #52628b;border-radius:6px;background:#18243c;color:#e7edff;text-align:left;cursor:pointer;font-size:12px;';
-  link.addEventListener('click',function(ev){ev.preventDefault();ev.stopPropagation();var launch=document.getElementById('sogipa-eventos-history-launch');if(launch)launch.click();});
-  parent.insertAdjacentElement('afterend',link);
- }
- if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',attach);else attach();
- var attempts=0;var interval=setInterval(function(){attach();if(++attempts>24||document.getElementById('sogipa-v45-eventos-link'))clearInterval(interval);},500);
+var dadosEl=document.getElementById('sogipa-eventos-history-data');
+if(!dadosEl)return;
+var eventos=JSON.parse(dadosEl.textContent).slice().sort(function(a,b){return a.title.localeCompare(b.title,'pt-BR');});
+var nav=document.getElementById('nav');if(!nav)return;
+function instalar(){
+ var grupos=Array.from(nav.querySelectorAll('button.nav-group'));
+ var grupo=grupos.find(function(el){return /RECEITA DE EVENTOS/i.test(el.textContent||'')});
+ if(!grupo)return;
+ var sub=grupo.nextElementSibling;
+ if(!sub||!sub.classList.contains('nav-sub')||sub.querySelector('.sogipa-v46-evento'))return;
+ var heading=document.createElement('div');heading.className='sogipa-v46-evento-titulo';heading.textContent='MATRIZES DOS EVENTOS ('+eventos.length+')';sub.appendChild(heading);
+ eventos.forEach(function(e,i){
+  var btn=document.createElement('button');btn.type='button';btn.className='sogipa-v46-evento';btn.textContent='› '+e.title.replace(/^SOGIPA\s*\|\s*/i,'')+' · '+e.cost_center;
+  btn.addEventListener('click',function(ev){ev.preventDefault();ev.stopPropagation();var sel=document.getElementById('sogipa-eventos-history-select');var modal=document.getElementById('sogipa-eventos-history-modal');if(!sel||!modal)return;var original=Array.from(sel.options).find(function(o){return o.textContent.indexOf(e.cost_center)>=0});if(original)sel.value=original.value;modal.style.display='block';sel.dispatchEvent(new Event('change'));});
+  sub.appendChild(btn);
+ });
+}
+var pending=false;var observer=new MutationObserver(function(){if(pending)return;pending=true;requestAnimationFrame(function(){pending=false;instalar()})});
+observer.observe(nav,{childList:true,subtree:false});
+instalar();
 })();
 </script>
 </body>
