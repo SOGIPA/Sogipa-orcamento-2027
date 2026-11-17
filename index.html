@@ -31684,5 +31684,24 @@ h+='<table><thead><tr><th>Natureza / conta</th>'+years.map(function(y){return '<
 sel.addEventListener('change',render);document.getElementById('sogipa-eventos-history-launch').addEventListener('click',function(){modal.style.display='block';render()});document.getElementById('sogipa-eventos-history-close').addEventListener('click',function(){modal.style.display='none'});modal.addEventListener('click',function(e){if(e.target===modal)modal.style.display='none'});document.addEventListener('keydown',function(e){if(e.key==='Escape')modal.style.display='none'});
 })();
 </script>
+
+<!-- V45: atalho contextual nao destrutivo para historico de eventos -->
+<script id="sogipa-v45-eventos-menu">
+(function(){'use strict';
+ function attach(){
+  var candidates=Array.from(document.querySelectorAll('aside *, nav *, [class*="sidebar"] *, [class*="menu"] *'));
+  var target=candidates.find(function(e){return e.children.length===0 && e.textContent.trim().toUpperCase()==='RECEITA DE EVENTOS';});
+  if(!target)return;
+  var parent=target.closest('li,[class*="nav-item"],[class*="tree-item"],[class*="menu-item"]')||target.parentElement;
+  if(!parent||document.getElementById('sogipa-v45-eventos-link'))return;
+  var link=document.createElement('button');link.id='sogipa-v45-eventos-link';link.type='button';link.textContent='▸ 37 matrizes históricas (2022–2026)';
+  link.style.cssText='display:block;width:100%;padding:9px 12px;margin:6px 0 6px 12px;border:1px solid #52628b;border-radius:6px;background:#18243c;color:#e7edff;text-align:left;cursor:pointer;font-size:12px;';
+  link.addEventListener('click',function(ev){ev.preventDefault();ev.stopPropagation();var launch=document.getElementById('sogipa-eventos-history-launch');if(launch)launch.click();});
+  parent.insertAdjacentElement('afterend',link);
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',attach);else attach();
+ var attempts=0;var interval=setInterval(function(){attach();if(++attempts>24||document.getElementById('sogipa-v45-eventos-link'))clearInterval(interval);},500);
+})();
+</script>
 </body>
 </html>
