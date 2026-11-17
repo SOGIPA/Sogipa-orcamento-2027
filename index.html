@@ -31685,36 +31685,63 @@ sel.addEventListener('change',render);document.getElementById('sogipa-eventos-hi
 })();
 </script>
 
-<!-- V46: 37 eventos integrados na arvore renderizada, preservando as quatro contas originais -->
+<!-- V48: Eventos integrados ao corpo principal; dados historicos imutaveis -->
 <style>
-#sogipa-eventos-history-launch{display:none!important}
-.sogipa-v46-evento{display:block;width:calc(100% - 20px);margin:2px 0 2px 20px;padding:7px 5px;border:0;background:transparent;color:#b9c9ef;text-align:left;font-size:11px;cursor:pointer;line-height:1.4}
-.sogipa-v46-evento:hover,.sogipa-v46-evento:focus{background:#263450;color:#fff;border-radius:4px}
-.sogipa-v46-evento-titulo{display:block;margin:10px 0 4px 15px;color:#7de6c6;font-size:11px;font-weight:bold}
+#sogipa-eventos-history-launch,#sogipa-eventos-history-modal{display:none!important}
+.sogipa-v48-title{padding:12px 12px 6px 20px;color:#80e4bf;font-weight:700;font-size:11px}
+.sogipa-v48-evento{display:block;width:100%;padding:7px 12px 7px 25px;background:transparent;border:0;color:#c4d1ef;text-align:left;cursor:pointer;font-size:11px;line-height:1.45}
+.sogipa-v48-evento:hover,.sogipa-v48-evento.active{background:#263550;color:#fff}
+#sogipa-v48-view{max-width:100%;font-family:inherit;color:var(--text,#e8ecf7)}
+#sogipa-v48-view .v48-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:16px 0}
+#sogipa-v48-view .v48-card{background:#202331;border:1px solid #42485f;border-radius:11px;padding:17px}
+#sogipa-v48-view .v48-card .label{font-size:11px;letter-spacing:.05em;color:#b9c8e8;font-weight:700}
+#sogipa-v48-view .v48-card .value{font-size:23px;font-weight:800;margin:9px 0}
+#sogipa-v48-view .v48-card .note{font-size:11px;color:#a9b7d5}
+#sogipa-v48-view .v48-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+#sogipa-v48-view .v48-tabs button{background:#202437;border:1px solid #4c5672;color:#d5e2ff;border-radius:8px;padding:9px 14px;cursor:pointer}
+#sogipa-v48-view .v48-tabs button.active{background:#183361;border-color:#4789ff;color:white}
+#sogipa-v48-view .v48-scroll{overflow:auto;border:1px solid #414860;border-radius:9px}
+#sogipa-v48-view table{border-collapse:collapse;width:100%;min-width:850px;font-size:12px}
+#sogipa-v48-view th,#sogipa-v48-view td{padding:11px 12px;border-bottom:1px solid #32394e;text-align:right;white-space:nowrap}
+#sogipa-v48-view th:first-child,#sogipa-v48-view td:first-child{text-align:left;min-width:225px}
+#sogipa-v48-view th{background:#252a3c;color:#c7d5f2}
+#sogipa-v48-view tr.v48-total{background:#1d3145;font-weight:800}
+#sogipa-v48-view tr.v48-section{background:#2a3045;font-weight:800;color:#dce9ff}
+#sogipa-v48-view .v48-neg{color:#ff8d98}
+#sogipa-v48-view .v48-note{font-size:12px;color:#abb9d4;margin:12px 0}
+@media(max-width:800px){#sogipa-v48-view .v48-cards{grid-template-columns:1fr}#sogipa-v48-view .v48-card .value{font-size:19px}}
 </style>
-<script id="sogipa-v46-eventos-arvore">
+<script id="sogipa-v48-eventos-integrados">
 (function(){'use strict';
-var dadosEl=document.getElementById('sogipa-eventos-history-data');
-if(!dadosEl)return;
-var eventos=JSON.parse(dadosEl.textContent).slice().sort(function(a,b){return a.title.localeCompare(b.title,'pt-BR');});
-var nav=document.getElementById('nav');if(!nav)return;
-function instalar(){
- var grupos=Array.from(nav.querySelectorAll('button.nav-group'));
- var grupo=grupos.find(function(el){return /RECEITA DE EVENTOS/i.test(el.textContent||'')});
- if(!grupo)return;
- var sub=grupo.nextElementSibling;
- if(!sub||!sub.classList.contains('nav-sub')||sub.querySelector('.sogipa-v46-evento'))return;
- var heading=document.createElement('div');heading.className='sogipa-v46-evento-titulo';heading.textContent='MATRIZES DOS EVENTOS ('+eventos.length+')';sub.appendChild(heading);
- eventos.forEach(function(e,i){
-  var btn=document.createElement('button');btn.type='button';btn.className='sogipa-v46-evento';btn.textContent='› '+e.title.replace(/^SOGIPA\s*\|\s*/i,'')+' · '+e.cost_center;
-  btn.addEventListener('click',function(ev){ev.preventDefault();ev.stopPropagation();var sel=document.getElementById('sogipa-eventos-history-select');var modal=document.getElementById('sogipa-eventos-history-modal');if(!sel||!modal)return;var original=Array.from(sel.options).find(function(o){return o.textContent.indexOf(e.cost_center)>=0});if(original)sel.value=original.value;modal.style.display='block';sel.dispatchEvent(new Event('change'));});
-  sub.appendChild(btn);
- });
+var src=document.getElementById('sogipa-eventos-history-data'),nav=document.getElementById('nav');if(!src||!nav)return;
+var events=JSON.parse(src.textContent).slice().sort(function(a,b){return a.title.localeCompare(b.title,'pt-BR')});
+var chosen=null,year=2025;
+function safe(x){return String(x==null?'':x).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function money(x){return Number(x||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
+function label(e){return e.title.replace(/^SOGIPA\s*\|\s*/i,'').trim()}
+function install(){
+ var group=Array.from(nav.querySelectorAll('button.nav-grupo[data-navgrupo]')).find(function(el){return /RECEITA DE EVENTOS/i.test(el.textContent||'')});if(!group)return;
+ var sub=group.nextElementSibling;if(!sub||!sub.classList.contains('nav-sub'))return;
+ Array.from(sub.children).forEach(function(el){if(!el.classList.contains('sogipa-v48-title')&&!el.classList.contains('sogipa-v48-evento'))el.style.display='none'});
+ if(sub.querySelector('.sogipa-v48-title'))return;
+ var h=document.createElement('div');h.className='sogipa-v48-title';h.textContent='EVENTOS ('+events.length+')';sub.appendChild(h);
+ events.forEach(function(e){var b=document.createElement('button');b.type='button';b.className='sogipa-v48-evento';b.textContent='› '+label(e);b.setAttribute('data-centro-evento',e.cost_center);b.addEventListener('click',function(ev){ev.preventDefault();ev.stopPropagation();chosen=e;year=2025;Array.from(nav.querySelectorAll('.sogipa-v48-evento')).forEach(function(x){x.classList.toggle('active',x===b)});render()});sub.appendChild(b)});
 }
-var pending=false;var observer=new MutationObserver(function(){if(pending)return;pending=true;requestAnimationFrame(function(){pending=false;instalar()})});
-observer.observe(nav,{childList:true,subtree:false});
-instalar();
+function render(){if(!chosen)return;var e=chosen,idx=year-2022;var main=document.getElementById('main');if(!main)return;
+ var pt=document.getElementById('pageT'),ps=document.getElementById('pageS'),tr=document.getElementById('trilha'),tabs=document.getElementById('subtabs');
+ if(pt)pt.textContent=label(e);if(ps)ps.textContent='Receita de Eventos · Matriz orçamentária histórica';if(tr)tr.textContent='RECEITA / RECEITA DE EVENTOS / '+label(e);if(tabs)tabs.innerHTML='';
+ var rev=Number(e.totals['TOTAL DE RECEITAS'][idx]||0),exp=Number(e.totals['TOTAL DE DESPESAS'][idx]||0),res=rev-exp;
+ var h='<div id="sogipa-v48-view"><div class="v48-note">Centro de custo: '+safe(e.cost_center)+' · Fonte: '+safe(e.file)+' · 2026 parcial · Histórico conferido com a matriz original</div>';
+ h+='<div class="v48-tabs">'+[2022,2023,2024,2025,2026].map(function(y){return '<button data-v48-year="'+y+'" class="'+(year===y?'active':'')+'">'+y+(y===2026?' · parcial':'')+'</button>'}).join('')+'</div>';
+ h+='<div class="v48-cards">'+[['RECEITAS',rev],['DESPESAS',exp],['RESULTADO OPERACIONAL',res]].map(function(z){return '<div class="v48-card"><div class="label">'+z[0]+'</div><div class="value '+(z[1]<0?'v48-neg':'')+'">'+money(z[1])+'</div><div class="note">'+year+(year===2026?' · parcial':' · histórico')+'</div></div>'}).join('')+'</div>';
+ h+='<div class="v48-scroll"><table><thead><tr><th>NATUREZA / CONTA</th>'+[2022,2023,2024,2025,2026].map(function(y){return '<th>'+y+(y===2026?' (parcial)':'')+'</th>'}).join('')+'</tr></thead><tbody>';
+ function trow(title,vals){return '<tr class="v48-total"><td>'+title+'</td>'+vals.map(function(v){return '<td class="'+(Number(v)<0?'v48-neg':'')+'">'+money(v)+'</td>'}).join('')+'</tr>'}
+ h+=trow('TOTAL DE RECEITAS',e.totals['TOTAL DE RECEITAS']);h+=trow('TOTAL DE DESPESAS',e.totals['TOTAL DE DESPESAS']);h+=trow('RESULTADO OPERACIONAL',e.totals['RESULTADO DO EVENTO']);
+ ['receita','despesa'].forEach(function(n){h+='<tr class="v48-section"><td colspan="6">'+(n==='receita'?'RECEITAS':'DESPESAS')+'</td></tr>';e.accounts.filter(function(a){return a.nature===n}).forEach(function(a){h+='<tr><td>'+safe(a.code)+' · '+safe(a.description)+'</td>'+a.values.map(function(v){return '<td class="'+(Number(v)<0?'v48-neg':'')+'">'+money(v)+'</td>'}).join('')+'</tr>'})});
+ h+='</tbody></table></div><div class="v48-note">Orçamento 2027: ainda não lançado. Os dados de 2022–2026 são somente leitura e não alteram o DRE existente.</div></div>';main.innerHTML=h;
+ Array.from(main.querySelectorAll('[data-v48-year]')).forEach(function(b){b.addEventListener('click',function(){year=Number(b.getAttribute('data-v48-year'));render()})});
+}
+var queued=false;new MutationObserver(function(){if(queued)return;queued=true;requestAnimationFrame(function(){queued=false;install()})}).observe(nav,{childList:true,subtree:false});install();
 })();
 </script>
-</body>
-</html>
+</body></html>
