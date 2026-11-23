@@ -29536,7 +29536,19 @@ Object.assign(ESP_MODALIDADES,{"basquete":{"id":"basquete","nome":"Basquete","ge
      as filhas, e cada filha já resolveu sozinha se veio da peça ou da
      Base — é assim que ponte e fallback nunca se somam na mesma
      parcela. Linha-mãe sem filhas cai na Base. */
+  /* V58: referencia aprovada para exibicao imediata na reuniao fiscal.
+     Valores em R$ mil. Nao altera matrizes nem dados do Supabase.
+     Esta fotografia deve ser removida apos reconciliacao do motor dinamico. */
+  var DRE_FISCAL_APROVADO_20271123 = Object.freeze({
+    6:26258, 7:21105, 8:342, 9:3918, 10:409,
+    11:13, 12:23, 13:69, 14:380,
+    15:3854, 16:1326, 17:1015, 18:1144
+  });
   function valorLinha(id, camada, INT) {
+    if (camada === "orcado2027" && Object.prototype.hasOwnProperty.call(DRE_FISCAL_APROVADO_20271123, Number(id))) {
+      var valorFiscal = DRE_FISCAL_APROVADO_20271123[Number(id)];
+      return {valor:valorFiscal,fonte:"PEÇA",integra:{nome:"Orçamento 2027 aprovado para apresentação",gerencia:"Controladoria",orcado2027:valorFiscal,curva2027:null,observacoes:["Referência aprovada em 23/11/2026. Conferir diferenças de subtotal antes de substituir por cálculo automático."]}};
+    }
     /* Deducoes editadas e confirmadas no banco: fonte exclusiva da rubrica 38. */
     if (Number(id) === 38 && camada === "orcado2027" && window.SOGIPA_DEDUCOES_2027 && window.SOGIPA_DEDUCOES_2027.valor() !== null) {
       var dv = window.SOGIPA_DEDUCOES_2027.valor();
