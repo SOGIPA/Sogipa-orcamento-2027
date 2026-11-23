@@ -25740,8 +25740,7 @@ if (typeof APP !== "undefined" && APP) {
            cálculo — o painel keya exclusivamente pela referência. */
         var dest = (c === "linhaid" || c === "id" || c === "linha" || c === "referencia") ? "id"
           : (c === "nome" || c === "conta" || c === "descricao" || c === "identificador") ? "nome"
-          : (["r25","o26","g26","base26","m27","hist","r22","r23","r24"].indexOf(c) >= 0) ? c
-          : null;
+          : (c === "o27" ? "m27" : (["r25","o26","g26","base26","m27","hist","r22","r23","r24"].indexOf(c) >= 0) ? c : null);
         if (!dest) return;
         if (bruto[dest] === undefined && o[k] !== null && o[k] !== undefined) bruto[dest] = o[k];
       });
