@@ -31788,7 +31788,13 @@ rows.forEach(function(x){var r26=Number(x.receita_2026||0),d26=Number(x.despesa_
 function open(){root.classList.add('open');document.body.style.overflow='hidden';var el=root.querySelector('#ee27-content');el.textContent='Carregando consolidado...';var client=window.SB;if(!client||!client.from){el.textContent='Conexão com o sistema indisponível.';return}client.from('orcamento_eventos_esportivos_2027_staging').select('nome_fonte,despesa_2026,receita_2026,despesa_2027,receita_2027,nome_truncado').then(function(r){if(r.error)throw r.error;if(!r.data||r.data.length!==34)throw Error('A consulta não retornou os 34 eventos esperados.');show(r.data)}).catch(function(e){el.textContent='Não foi possível carregar os eventos: '+(e.message||e)})}
 /* Injeta acesso na propria linha 30 da DRE, sem substituir a renderizacao oficial. */
 function install(){var tr=document.querySelector('[data-dreexp="30"]');if(!tr||tr.querySelector('[data-ee27-open]'))return;var td=tr.querySelector('td');if(!td)return;var b=document.createElement('button');b.type='button';b.setAttribute('data-ee27-open','1');b.textContent='Ver consolidado de eventos';b.style.cssText='margin-left:8px;padding:4px 8px;border:1px solid #94a3b8;border-radius:5px;background:transparent;color:inherit;cursor:pointer;font-size:11px';td.appendChild(b)}
-document.addEventListener('click',function(e){var b=e.target.closest('[data-ee27-open]');if(b){e.preventDefault();e.stopImmediatePropagation();open()}},true);
+document.addEventListener('click',function(e){
+ var t=e.target;
+ if(!(t instanceof Element))return;
+ var b=t.closest('[data-ee27-open]');
+ var sidebar=t.closest('#nav [data-arvrub="30"]');
+ if(b||sidebar){e.preventDefault();e.stopImmediatePropagation();open();}
+},true);
 var timer;new MutationObserver(function(){clearTimeout(timer);timer=setTimeout(install,40)}).observe(document.body,{childList:true,subtree:true});install();
 })();
 </script>
