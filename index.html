@@ -29547,6 +29547,16 @@ Object.assign(ESP_MODALIDADES,{"basquete":{"id":"basquete","nome":"Basquete","ge
     if (Number(id) === 108 && camada === "orcado2027") {
       return { valor: 1373, fonte: "PEÇA", integra: {nome:"Contingências 2027", gerencia:"Controladoria", orcado2027:1373, curva2027:null, observacoes:["Valor anual informado; distribuição mensal pendente."]} };
     }
+    /* V57: orçamento 2027 oficialmente gravado na DRE tem prioridade
+       sobre projeção BASE e pontes locais desatualizadas. Não altera
+       qualquer peça, gravação, perfil ou série de 2026. */
+    if (camada === "orcado2027") {
+      var serieSalva = window.DB && window.DB.m27 && window.DB.m27[String(id)];
+      if (Array.isArray(serieSalva) && serieSalva.some(function(v){return v !== null && v !== undefined && isFinite(Number(v));})) {
+        var somaSalva = serieSalva.reduce(function(t,v){return t + (v === null || v === undefined ? 0 : Number(v));},0);
+        return {valor:somaSalva,fonte:"PEÇA",integra:{nome:"Orçamento 2027 confirmado",gerencia:"Controladoria",orcado2027:somaSalva,curva2027:serieSalva,observacoes:["Série gravada no Supabase"]}};
+      }
+    }
     INT = INT || integracoes();
     var i = INT[id];
     if (i) {
