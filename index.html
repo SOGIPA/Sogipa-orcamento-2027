@@ -2671,9 +2671,9 @@ tr.hoverable:hover>td{background:rgba(61,123,255,.06);}
     return Promise.all(PECAS.filter(function(p){return contaPeca(p)>0;}).map(function (p) {
       try {
         var r = repoDe(p), resultado;
-        if (p.salvar) resultado = p.salvar();
-        else if (r && typeof r.salvarRascunho === "function") resultado = r.salvarRascunho();
-        else throw Error('A peca ' + p.nome + ' nao tem rotina de salvamento');
+        if (p.id === "associacoes" && r && typeof r.salvarBanco === "function") resultado = r.salvarBanco();
+        else if (p.salvarPersistente && typeof p.salvarPersistente === "function") resultado = p.salvarPersistente();
+        else throw Error('A peca ' + p.nome + ' possui alteracoes, mas nao tem salvamento persistente verificado para Salvar e sair. Salve na tela da peca e confira antes de sair.');
         return Promise.resolve(resultado).then(function(x){
           if (x && (x.ok===false || x.error)) throw Error('Falha ao salvar ' + p.nome);
           return x;
@@ -23348,7 +23348,7 @@ var ASSOC_QUADRO = {"fonte":"ASSOCIAÇÕES 2027.xlsx","abas":{"operacional":"PA"
        no login e não altera as demais peças. */
     carregarBanco: function () {
       var SB = window.SB, AU = window.AUTH;
-      var assocGestor = !!(AU && AU.perfil && AU.perfil.id === "50412b40-5300-4c59-bf0f-54e81764be0f");
+      var assocGestor = !!(AU && AU.perfil && (AU.perfil.id === "50412b40-5300-4c59-bf0f-54e81764be0f" || AU.perfil.id === "7c8a84af-c182-4d6e-9684-c21b3229333b"));
       if (!SB || !AU || !AU.carregado || !AU.perfil || !(assocGestor || AU.perfil.acesso_global_leitura === true || (AU.podeAdministrar && AU.podeAdministrar())))
         return Promise.resolve({ok:false,motivo:"sem-permissao-de-leitura"});
       if (REPO.naoSalvasPecas() > 0) return Promise.resolve({ok:false,motivo:"Alterações ainda não salvas; recarga bloqueada para preservar o rascunho"});
@@ -23364,50 +23364,68 @@ var ASSOC_QUADRO = {"fonte":"ASSOCIAÇÕES 2027.xlsx","abas":{"operacional":"PA"
           });
           REPO.salvo.valores = salvo;
           PLANO.valores = JSON.parse(JSON.stringify(salvo));
-          preencherPropostas();
           return {ok:true,linhas:(r.data||[]).length};
         });
     },
     salvarBanco: function () {
-      var SB = window.SB, AU = window.AUTH;
-      var assocGestor = !!(AU && AU.perfil && AU.perfil.id === "50412b40-5300-4c59-bf0f-54e81764be0f");
-      if (!SB || !AU || !AU.carregado || !(assocGestor || (AU.podeAdministrar && AU.podeAdministrar())))
-        return Promise.resolve({ok:false,motivo:"Sem permissão para salvar Associações"});
-      var linhas = [], sv = REPO.salvo.valores || {};
-      Object.keys(PLANO.valores).forEach(function (id) {
-        if (!pecaById(id)) return;
-        Object.keys(PLANO.valores[id] || {}).forEach(function (mes) {
-          var valor = PLANO.valores[id][mes], anterior = (sv[id] || {})[mes];
-          if (valor === null || valor === undefined || valor === anterior) return;
-          if (!Number.isInteger(valor)) return; /* não arredondar centavos silenciosamente */
-          linhas.push({exercicio:2027,atividade:id,mes:Number(mes)+1,valor:valor});
+      var SB=window.SB, AU=window.AUTH;
+      var id=AU && AU.perfil && AU.perfil.id;
+      var permitido=id === "50412b40-5300-4c59-bf0f-54e81764be0f" || id === "7c8a84af-c182-4d6e-9684-c21b3229333b" || !!(AU && AU.podeAdministrar && AU.podeAdministrar());
+      if(!SB || !AU || !AU.carregado || !permitido) return Promise.resolve({ok:false,motivo:"Sessão sem autorização para salvar Associações"});
+      if(REPO._salvando) return Promise.resolve({ok:false,motivo:"Aguarde a gravação anterior terminar"});
+      var linhas=[], invalidos=[], anterior=REPO.salvo.valores || {};
+      Object.keys(PLANO.valores).forEach(function(peca){
+        if(!pecaById(peca)) return;
+        Object.keys(PLANO.valores[peca] || {}).forEach(function(mes){
+          var v=PLANO.valores[peca][mes], ant=(anterior[peca]||{})[mes];
+          if(v === ant || (v!=null && ant!=null && Number.isFinite(Number(v)) && Number.isFinite(Number(ant)) && Math.abs(Number(v)-Number(ant))<0.005))return;
+          if(!/^(?:[0-9]|1[01])$/.test(String(mes)) || v===null || v===undefined || (typeof v==="string" && !v.trim()) || !Number.isFinite(Number(v))) {invalidos.push(peca+"/"+mes);return;}
+          linhas.push({exercicio:2027,atividade:peca,mes:Number(mes)+1,valor:Number(v)});
         });
       });
-      if (!linhas.length) return Promise.resolve({ok:true,linhas:0});
-      return SB.from("associacoes_orcamento_pecas_2027")
-        .upsert(linhas,{onConflict:"exercicio,atividade,mes"})
-        .select("atividade,mes,valor")
-        .then(function (r) {
-          if (r.error) return {ok:false,motivo:r.error.message};
-          if (!r.data || r.data.length !== linhas.length) return {ok:false,motivo:"Gravação não confirmada integralmente"};
-          linhas.forEach(function (x) {
-            if (!REPO.salvo.valores[x.atividade]) REPO.salvo.valores[x.atividade] = {};
-            REPO.salvo.valores[x.atividade][x.mes-1] = x.valor;
-          });
-          return REPO.carregarBanco().then(function (releitura) {
-            if (!releitura.ok) return {ok:false,motivo:"Não foi possível reler os dados salvos"};
-            return {ok:true,linhas:linhas.length};
-          });
-        })["catch"](function (e) {return {ok:false,motivo:String(e.message||e)};});
+      if(invalidos.length)return Promise.resolve({ok:false,motivo:"Valores inválidos: "+invalidos.join(", ")});
+      if(Object.keys(PLANO.rascunho).some(function(pid){var r=PLANO.rascunho[pid]||{};return !!String(r.novo||"").trim() || !!r.edicaoId;}))
+        return Promise.resolve({ok:false,motivo:"Há textos de Pró-Memória ainda em edição. Registre-os antes de salvar a matriz."});
+      if(!linhas.length)return Promise.resolve({ok:true,linhas:0});
+      REPO._salvando=true;
+      var antes=JSON.parse(JSON.stringify(anterior));
+      return SB.from("associacoes_orcamento_pecas_2027").select("atividade,mes,valor").eq("exercicio",2027)
+      .then(function(primeira){
+        if(primeira.error)throw Error("Falha ao verificar concorrência: "+primeira.error.message);
+        var remoto={};(primeira.data||[]).forEach(function(x){remoto[x.atividade+":"+x.mes]=Number(x.valor);});
+        var conflitos=linhas.filter(function(x){
+          var key=x.atividade+":"+x.mes, ant=(antes[x.atividade]||{})[x.mes-1], atual=remoto[key];
+          return ant===undefined ? atual!==undefined : (atual===undefined || Math.abs(atual-Number(ant))>0.005);
+        });
+        if(conflitos.length)throw Error("Outra pessoa alterou estas contas. Atualize a tela antes de gravar: "+conflitos.map(function(x){return x.atividade+"/"+x.mes;}).join(", "));
+        return SB.from("associacoes_orcamento_pecas_2027").upsert(linhas,{onConflict:"exercicio,atividade,mes"}).select("atividade,mes,valor");
+      }).then(function(grava){
+        if(grava.error)throw Error(grava.error.message);
+        if(!grava.data || grava.data.length!==linhas.length)throw Error("Resposta incompleta do banco: "+(grava.data||[]).length+"/"+linhas.length);
+        return SB.from("associacoes_orcamento_pecas_2027").select("atividade,mes,valor").eq("exercicio",2027);
+      }).then(function(leitura){
+        if(leitura.error)throw Error("Falha na releitura: "+leitura.error.message);
+        var mapa={}, salvo={};(leitura.data||[]).forEach(function(x){
+          mapa[x.atividade+":"+x.mes]=Number(x.valor);
+          if(!pecaById(x.atividade)||x.mes<1||x.mes>12)return;
+          if(!salvo[x.atividade])salvo[x.atividade]={};salvo[x.atividade][x.mes-1]=Number(x.valor);
+        });
+        var divergentes=linhas.filter(function(x){return !Object.prototype.hasOwnProperty.call(mapa,x.atividade+":"+x.mes)||Math.abs(mapa[x.atividade+":"+x.mes]-x.valor)>0.005;});
+        if(divergentes.length)throw Error("Valores não confirmados no banco: "+divergentes.map(function(x){return x.atividade+"/"+x.mes;}).join(", "));
+        REPO.salvo.valores=salvo;PLANO.valores=JSON.parse(JSON.stringify(salvo));
+        if(window.SBDATA && typeof window.SBDATA.carregarDRE==="function"){
+          try{window.SBDATA.carregarDRE();}catch(e){console.warn("DRE: atualização não confirmada",e);}
+        }
+        return {ok:true,linhas:linhas.length};
+      }).catch(function(e){return {ok:false,motivo:String(e.message||e)};})
+      .then(function(r){REPO._salvando=false;return r;});
     },
     /* Salvar a matriz também efetiva o texto que estiver na caixa: é o
        que faz "Salvar e sair" não deixar informação para trás. */
     salvarRascunho: function () {
       PECAS.forEach(function (p) { efetivarRascunho(p.id); });
       PLANO.atualizadoEm = new Date().toISOString();
-      REPO.salvo.valores = JSON.parse(JSON.stringify(PLANO.valores));
-      REPO.salvo.registros = JSON.parse(JSON.stringify(PLANO.registros));
-      return { ok: true, quando: PLANO.atualizadoEm, linhas: REPO.exportar().length };
+      return { ok: false, motivo: "Rascunho de texto somente em memoria; use o salvamento persistente da matriz. Os registros nao foram confirmados no banco." };
     },
     /* Pendência é o mês alterado e o texto ainda não registrado. Registro
        já salvo no histórico não é pendência.
@@ -23426,7 +23444,7 @@ var ASSOC_QUADRO = {"fonte":"ASSOCIAÇÕES 2027.xlsx","abas":{"operacional":"PA"
       Object.keys(PLANO.valores).forEach(function (k) {
         var a = PLANO.valores[k], b = sv[k] || {};
         Object.keys(a).forEach(function (m) {
-          if (JSON.stringify(a[m]) !== JSON.stringify(b[m])) n++;
+          if ((a[m] == null || b[m] == null) ? a[m] !== b[m] : (Number.isFinite(Number(a[m])) && Number.isFinite(Number(b[m])) ? Math.abs(Number(a[m])-Number(b[m])) > 0.005 : JSON.stringify(a[m]) !== JSON.stringify(b[m]))) n++;
         });
       });
       Object.keys(PLANO.rascunho).forEach(function (pid) {
@@ -23542,7 +23560,7 @@ var ASSOC_QUADRO = {"fonte":"ASSOCIAÇÕES 2027.xlsx","abas":{"operacional":"PA"
       });
     });
   }
-  preencherPropostas();
+  /* As propostas historicas permanecem na fonte, mas nao entram no rascunho automaticamente. */
 
 
   /* Leitura de um mês. `fonte` escolhe a camada — "rascunho" é o que está
@@ -27069,8 +27087,8 @@ if (typeof APP !== "undefined" && APP) {
     if (k[0] === "qscamada") { S.qsCamada = k[1]; render(); return; }
     if (k[0] === "qsmes") { S.qsMes = +k[1]; render(); return; }
     if (k[0] === "salvarReal") {
-      AS.REPO.salvarRealizado();
-      S.qsFeed = true;
+      window.alert("Quadro Social: salvamento persistente nao configurado. Os dados permanecem em edicao nesta sessao; nao foi confirmado no Supabase.");
+      S.qsFeed = false;
       render();
       return;
     }
@@ -27094,7 +27112,7 @@ if (typeof APP !== "undefined" && APP) {
       AS.REPO.salvarBanco().then(function (r) {
         S.assSalvando = false;
         if (!r.ok) {window.alert("Falha ao salvar: " + (r.motivo||"sem confirmação"));render();return;}
-        AS.REPO.salvarRascunho();
+        /* Banco ja foi relido e confirmado: nao sobrescrever snapshot com memoria local. */
         S.assRegEdit = null;
         var d2 = S.assSaida; S.assSaida = null; concluirSaida(d2, render);
       });
@@ -27109,7 +27127,7 @@ if (typeof APP !== "undefined" && APP) {
       AS.REPO.salvarBanco().then(function (r) {
         S.assSalvando = false;
         if (r.ok) {
-          AS.REPO.salvarRascunho();
+          /* Banco ja foi relido e confirmado: nao sobrescrever snapshot com memoria local. */
           S.assFeed = true; S.assRegEdit = null;
         } else {
           S.assFeed = false;
