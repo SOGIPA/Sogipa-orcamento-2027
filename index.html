@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!-- SOGIPA V43 | 37 eventos cadastrados na estrutura, sem matrizes nem impacto financeiro; base V42 preservada -->
 <!-- SOGIPA V34 | Auditoria visual de Esportes sem gravacao ou substituicao de dados | 12-11-2026 -->
-<!-- SOGIPA V33 | Formatacao BRL na consulta ADMIN | Matrizes Esportes preservadas ate conciliacao -->
+<!-- SOGIPA V33 | Formatacao BRL na consulta administrativa | Matrizes Esportes preservadas ate conciliacao -->
 <!-- SOGIPA V31: correcao de identificacao de solicitacoes e revisao do gestor; manter permissao RPC. -->
 <!-- SOGIPA V30 | FILA OPERACOES GESTOR + REVISAO RH | 2026-11-12 -->
 <!-- SOGIPA ORCAMENTO 2027 | Revisao 2026-11-06 | DRE: recarga de dados disponivel; integracoes existentes preservadas -->
@@ -13589,7 +13589,7 @@ window.SOL_ACOES = function (cmd, render) {
     try { gPA = PP.gerById(d.gerenciaId || S.sGerAtual || S.pGer); } catch(e) {}
     try { gidPA = gPA && window.NAVPERM && window.NAVPERM.idInstitucional(gPA.nome); } catch(e) {}
     if (!gidPA || !window.SBDATA || !window.SBDATA.SOL || typeof window.SBDATA.SOL.salvarPA !== "function") {
-      alert("Nao foi possivel identificar a gerencia ou a conexao para salvar no banco. O formulario foi preservado.");
+      alert("Não foi possível identificar a gerência ou a conexão para salvar no banco. O formulário foi preservado.");
       return;
     }
     S.solCliqueEmAndamento = true;
@@ -13597,7 +13597,7 @@ window.SOL_ACOES = function (cmd, render) {
     window.SBDATA.SOL.salvarPA(null, Number(gidPA), d, enviarPA).then(function(res){
       S.solCliqueEmAndamento = false;
       if (!res || !res.ok || !res.confirmado) {
-        alert((res && res.mensagem) || "Falha de confirmacao no banco. O formulario foi preservado.");
+        alert((res && res.mensagem) || "Falha na confirmação do banco de dados. O formulário foi preservado.");
         return;
       }
       /* O banco e a fonte oficial. Falha de cache local nunca transforma um
@@ -13613,37 +13613,37 @@ window.SOL_ACOES = function (cmd, render) {
         console.warn("Solicitacao confirmada no banco; cache local indisponivel", cacheErr);
       }
       S.drawer = null; S.sGerAtual = null; S.pAba = "solicitacoes";
-      S.solMensagem = {id:local ? local.id : res.id,ok:true,texto:"Solicitacao salva e confirmada no banco ("+res.id+")."};
+      S.solMensagem = {id:local ? local.id : res.id,ok:true,texto:"Solicitação salva e confirmada no banco ("+res.id+")."};
       render();
     }).catch(function(err){
       S.solCliqueEmAndamento = false;
-      alert("Erro ao salvar no Supabase: "+String(err && err.message || err)+". O formulario foi preservado.");
+      alert("Erro ao salvar a solicitação: "+String(err && err.message || err)+". O formulário foi preservado.");
     });
     return;
   }
   if (k[0] === "enviar") {
     var sEnv = SO.porId(k[1]);
     if (sEnv && ehDeslig(sEnv)) { enviarDesligamento(sEnv, sEnv, render); return; }
-    if (!sEnv) { alert("Solicitacao local nao encontrada."); return; }
+    if (!sEnv) { alert("Solicitação local não encontrada."); return; }
     var gExistente = null, gidExistente = null;
     try { gExistente = PP.gerById(sEnv.gerenciaId || S.sGerAtual || S.pGer); } catch(e) {}
     try { gidExistente = gExistente && window.NAVPERM && window.NAVPERM.idInstitucional(gExistente.nome); } catch(e) {}
     if (!gidExistente || !window.SBDATA || !window.SBDATA.SOL) {
-      alert("Conexao ou gerencia indisponivel. O rascunho foi preservado."); return;
+      alert("Conexão ou gerência indisponível. O rascunho foi preservado."); return;
     }
     if (S.solCliqueEmAndamento) return;
     S.solCliqueEmAndamento = true;
     window.SBDATA.SOL.salvarPA(sEnv.idBanco || null, Number(gidExistente), sEnv, true).then(function(res){
       S.solCliqueEmAndamento = false;
       if (!res || !res.ok || !res.confirmado) {
-        alert((res && res.mensagem) || "Falha ao confirmar envio. Rascunho preservado."); return;
+        alert((res && res.mensagem) || "Falha ao confirmar o envio. O rascunho foi preservado."); return;
       }
       sEnv.idBanco = res.id;
       SO.REPO.registrarTransicao(k[1],res.status || "sol_enviada","Enviada e confirmada no banco");
       render();
     }).catch(function(err){
       S.solCliqueEmAndamento = false;
-      alert("Erro ao enviar: "+String(err && err.message || err)+". Rascunho preservado.");
+      alert("Erro ao enviar a solicitação: "+String(err && err.message || err)+". Rascunho preservado.");
     });
     return;
   }
@@ -31598,7 +31598,7 @@ function update(){if(!authorized()||Q.loading||!window.SB||typeof window.SB.rpc!
 function check(){if(Q.checking||!window.SB||typeof window.SB.rpc!=='function'||Date.now()-Q.lastAuth<3000)return;
  Q.checking=true;Q.lastAuth=Date.now();window.SB.rpc('pa_2027_perfil').then(function(r){if(r.error)throw r.error;
  var p=Array.isArray(r.data)?r.data[0]:r.data;Q.role=String(p&&p.papel||'').toLowerCase();
- if(!authorized())throw Error('Acesso RH/ADMIN nao confirmado para esta sessao');
+ if(!authorized())throw Error('Acesso do RH ou administrador não confirmado para esta sessão');
  window.__rhPapelPAConfirmado=Q.role;update();}).catch(function(err){Q.state='error';Q.error=String(err&&err.message||err);paint();}).finally(function(){Q.checking=false;});}
 window.__SOGIPA_RH_FILA_V9=function(){
  var h='<section id="rh-fila-v9" style="margin:0 0 18px;background:#202331;color:#f5f7ff;border:1px solid #454b67;border-radius:10px;overflow:hidden">'+
@@ -31632,13 +31632,13 @@ function norm(x){return String(x==null?'':x).trim().replace(/^SB-/i,'')}
 function load(){if(S.busy||!window.SB||typeof window.SB.rpc!=='function')return;S.busy=true;S.attempt=Date.now();
  Promise.all([window.SB.rpc('pa_2027_perfil'),window.SB.rpc('pa_2027_listar')]).then(function(r){
  var profile=arr(data(r[0]))[0];if(!profile||!profile.papel)throw Error('Perfil de Pessoal de Apoio indisponivel');
- var raw=data(r[1]);if(!Array.isArray(raw))throw Error('Resposta inesperada: a fila nao retornou uma lista');var rows=raw;S.role=String(profile.papel).trim().toLowerCase();S.gid=profile.gerencia_id;/* V31: perfil da sessão é a única fonte de autorização; não inferir pelo ADMIN. */
+ var raw=data(r[1]);if(!Array.isArray(raw))throw Error('Resposta inesperada: a lista de solicitações não foi carregada');var rows=raw;S.role=String(profile.papel).trim().toLowerCase();S.gid=profile.gerencia_id;/* V31: perfil da sessão é a única fonte de autorização; não inferir pelo ADMIN. */
  if(!['rh','admin','gestor','gerente_geral'].includes(S.role))throw Error('Perfil sem acesso a esta fila');
  S.rows=rows.filter(function(x){return x&&x.dados&&x.dados.tipo==='desligamento'&&statuses.includes(x.status)});
  S.ok=true;S.err='';S.last=Date.now();
  /* A fonte oficial de nomes ja respeita a autorizacao do RH e de cada gestor. */
  return window.SB.rpc('pa_2027_rh_minha_equipe').then(function(v){
-  if(v&&(v.error||v.ok===false)){S.err='Nomes ainda nao carregados: '+((v.error&&v.error.message)||v.motivo||'consulta indisponivel');return;}
+  if(v&&(v.error||v.ok===false)){S.err='Nomes ainda não carregados: '+((v.error&&v.error.message)||v.motivo||'consulta indisponivel');return;}
   var map={};arr(data(v)).forEach(function(r){var d=r.dados||{},key=norm(r.matricula||d.matricula),name=d.funcionario||d.nome||'';if(key&&name)map[key]={nome:name,matricula:r.matricula,cargo:d.cargo,gerencia:d.gerencia};});S.people=map;S.teamRows=arr(data(v));
  });
  }).catch(function(e){S.err=String(e.message||e);/* manter ultimo resultado em memoria */}).finally(function(){S.busy=false;paint()});}
@@ -31686,8 +31686,8 @@ function paint(){var c=context(),old=document.getElementById('sogipa-fila-unific
  html+='<tr><td style="padding:9px;border-top:1px solid #3b4960"><b>'+esc(p.nome||'Nome pendente de identifica\u00e7\u00e3o')+'</b><div style="font-size:12px">Matr\u00edcula: '+esc(p.matricula)+'</div></td><td style="padding:9px;border-top:1px solid #3b4960">'+esc(label)+'</td><td style="padding:9px;border-top:1px solid #3b4960">'+esc(x.atualizada_em?new Date(x.atualizada_em).toLocaleString('pt-BR'):'')+'</td><td style="padding:9px;border-top:1px solid #3b4960">'+(canAct?'<button class="btn sm pri" type="button" data-v23-review="'+esc(x.id)+'">Revisar</button>':(S.role==='admin'?'<button class="btn sm" type="button" data-v32-detail="'+esc(x.id)+'">Ver detalhes</button>':(!p.nome?'Identificacao pendente':'Acompanhar')))+'</td></tr>';
  });html+='</tbody></table></div>';}}
  if(c.rh&&S.role==='rh'&&S.teamRows.length){
-  var groups={};S.teamRows.forEach(function(r){var d=r.dados||{},g=d.gerencia||'Gerencia nao informada';(groups[g]||(groups[g]=[])).push(d);});
-  html+='<details style="margin-top:15px;border-top:1px solid #44536a;padding-top:12px"><summary style="cursor:pointer;font-weight:700">Pessoal de Apoio de todas as gerencias — consulta RH ('+S.teamRows.length+' registros)</summary><p style="font-size:12px;color:#becae1">Consulta somente leitura. Edicao permanece restrita aos processos autorizados do RH.</p>';
+  var groups={};S.teamRows.forEach(function(r){var d=r.dados||{},g=d.gerencia||'Gerência não informada';(groups[g]||(groups[g]=[])).push(d);});
+  html+='<details style="margin-top:15px;border-top:1px solid #44536a;padding-top:12px"><summary style="cursor:pointer;font-weight:700">Pessoal de Apoio de todas as gerências — consulta RH ('+S.teamRows.length+' registros)</summary><p style="font-size:12px;color:#becae1">Consulta somente leitura. Edicao permanece restrita aos processos autorizados do RH.</p>';
   Object.keys(groups).sort().forEach(function(g){html+='<details style="padding:7px 0"><summary style="cursor:pointer">'+esc(g)+' — '+groups[g].length+' colaborador(es)</summary><div style="max-height:350px;overflow:auto"><table style="width:100%"><thead><tr><th style="text-align:left">Colaborador</th><th style="text-align:left">Cargo</th><th style="text-align:left">Matricula</th></tr></thead><tbody>';groups[g].forEach(function(d){html+='<tr><td>'+esc(d.funcionario||'')+'</td><td>'+esc(d.cargo||'')+'</td><td>'+esc(d.matricula||'')+'</td></tr>'});html+='</tbody></table></div></details>'});html+='</details>';
  }
  html+='</section>';
@@ -31702,19 +31702,28 @@ function showAdminDetails(id){
  var d=x.dados||{},p=person(x);
  var fields=[['Colaborador',p.nome],['Matrícula',p.matricula],['Etapa',x.status],['Gerência',x.gerencia_id],['Data da solicitação',x.criada_em],['Última atualização',x.atualizada_em]];
  var financial=['rh_rescisao','rescisaoValor','valor_rescisao','valorRescisao','rh_parecer','parecer_rh','rh_comentario','comentario_rh','dataDesligamento','data_desligamento','dataPrevista','data_prevista','justificativa','comentario_gestor','observacao'];
- financial.forEach(function(k){if(Object.prototype.hasOwnProperty.call(d,k))fields.push([k,d[k]]);});
+ var labels={rh_rescisao:'Valor da rescisão (RH)',rescisaoValor:'Valor da rescisão',valor_rescisao:'Valor da rescisão',valorRescisao:'Valor da rescisão',rh_parecer:'Parecer do RH',parecer_rh:'Parecer do RH',rh_comentario:'Comentário do RH',comentario_rh:'Comentário do RH',dataDesligamento:'Data do desligamento',data_desligamento:'Data do desligamento',dataPrevista:'Data prevista',data_prevista:'Data prevista',justificativa:'Justificativa',comentario_gestor:'Comentário do gestor',observacao:'Observação'};
+ financial.forEach(function(k){if(Object.prototype.hasOwnProperty.call(d,k))fields.push([labels[k]||k,d[k],k]);});
  var root=document.createElement('div');root.id='sogipa-admin-detail-v32';root.style.cssText='position:fixed;inset:0;z-index:999999;background:rgba(0,0,0,.82);display:flex;align-items:center;justify-content:center;padding:18px';
  var val=function(v,k){
   if(['rh_rescisao','rescisaoValor','valor_rescisao','valorRescisao'].indexOf(k)>=0){
    if(v===null||v===undefined||v==='')return 'Não informado';
+   /* Valor 0 em pedido ainda aguardando RH não equivale a rescisão calculada. */
+   if(Number(v)===0&&x.status==='sol_aguardando_rh'&&k!=='rh_rescisao'&&!(d.rh_rescisao!==null&&d.rh_rescisao!==undefined&&d.rh_rescisao!==''))return 'Aguardando cálculo do RH';
    var n=typeof v==='number'?v:Number(String(v).replace(/\s/g,'').replace(/\./g,'').replace(',','.'));
    return Number.isFinite(n)?new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(n):String(v);
   }
-  if(k==='Etapa'){return {'sol_retorno_gestor':'Com o gestor — retorno do RH','sol_aprovada':'Aprovada','sol_aguardando_rh':'Aguardando análise do RH','sol_enviada':'Encaminhada ao Gerente Geral'}[v]||String(v||'Não informado');}
+  if(k==='Etapa'){return {'sol_retorno_gestor':'Com o gestor — retorno do RH','sol_aprovada':'Aprovada','sol_aguardando_rh':'Aguardando análise do RH','sol_enviada':'Encaminhada ao Gerente Geral','sol_rascunho':'Rascunho','sol_ajuste':'Aguardando ajustes'}[v]||String(v||'Não informado');}
   if((k==='Data da solicitação'||k==='Última atualização')&&v){var dt=new Date(v);if(!Number.isNaN(dt.getTime()))return dt.toLocaleString('pt-BR');}
-  return v&&typeof v==='object'?JSON.stringify(v,null,2):String(v==null?'Não informado':v);
+  if(['dataDesligamento','data_desligamento','dataPrevista','data_prevista'].indexOf(k)>=0&&v){
+   var match=String(v).match(/^(\d{4})-(\d{2})-(\d{2})(?:$|T|\s)/);
+   if(match)return match[3]+'/'+match[2]+'/'+match[1];
+   var dt2=new Date(v);if(!Number.isNaN(dt2.getTime()))return dt2.toLocaleDateString('pt-BR',{timeZone:'UTC'});
+  }
+  if(k==='Gerência'){var gerNomes={'3':'Operações','5':'Manutenção'};return gerNomes[String(v)]||String(v);}
+  return v&&typeof v==='object'?JSON.stringify(v,null,2):String(v===null||v===undefined||v===''?'Não informado':v);
  };
- root.innerHTML='<section role="dialog" aria-modal="true" aria-label="Detalhes da solicitação" style="width:100%;max-width:760px;max-height:90vh;overflow:auto;background:#202431;color:#fff;border:1px solid #536079;border-radius:12px;padding:22px"><h3>Detalhes da solicitação — consulta ADMIN</h3><p>Somente leitura. Nenhuma alteração será gravada nesta tela.</p>'+fields.map(function(f){return '<div style="padding:8px 0;border-bottom:1px solid #3b4357"><small>'+esc(f[0])+'</small><div style="white-space:pre-wrap;overflow-wrap:anywhere">'+esc(val(f[1],f[0]))+'</div></div>'}).join('')+'<button type="button" class="btn sm" data-v32-close style="margin-top:18px">Fechar</button></section>';
+ root.innerHTML='<section role="dialog" aria-modal="true" aria-label="Detalhes da solicitação" style="width:100%;max-width:760px;max-height:90vh;overflow:auto;background:#202431;color:#fff;border:1px solid #536079;border-radius:12px;padding:22px"><h3>Detalhes da solicitação — consulta administrativa</h3><p>Somente leitura. Nenhuma alteração será gravada nesta tela.</p>'+fields.map(function(f){return '<div style="padding:8px 0;border-bottom:1px solid #3b4357"><small>'+esc(f[0])+'</small><div style="white-space:pre-wrap;overflow-wrap:anywhere">'+esc(val(f[1],f[2]||f[0]))+'</div></div>'}).join('')+'<button type="button" class="btn sm" data-v32-close style="margin-top:18px">Fechar</button></section>';
  document.body.appendChild(root);
 }
 document.addEventListener('click',function(e){var b=e.target.closest('[data-v32-detail]');if(b){e.preventDefault();showAdminDetails(b.getAttribute('data-v32-detail'));return;}if(e.target.closest('[data-v32-close]')){e.preventDefault();var m=document.getElementById('sogipa-admin-detail-v32');if(m)m.remove();}},false);
