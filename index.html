@@ -13584,28 +13584,68 @@ window.SOL_ACOES = function (cmd, render) {
     if (!validarSolicitacao(d)) return;
     var c = SO.calcular(d);
     if (!c.conclusivo && SO.tipoById(d.tipo).regra !== "reposicao") { alert(c.motivo); return; }
-    var s = SO.REPO.salvarSolicitacao(d);
-    if (k[0] === "criar-enviar") {
-      /* DESLIGAMENTO: vai pelo banco. O status local passa a ser o que a
-         releitura trouxe, e enquanto o banco nao confirma a solicitacao
-         fica em rascunho — a tela nao diz "enviada" por conta propria. */
-      if (ehDeslig(d)) {
-        enviarDesligamento(s, d, render);
+    /* V66: primeiro persistir no Supabase; nunca tratar memoria como salvamento. */
+    var gPA = null, gidPA = null;
+    try { gPA = PP.gerById(d.gerenciaId || S.sGerAtual || S.pGer); } catch(e) {}
+    try { gidPA = gPA && window.NAVPERM && window.NAVPERM.idInstitucional(gPA.nome); } catch(e) {}
+    if (!gidPA || !window.SBDATA || !window.SBDATA.SOL || typeof window.SBDATA.SOL.salvarPA !== "function") {
+      alert("Nao foi possivel identificar a gerencia ou a conexao para salvar no banco. O formulario foi preservado.");
+      return;
+    }
+    S.solCliqueEmAndamento = true;
+    var enviarPA = k[0] === "criar-enviar";
+    window.SBDATA.SOL.salvarPA(null, Number(gidPA), d, enviarPA).then(function(res){
+      S.solCliqueEmAndamento = false;
+      if (!res || !res.ok || !res.confirmado) {
+        alert((res && res.mensagem) || "Falha de confirmacao no banco. O formulario foi preservado.");
         return;
       }
-      var r0 = SO.REPO.registrarTransicao(s.id, "sol_enviada", "Enviada ao Gerente Geral");
-      if (!r0.ok) { alert(r0.erro); return; }
-    }
-    S.drawer = null; S.sGerAtual = null;
-    S.pAba = "solicitacoes";
-    render(); return;
+      /* O banco e a fonte oficial. Falha de cache local nunca transforma um
+         salvamento confirmado em erro nem autoriza novo INSERT duplicado. */
+      var local = null;
+      try {
+        local = SO.REPO.salvarSolicitacao(d);
+        if (local) {
+          local.idBanco = res.id;
+          if (enviarPA) SO.REPO.registrarTransicao(local.id, res.status || "sol_enviada", "Confirmada no Supabase");
+        }
+      } catch (cacheErr) {
+        console.warn("Solicitacao confirmada no banco; cache local indisponivel", cacheErr);
+      }
+      S.drawer = null; S.sGerAtual = null; S.pAba = "solicitacoes";
+      S.solMensagem = {id:local ? local.id : res.id,ok:true,texto:"Solicitacao salva e confirmada no banco ("+res.id+")."};
+      render();
+    }).catch(function(err){
+      S.solCliqueEmAndamento = false;
+      alert("Erro ao salvar no Supabase: "+String(err && err.message || err)+". O formulario foi preservado.");
+    });
+    return;
   }
   if (k[0] === "enviar") {
     var sEnv = SO.porId(k[1]);
     if (sEnv && ehDeslig(sEnv)) { enviarDesligamento(sEnv, sEnv, render); return; }
-    var r = SO.REPO.registrarTransicao(k[1], "sol_enviada", "Enviada ao Gerente Geral");
-    if (!r.ok) alert(r.erro);
-    render(); return;
+    if (!sEnv) { alert("Solicitacao local nao encontrada."); return; }
+    var gExistente = null, gidExistente = null;
+    try { gExistente = PP.gerById(sEnv.gerenciaId || S.sGerAtual || S.pGer); } catch(e) {}
+    try { gidExistente = gExistente && window.NAVPERM && window.NAVPERM.idInstitucional(gExistente.nome); } catch(e) {}
+    if (!gidExistente || !window.SBDATA || !window.SBDATA.SOL) {
+      alert("Conexao ou gerencia indisponivel. O rascunho foi preservado."); return;
+    }
+    if (S.solCliqueEmAndamento) return;
+    S.solCliqueEmAndamento = true;
+    window.SBDATA.SOL.salvarPA(sEnv.idBanco || null, Number(gidExistente), sEnv, true).then(function(res){
+      S.solCliqueEmAndamento = false;
+      if (!res || !res.ok || !res.confirmado) {
+        alert((res && res.mensagem) || "Falha ao confirmar envio. Rascunho preservado."); return;
+      }
+      sEnv.idBanco = res.id;
+      SO.REPO.registrarTransicao(k[1],res.status || "sol_enviada","Enviada e confirmada no banco");
+      render();
+    }).catch(function(err){
+      S.solCliqueEmAndamento = false;
+      alert("Erro ao enviar: "+String(err && err.message || err)+". Rascunho preservado.");
+    });
+    return;
   }
   /* ── ANALISE DO RH ──
      Validar exige o valor da rescisao; devolver exige justificativa. As duas
