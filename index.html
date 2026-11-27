@@ -10629,6 +10629,7 @@ var APP = (function () {
     { id: "porgerencia", nome: "Solicitações por Gerência" }, { id: "cenarios", nome: "Cenários de Decisão" },
     { id: "histdec", nome: "Histórico de Decisões" },
     { id: "quadro", nome: "Quadro Atual" },
+    { id: "solicitacoes", nome: "Solicitações" },
     { id: "detalhes", nome: "Detalhes da Gerência Geral" }
   ];
   /* Operações tem uma subárea própria: o Estacionamento, com matriz e peça
@@ -11095,6 +11096,26 @@ var APP = (function () {
     return quadroLista(PP.pessoasDoQuadro(g), null, null, true, g.nome)
       /* + paMatrizGerencia(g) */;
   }
+  /* V71: referência cruzada de gerentes para David. Sem alterar quadros,
+     vínculos, custos ou a contabilidade da gerência de origem. */
+  window.GG_SOLICITACOES = {
+    gerentes: function () {
+      var gg = PP.PES.gerencias.filter(function(g){return !!g.executiva;})[0];
+      return PP.PES.gerencias.filter(function(g){return g !== gg;}).map(function(g){
+        var r = PP.responsavelDe(PP.pessoasDoQuadro(g));
+        return r ? {g:g,r:r} : null;
+      }).filter(Boolean);
+    },
+    listaGerentes: function () {
+      var lista = this.gerentes();
+      if (!lista.length) return '<div class="gap"></div>' + card('Gerentes das demais áreas', 'Consulta adicional sem duplicação financeira',
+        '<div class="card-pad">Nenhum gerente das demais áreas foi carregado. Verifique o acesso aos dados antes de solicitar uma movimentação.</div>');
+      return '<div class="gap"></div>' + card('Gerentes das demais áreas', 'Consulta adicional — custos permanecem na gerência de origem',
+        '<div class="tw"><table><thead><tr><th>Gerente</th><th>Gerência de origem</th><th>Cargo</th><th class="num">Salário-base</th><th class="num">Encargos</th><th class="num">Custo mensal</th><th>Ação</th></tr></thead><tbody>'+
+        lista.map(function(x){return '<tr><td><b>'+esc(x.r.c.nome)+'</b></td><td>'+esc(x.g.nome)+'</td><td>'+esc(x.r.c.cargo||'—')+'</td><td class="num">R$ '+fmt(x.r.c.salarioBase||0,2)+'</td><td class="num">R$ '+fmt(PP.encargos(x.r.c),2)+'</td><td class="num">R$ '+fmt(PP.custoMensal(x.r.c),2)+'</td><td><button class="btn sm pri" data-sacao="nova-ger:'+esc(x.g.id)+':'+esc(x.r.cc.id)+':'+esc(x.r.c.id)+'">Solicitar movimentação</button></td></tr>';}).join('')+
+        '</tbody></table></div>', 'Exibição para movimentações; nenhuma pessoa ou despesa é adicionada à Gerência Geral.');
+    }
+  };
   /* Um único componente de Quadro Atual, usado por gerências, Eventos e
      Locações. `nome` só muda o título; a estrutura é sempre a mesma. */
   function quadroLista(todos, nome, aviso, comImport, areaRef) {
@@ -11898,7 +11919,8 @@ var APP = (function () {
         porgerencia: function () { return window.GERAL_EXEC.porGerencia(); },
         cenarios: function () { return window.GERAL_EXEC.cenarios(); },
         histdec: function () { return window.GERAL_EXEC.historicoDecisoes(); },
-        quadro: function (gg) { return quadro(gg); },
+        quadro: function (gg) { return quadro(gg) + window.GG_SOLICITACOES.listaGerentes(); },
+        solicitacoes: function (gg) { return window.SOLICITACOES_VIEW.render(gg); },
         simulacoes: function (gg) { return window.GESTOR_VIEW.simulacoes(gg); },
         detalhes: function (gg) { return window.GESTOR_VIEW.detalhes(gg, det); }
       };
@@ -12915,7 +12937,16 @@ var APP = (function () {
       SO.tiposVisiveis().map(function (x) {
         return '<option value="' + x.id + '"' + (tipo === x.id ? " selected" : "") + ">" + esc(x.nome) + "</option>";
       }).join("") + "</select></div>";
-    f += '<div class="field"><label>Gerência</label><input class="calc" readonly value="' + esc(g.nome) + '"></div>';
+    if (S.pGer && PP.gerById(S.pGer) && PP.gerById(S.pGer).executiva) {
+      var gerentesGG = window.GG_SOLICITACOES.gerentes();
+      f += '<div class="field full"><label for="soGerenteDireto">Selecionar gerente de outra área (opcional)</label><select id="soGerenteDireto">' +
+        '<option value="">— Selecionar na lista de gerentes —</option>' +
+        gerentesGG.map(function(x){var cod = [x.g.id,x.r.cc.id,x.r.c.id].join('|'); return '<option value="'+esc(cod)+'"'+(S.sGerAtual===x.g.id && S.sColab===x.r.c.id?' selected':'')+'>'+esc(x.r.c.nome)+' — '+esc(x.g.nome)+'</option>';}).join('') + '</select></div>';
+      f += '<div class="field"><label for="soGerenciaOrigem">Gerência do colaborador</label><select id="soGerenciaOrigem">' +
+        PP.PES.gerencias.filter(function(x){return !!x.ccs.length;}).map(function(x){return '<option value="'+esc(x.id)+'"'+(x.id===g.id?' selected':'')+'>'+esc(x.nome)+'</option>';}).join('') + '</select></div>';
+    } else {
+      f += '<div class="field"><label>Gerência</label><input class="calc" readonly value="' + esc(g.nome) + '"></div>';
+    }
 
     if (SO.usa(tipo, "cc")) {
       f += '<div class="field"><label for="soCC">Centro de custo</label><select id="soCC">' +
@@ -13526,6 +13557,15 @@ window.SOL_ACOES = function (cmd, render) {
   var A = APP, S = A.state, SO = window.SOLICITACOES, SV = window.SOLICITACOES_VIEW, PP = window.PESSOAL;
   var k = cmd.split(":");
 
+  if (k[0] === "nova-ger") {
+    var area = PP.gerById(k[1]);
+    if (!area || !PP.gerById(S.pGer) || !PP.gerById(S.pGer).executiva) return;
+    S.sGerAtual = area.id; S.sTipo = SO.tiposVisiveis()[0].id;
+    S.sCC = k[2] || ""; S.sColab = k[3] || ""; S.sMes = 1;
+    S.sJustRascunho = ""; S.sObsRascunho = ""; S.solCliqueEmAndamento = false;
+    S.drawer = "sol-nova:" + area.id;
+    render(); return;
+  }
   if (k[0] === "nova") {
     S.sGerAtual = S.pGer;
     S.sTipo = SO.tiposVisiveis()[0].id; S.sCC = ""; S.sColab = ""; S.sMes = 1;
@@ -18870,6 +18910,31 @@ window.SOL_ACOES = function (cmd, render) {
       S.sJustRascunho = justAnt ? justAnt.value : (S.sJustRascunho || "");
       S.sObsRascunho = obsAnt ? obsAnt.value : (S.sObsRascunho || "");
       S.sTipo = ev.target.value; S.sColab = ""; render(); return;
+    }
+    if (ev.target.id === "soGerenteDireto" && ev.target.value) {
+      var gAtual = window.PESSOAL.gerById(S.pGer);
+      if (!gAtual || !gAtual.executiva) return;
+      var partes = ev.target.value.split('|');
+      var gAlvo = window.PESSOAL.gerById(partes[0]);
+      if (!gAlvo) return;
+      var achou = window.GG_SOLICITACOES.gerentes().some(function(x){return x.g.id===gAlvo.id && x.r.cc.id===partes[1] && x.r.c.id===partes[2];});
+      if (!achou) return;
+      S.sGerAtual = gAlvo.id; S.sCC = partes[1]; S.sColab = partes[2];
+      S.sJustRascunho = (document.getElementById('soJust')||{}).value || '';
+      S.sObsRascunho = (document.getElementById('soObs')||{}).value || '';
+      S.drawer = 'sol-nova:' + gAlvo.id;
+      render(); return;
+    }
+    if (ev.target.id === "soGerenciaOrigem") {
+      var atual = window.PESSOAL.gerById(S.pGer);
+      if (!atual || !atual.executiva) return;
+      S.sGerAtual = ev.target.value;
+      S.sCC = ""; S.sColab = "";
+      var j = document.getElementById("soJust"), o = document.getElementById("soObs");
+      S.sJustRascunho = j ? j.value : "";
+      S.sObsRascunho = o ? o.value : "";
+      S.drawer = "sol-nova:" + S.sGerAtual;
+      render(); return;
     }
     if (ev.target.id === "soCC") {
       var justAnt2 = document.getElementById("soJust"), obsAnt2 = document.getElementById("soObs");
