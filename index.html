@@ -11140,7 +11140,7 @@ var APP = (function () {
   };
   /* Um único componente de Quadro Atual, usado por gerências, Eventos e
      Locações. `nome` só muda o título; a estrutura é sempre a mesma. */
-  function quadroLista(todos, nome, aviso, comImport, areaRef) {
+  function quadroLista(todos, nome, aviso, comImport, areaRef, secaoGestores) {
     var g = { nome: nome || "" };
     if (!todos.length) {
       /* ─── TRÊS SITUAÇÕES DIFERENTES, TRÊS RESPOSTAS DIFERENTES ───
@@ -11225,7 +11225,8 @@ var APP = (function () {
 
     var out = (comImport ? faixaImportar() : "") +
       stitle("Quadro atual" + (nome ? " — " + esc(nome) : ""), A.plural(todos.length, "pessoa") + " · R$");
-    out += cabecalhoQuadro(g, todos, gestor, totMensal);
+    out += cabecalhoQuadro(g, todos, gestor, totMensal, !!secaoGestores);
+    if (secaoGestores) out += secaoGestores;
     out += '<div class="row" style="margin-bottom:14px">' +
       '<div class="field" style="flex:1;max-width:340px"><input id="pBusca" type="text" autocomplete="off" ' +
       'placeholder="Buscar por nome, cargo, matrícula ou CC" value="' + esc(S.pBusca || "") + '"></div>' +
@@ -11241,7 +11242,7 @@ var APP = (function () {
 
   /* Gestor da área, seus números e, quando houver, aviso de quem veio de
      outro centro. Os valores aqui são leitura da mesma fonte da tabela. */
-  function cabecalhoQuadro(g, todos, resp, totMensal) {
+  function cabecalhoQuadro(g, todos, resp, totMensal, incluirGestores) {
     if (resp === undefined) resp = PP.responsavelDe(todos);
     var vindos = todos.filter(function (x) { return x.realocado; });
     var nEquipe = resp ? todos.length - 1 : todos.length;
@@ -11254,7 +11255,7 @@ var APP = (function () {
         : '<label>Gestor da área</label><b class="neu">não identificado</b>' +
           "<span>nenhum cargo de chefia registrado nesta área</span>") +
       "</div>" +
-      '<div class="qd-tot"><label>Pessoas na área</label><b>' + todos.length + "</b>" +
+      '<div class="qd-tot"><label>' + (incluirGestores ? "Gestores e pessoas na área" : "Pessoas na área") + '</label><b>' + (incluirGestores && window.GG_SOLICITACOES ? window.GG_SOLICITACOES.gerentes().length + " gestores · " + todos.length + " pessoas na área" : todos.length) + "</b>" +
       "<span>" + (resp ? "1 gestor + " + A.plural(nEquipe, "na equipe", "na equipe") + " · " : "") +
       A.plural(new Set(todos.map(function (x) { return x.cc.numero; })).size,
         "centro de custo", "centros de custo") + "</span></div>";
@@ -11941,7 +11942,7 @@ var APP = (function () {
         porgerencia: function () { return window.GERAL_EXEC.porGerencia(); },
         cenarios: function () { return window.GERAL_EXEC.cenarios(); },
         histdec: function () { return window.GERAL_EXEC.historicoDecisoes(); },
-        quadro: function (gg) { return window.GG_SOLICITACOES.listaGerentes() + quadro(gg); },
+        quadro: function (gg) { return quadroLista(PP.pessoasDoQuadro(gg), null, null, true, gg.nome, window.GG_SOLICITACOES.listaGerentes()); },
         solicitacoes: function (gg) { return window.SOLICITACOES_VIEW.render(gg); },
         simulacoes: function (gg) { return window.GESTOR_VIEW.simulacoes(gg); },
         detalhes: function (gg) { return window.GESTOR_VIEW.detalhes(gg, det); }
