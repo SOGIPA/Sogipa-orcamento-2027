@@ -29840,8 +29840,8 @@ Object.assign(ESP_MODALIDADES,{"basquete":{"id":"basquete","nome":"Basquete","ge
     var desp = { valor: soma(c.despesas), fonte: somaBloco(DESP_LEITURA, camada, INT).fonte };
     var juros = { valor: soma(c.jurosDivida) };
     function n(x) { return x === null || x === undefined ? null : x; }
-    var liq = (bruta.valor === null && ded.valor === null) ? null
-      : (bruta.valor || 0) + (ded.valor || 0);   /* dedução já vem negativa */
+    var liq = (bruta.valor === null || ded.valor === null) ? null
+      : bruta.valor + ded.valor;   /* dedução já vem negativa; N/D não é zero */
     var oper = (liq === null || desp.valor === null) ? null : liq - desp.valor;
     var jv = juros.valor === null || juros.valor === undefined ? null : juros.valor;
     var liquido = oper === null ? null : oper - (jv || 0);
@@ -29911,15 +29911,24 @@ Object.assign(ESP_MODALIDADES,{"basquete":{"id":"basquete","nome":"Basquete","ge
   function curvaBloco(ids, camada) {
     var INT = integracoes();
     var acc = new Array(12).fill(null);
+    var incompleto = new Array(12).fill(false);
     ids.forEach(function (id) {
       var c = curvaLinha(id, camada, INT);
-      if (!c) return;
+      if (!c || c.length !== 12) {
+        for (var m = 0; m < 12; m++) incompleto[m] = true;
+        return;
+      }
       c.forEach(function (v, m) {
-        if (v === null || v === undefined) return;
-        acc[m] = (acc[m] || 0) + v;
+        if (v === null || v === undefined || !Number.isFinite(Number(v))) {
+          incompleto[m] = true;
+          return;
+        }
+        acc[m] = (acc[m] || 0) + Number(v);
       });
     });
-    return acc;
+    /* Segurança financeira: um bloco incompleto nunca vira total definitivo.
+       Preserva os valores individuais e não modifica dados no Supabase. */
+    return acc.map(function (v, m) { return incompleto[m] ? null : v; });
   }
 
   function curvaTotais(camada) {
@@ -29930,7 +29939,7 @@ Object.assign(ESP_MODALIDADES,{"basquete":{"id":"basquete","nome":"Basquete","ge
     var liq = [], oper = [], liquido = [];
     for (var m = 0; m < 12; m++) {
       var b = bruta[m], d = ded[m], p = desp[m], j = juros[m];
-      var l = (b === null && d === null) ? null : (b || 0) + (d || 0);
+      var l = (b === null || d === null) ? null : b + d;
       liq.push(l);
       var o = (l === null || p === null) ? null : l - p;
       oper.push(o);
