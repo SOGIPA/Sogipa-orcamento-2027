@@ -11107,13 +11107,35 @@ var APP = (function () {
       }).filter(Boolean);
     },
     listaGerentes: function () {
-      var lista = this.gerentes();
-      if (!lista.length) return '<div class="gap"></div>' + card('Gerentes das demais áreas', 'Consulta adicional sem duplicação financeira',
-        '<div class="card-pad">Nenhum gerente das demais áreas foi carregado. Verifique o acesso aos dados antes de solicitar uma movimentação.</div>');
-      return '<div class="gap"></div>' + card('Gerentes das demais áreas', 'Consulta adicional — custos permanecem na gerência de origem',
-        '<div class="tw"><table><thead><tr><th>Gerente</th><th>Gerência de origem</th><th>Cargo</th><th class="num">Salário-base</th><th class="num">Encargos</th><th class="num">Custo mensal</th><th>Ação</th></tr></thead><tbody>'+
-        lista.map(function(x){return '<tr><td><b>'+esc(x.r.c.nome)+'</b></td><td>'+esc(x.g.nome)+'</td><td>'+esc(x.r.c.cargo||'—')+'</td><td class="num">R$ '+fmt(x.r.c.salarioBase||0,2)+'</td><td class="num">R$ '+fmt(PP.encargos(x.r.c),2)+'</td><td class="num">R$ '+fmt(PP.custoMensal(x.r.c),2)+'</td><td><button class="btn sm pri" data-sacao="nova-ger:'+esc(x.g.id)+':'+esc(x.r.cc.id)+':'+esc(x.r.c.id)+'">Solicitar movimentação</button></td></tr>';}).join('')+
-        '</tbody></table></div>', 'Exibição para movimentações; nenhuma pessoa ou despesa é adicionada à Gerência Geral.');
+      var lista = this.gerentes().sort(function(a,b){
+        return (Number(b.r.c.salarioBase)||0)-(Number(a.r.c.salarioBase)||0) ||
+          String(a.r.c.nome||'').localeCompare(String(b.r.c.nome||''),'pt-BR');
+      });
+      if (!lista.length) return '<div class="gap"></div>' + card('GESTORES', 'Consulta adicional sem duplicação financeira',
+        '<div class="card-pad">Nenhum gestor de outra área foi carregado. Verifique o acesso aos dados antes de solicitar uma movimentação.</div>');
+      var totalGerencias = {};
+      lista.forEach(function(x){
+        var chave=String(x.g.id);
+        if (!Object.prototype.hasOwnProperty.call(totalGerencias,chave)) {
+          totalGerencias[chave]=PP.pessoasDoQuadro(x.g).reduce(function(t,p){return t+PP.custoMensal(p.c);},0);
+        }
+      });
+      return '<div class="gap"></div>' + card('GESTORES', 'Consulta adicional — custos permanecem na gerência de origem',
+        '<div class="tw"><table><thead><tr><th>Colaborador</th><th>Cargo</th><th>CC</th><th class="num">Salário-base</th><th class="num">Adicionais</th><th class="num">Benefícios</th><th class="num">Encargos</th><th class="num">Custo mensal</th><th class="num">Custo anual</th><th class="num">% da gerência</th><th>Gestão do quadro</th></tr></thead><tbody>'+
+        lista.map(function(x){
+          var c=x.r.c, mensal=PP.custoMensal(c), total=totalGerencias[String(x.g.id)];
+          return '<tr><td><b>'+esc(c.nome)+'</b><div class="muted" style="font-size:11px">'+esc(c.matricula||'sem matrícula')+' · '+esc(x.g.nome)+'</div></td>'+
+          '<td>'+esc(c.cargo||'—')+'</td><td class="muted">'+esc(x.r.cc.nome||'—')+'</td>'+
+          '<td class="num">'+fmt(c.salarioBase||0)+'</td>'+
+          '<td class="num">'+fmt(PP.somaRubricas(c,['adicional']))+'</td>'+
+          '<td class="num">'+fmt(PP.somaRubricas(c,['beneficio']))+'</td>'+
+          '<td class="num">'+fmt(PP.encargos(c))+'</td>'+
+          '<td class="num"><b>'+fmt(mensal)+'</b></td>'+
+          '<td class="num">'+r$(PP.custoAnual(c))+'</td>'+
+          '<td class="num muted">'+(total ? pct(mensal/total) : '—')+'</td>'+
+          '<td><button class="btn sm pri" data-sacao="nova-ger:'+esc(x.g.id)+':'+esc(x.r.cc.id)+':'+esc(c.id)+'">Solicitar movimentação</button></td></tr>';
+        }).join('')+
+        '</tbody></table></div>', 'Ordenados pelo maior salário-base. Participação calculada na gerência de origem; nenhum custo é adicionado à Gerência Geral.');
     }
   };
   /* Um único componente de Quadro Atual, usado por gerências, Eventos e
@@ -11919,7 +11941,7 @@ var APP = (function () {
         porgerencia: function () { return window.GERAL_EXEC.porGerencia(); },
         cenarios: function () { return window.GERAL_EXEC.cenarios(); },
         histdec: function () { return window.GERAL_EXEC.historicoDecisoes(); },
-        quadro: function (gg) { return quadro(gg) + window.GG_SOLICITACOES.listaGerentes(); },
+        quadro: function (gg) { return window.GG_SOLICITACOES.listaGerentes() + quadro(gg); },
         solicitacoes: function (gg) { return window.SOLICITACOES_VIEW.render(gg); },
         simulacoes: function (gg) { return window.GESTOR_VIEW.simulacoes(gg); },
         detalhes: function (gg) { return window.GESTOR_VIEW.detalhes(gg, det); }
